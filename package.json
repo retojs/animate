@@ -1,9 +1,10 @@
 {
-  "name": "typescript-app-seed",
+  "name": "animate",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "compile": "node_modules/.bin/tsc",
     "build": "webpack",
     "start": "webpack-dev-server --history-api-fallback --inline --progress --open",
     "start:backend": "node ./backend/server.js",
@@ -15,42 +16,44 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/retojs/typescript-app-seed.git"
+    "url": "git+ssh://git@github.com/retojs/animate.git"
   },
-  "keywords": [
-    "typescript"
-  ],
   "author": "Reto J. S.",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/retojs/typescript-app-seed/issues"
-  },
-  "homepage": "https://github.com/retojs/typescript-app-seed#readme",
   "devDependencies": {
-    "@types/jest": "^24.0.9",
-    "@types/node": "^11.9.6",
-    "css-loader": "^2.1.0",
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.18",
+    "css-loader": "^3.4.2",
     "html-webpack-plugin": "^3.2.0",
     "jasmine-core": "^3.3.0",
-    "jest": "^24.1.0",
-    "jest-canvas-mock": "^2.0.0-alpha.3",
-    "karma": "^4.0.1",
+    "jest": "^23.6.0",
+    "jest-canvas-mock": "^1.1.0",
+    "karma": "^3.1.4",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^2.0.0",
     "karma-jasmine": "^2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.5",
-    "mini-css-extract-plugin": "^0.5.0",
-    "node-sass": "^4.12.0",
-    "raw-loader": "^1.0.0",
+    "mini-css-extract-plugin": "^0.4.5",
+    "node-sass": "^4.13.0",
+    "raw-loader": "^0.5.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "ts-jest": "^24.0.0",
-    "ts-loader": "^5.3.3",
-    "typescript": "^3.3.3333",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.1"
-  }
+    "ts-jest": "^23.10.5",
+    "ts-loader": "^5.3.0",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "typescript": "^3.1.6",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  },
+  "dependencies": {
+    "comicvm-dom": "^1.0.7",
+    "comicvm-geometry-2d": "^1.0.5"
+  },
+  "bugs": {
+    "url": "https://github.com/retojs/animate/issues"
+  },
+  "homepage": "https://github.com/retojs/animate#readme"
 }

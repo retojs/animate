@@ -1,7 +1,4 @@
 import "../style/index.scss";
-import { MyApp } from "./app";
+import { createAnimationDemo } from "./demo";
 
-window.onload = () => {
-    const app = new MyApp("Hello World");
-    console.log("App is loaded.", app.message);
-};
+createAnimationDemo();

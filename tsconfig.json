@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "rootDir": "src",
+    "declaration": true,
+    "outDir": "dist",
+    "baseUrl": ".",
     "sourceMap": true,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
     "module": "es6",
     "target": "es5",
     "jsx": "react",
@@ -12,5 +17,12 @@
       "dom",
       "es2016"
     ]
-  }
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
