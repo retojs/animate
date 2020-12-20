@@ -1,0 +1,8 @@
+@import "variables";
+
+.panel {
+  display: block;
+  margin: $gap-size;
+  padding: $gap-size;
+  box-shadow: $panel-box-shadow;
+}

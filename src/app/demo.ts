@@ -1,33 +1,17 @@
-import { Canvas, Div, Font, PaintStyle } from "comicvm-dom";
-import { Animator } from "./Animator";
-import { LineAnimation } from "./animation-items/LineAnimation";
+import "../style/index.scss";
 
-export const PRIMARY_COLOR = "#2e878a";
+import { Div } from "comicvm-dom";
+import { createSVGDemo } from "./svg";
+import { drawingLinesDemo } from "./anim";
+import { createPentaPaintingDemo } from "./penta/penta-painting-demo";
+import { createPentaPaintingDemo2 } from "./penta/penta-painting-demo-2";
 
-export function createAnimationDemo(): Div {
+export function runDemo() {
 
-    const canvas = Canvas.create({
-        width: 600,
-        height: 400,
-        paintStyleConfig: {font: new Font(30, "Arial")},
-    })
+    const demo = Div.create({container: "demo"});
 
-    const animator = new Animator(canvas);
-
-    animator.start(
-        LineAnimation.create(200, 100,
-            300,
-            PaintStyle.stroke(PRIMARY_COLOR, 1))
-            .lineTo(500, 120)
-            .lineTo(210, 140)
-            .lineTo(510, 160)
-            .lineTo(220, 180)
-            .lineTo(520, 200)
-            .lineTo(230, 220)
-            .lineTo(530, 240)
-    );
-
-    return Div.create({container: "demo"})
-        .append("<h2>Drawing Lines</h2>")
-        .append(canvas);
+    createSVGDemo(demo);
+    drawingLinesDemo(demo);
+    createPentaPaintingDemo(demo);
+    createPentaPaintingDemo2(demo);
 }

@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "comicvm-dom": "^1.0.7",
-    "comicvm-geometry-2d": "^1.0.5"
+    "comicvm-geometry-2d": "^1.0.8"
   },
   "bugs": {
     "url": "https://github.com/retojs/animate/issues"

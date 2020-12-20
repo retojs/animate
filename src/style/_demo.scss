@@ -1,0 +1,81 @@
+@import "shared/index";
+@import "font/Roboto.css";
+
+$primary-color: #2e878a;
+$background-color: #e1ecea;
+$link-color: #27aaaf;
+
+body {
+  margin: 0;
+  color: $primary-color;
+  background-color: $background-color;
+  font-family: $comic-vm-font-family;
+  text-align: center;
+}
+
+main {
+  margin: auto;
+  text-align: left;
+  background-color: white;
+  box-shadow: $panel-box-shadow;
+  padding: 10px 20px;
+  min-height: 90vh;
+  max-width: 1080px;
+
+  div {
+    margin: $gap-size 0;
+  }
+}
+
+canvas, .svg-canvas {
+  display: block;
+  margin: auto;
+  box-shadow: $panel-box-shadow;
+}
+
+$sample-code-color: #333;
+$sample-code-background-color: #eee;
+
+#demo {
+  line-height: 1.5em;
+
+  button,
+  label,
+  input,
+  select,
+  textarea {
+    padding: 5px 10px;
+  }
+
+  .demo-section {
+    margin: 24px 16px;
+    padding: 8px 24px 16px;
+    box-shadow: $panel-box-shadow;
+  }
+
+  .code-sample {
+    position: relative;
+
+    pre {
+      background-color: $sample-code-background-color;
+      color: $sample-code-color;
+      padding: $gap-size;
+      font-size: 14px;
+      line-height: 1.8em;
+    }
+
+    a[target='_blank'] {
+      position: absolute;
+      right: 20px;
+      top: 8px;
+    }
+  }
+
+  a {
+    color: $link-color;
+
+    &:visited {
+      color: $link-color;
+    }
+  }
+}

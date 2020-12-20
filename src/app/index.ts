@@ -1,4 +1,3 @@
-import "../style/index.scss";
-import { createAnimationDemo } from "./demo";
+import { runDemo } from "./demo";
 
-createAnimationDemo();
+window.onload = () => runDemo()
