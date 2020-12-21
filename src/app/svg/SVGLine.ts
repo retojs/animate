@@ -5,7 +5,7 @@ import { Line } from "comicvm-geometry-2d";
 
 export class SVGLine extends SVGShape {
 
-    static from(line: Line, style: PaintStyle, svg?: SVG): SVGLine {
+    static fromLine(line: Line, style: PaintStyle, svg?: SVG): SVGLine {
         return new SVGLine(line.from.x, line.from.y, line.to.x, line.to.y, style, svg)
     }
 

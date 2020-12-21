@@ -34,6 +34,18 @@ export default class Penta {
     ischiumLeft: Point
     ischiumRight: Point
 
+    hips: Line
+    leftTorso: Line
+    rightTorso: Line
+    leftRibs: Line
+    rightRibs: Line
+
+    heart: Point
+    lungLeft: Point
+    lungRight: Point
+    kidneyLeft: Point
+    kidneyRight: Point
+
     constructor(x: number, y: number, radius: number) {
         this.center = new Point(x, y);
 
@@ -73,5 +85,18 @@ export default class Penta {
         this.scapulaRight = this.armRight.intersection(this.rightSide)
         this.ischiumLeft = this.legLeft.intersection(this.leftExt)
         this.ischiumRight = this.legRight.intersection(this.rightExt)
+
+        this.hips = new Line(this.hipLeft, this.hipRight)
+        this.leftTorso = new Line(this.shoulderLeft, this.pubis)
+        this.rightTorso = new Line(this.shoulderRight, this.pubis)
+        this.leftRibs = new Line(this.shoulderLeft, this.hipRight)
+        this.rightRibs = new Line(this.shoulderRight, this.hipLeft)
+
+        this.heart = this.leftRibs.intersection(this.rightRibs)
+        this.lungLeft = this.leftTorso.intersection(this.rightRibs)
+        this.lungRight = this.rightTorso.intersection(this.leftRibs)
+        this.kidneyLeft = this.leftTorso.intersection(this.hips)
+        this.kidneyRight = this.rightTorso.intersection(this.hips)
+
     }
 }

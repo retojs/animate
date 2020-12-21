@@ -1,8 +1,13 @@
 import { PaintStyle } from "comicvm-dom";
 import { SVG_NAMESPACE } from "./SVG";
 import { SVGShape } from "./SVGShape";
+import { Point } from "comicvm-geometry-2d";
 
 export class SVGCircle extends SVGShape {
+
+    static fromPoint(center: Point, radius: number, style: PaintStyle) {
+        return new SVGCircle(center.x, center.y, radius, style)
+    }
 
     constructor(x: number, y: number, r: number, style: PaintStyle) {
         super(style);

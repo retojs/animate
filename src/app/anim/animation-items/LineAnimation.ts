@@ -41,7 +41,7 @@ export class LineAnimation extends Animation {
         const lineAnimations = lines.map((lineGroup, index) => {
             const lineArray = Array.isArray(lineGroup) ? lineGroup : [lineGroup]
             return lineArray.map(line => new LineAnimationItem(
-                SVGLine.from(line, defaultPaintStyle, svg),
+                SVGLine.fromLine(line, defaultPaintStyle, svg),
                 index * defaultDuration,
                 index * defaultDuration + defaultDuration
             ))

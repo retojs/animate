@@ -5,6 +5,7 @@ import { createSVGDemo } from "./svg";
 import { drawingLinesDemo } from "./anim";
 import { createPentaPaintingDemo } from "./penta/penta-painting-demo";
 import { createPentaPaintingDemo2 } from "./penta/penta-painting-demo-2";
+import { createPentaPaintingDemo3 } from "./penta/penta-painting-demo-3";
 
 export function runDemo() {
 
@@ -14,4 +15,5 @@ export function runDemo() {
     drawingLinesDemo(demo);
     createPentaPaintingDemo(demo);
     createPentaPaintingDemo2(demo);
+    createPentaPaintingDemo3(demo);
 }
