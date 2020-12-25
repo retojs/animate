@@ -1,10 +1,17 @@
 import { PaintStyle } from "comicvm-dom";
-import { SVG_NAMESPACE } from "./SVG";
+import { SVG, SVG_NAMESPACE } from "./SVG";
 import { SVGShape } from "./SVGShape";
 
 export class SVGRect extends SVGShape {
 
-    constructor(x: number, y: number, width: number, height: number, style: PaintStyle) {
+    constructor(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        style: PaintStyle,
+        svg?: SVG
+    ) {
         super(style);
 
         this.element = document.createElementNS(SVG_NAMESPACE, "rect")
@@ -14,6 +21,8 @@ export class SVGRect extends SVGShape {
         this.element.setAttributeNS(null, "height", height.toString())
 
         this.applyPaintStyle()
+
+        if (svg) svg.add(this)
     }
 
     get x() {

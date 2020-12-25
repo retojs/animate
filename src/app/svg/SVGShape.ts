@@ -5,9 +5,13 @@ export class SVGShape {
     element: SVGElement
 
     private _style: PaintStyle
+    private _transform: string
+    private _css: string
 
-    constructor(style: PaintStyle) {
+    constructor(style: PaintStyle, transform?: string, css?: string) {
         this._style = style;
+        this._transform = transform
+        this._css = css
     }
 
     get style(): PaintStyle {
@@ -19,7 +23,27 @@ export class SVGShape {
         this.applyPaintStyle()
     }
 
+    get transform(): string {
+        return this._transform
+    }
+
+    set transform(transform: string) {
+        this._transform = transform
+        this.applyTransform()
+    }
+
+    get css(): string {
+        return this._css
+    }
+
+    set css(css: string) {
+        this._css = css
+        this.applyCSS()
+    }
+
     applyPaintStyle() {
+        if (!this.style) return
+
         this.element.setAttributeNS(null, 'shape-rendering', 'geometricPrecision')
         if (this.style.fillStyle) {
             this.element.setAttributeNS(null, 'fill', this.style.fillStyle as string)
@@ -30,5 +54,17 @@ export class SVGShape {
         if (this.style.lineWidth) {
             this.element.setAttributeNS(null, 'stroke-width', this.style.lineWidth.toString())
         }
+    }
+
+    applyTransform() {
+        if (!this.transform) return
+
+        this.element.setAttributeNS(null, 'transform', this.transform)
+    }
+
+    applyCSS() {
+        if (!this.css) return
+
+        this.element.setAttributeNS(null, 'style', this.css)
     }
 }

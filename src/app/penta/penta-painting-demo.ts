@@ -1,10 +1,15 @@
 import { Div, PaintStyle } from "comicvm-dom";
+import { Point } from "comicvm-geometry-2d";
+import { getColorPalette } from "../style/getColorPalette";
 import { SVG, SVGCircle } from "../svg";
 import { Animator, LineAnimation } from "../anim";
-import { SECONDARY_COLOR } from "./penta-painting-demo-2";
 import Penta from "./Penta";
 
+export const DEFAULT_DURATION = 300
+export const STARTOVER_DELAY = 3000
+
 export const PRIMARY_COLOR = "#2e878a";
+export const SECONDARY_COLOR = "#00bfc5"
 export const BACKGROUND_COLOR = "#fff";
 
 const secondaryLineStyle = PaintStyle.fillAndStroke("transparent", SECONDARY_COLOR, 1.5)
@@ -22,7 +27,7 @@ export function createPentaPaintingDemo(container): Div {
 
     const animation = LineAnimation.fromLines(
         svg,
-        300,
+        DEFAULT_DURATION,
         PaintStyle.stroke(PRIMARY_COLOR, 2),
 
         penta.upperArms,
@@ -46,7 +51,11 @@ export function createPentaPaintingDemo(container): Div {
 
     animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR, 1.5), 10, 11, 12, 13, 14)
 
-    new Animator("Penta Painting").start(animation);
+    const pentaPainting = new Animator("Penta Painting");
+
+    pentaPainting.onEnd = () => pentaPainting.startOver(STARTOVER_DELAY)
+
+    pentaPainting.start(animation)
 
     addForegroundPentaPoints(penta, svg)
 
@@ -58,8 +67,10 @@ export function createPentaPaintingDemo(container): Div {
 function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
 
     svg.add(
-        SVGCircle.fromPoint(penta.center, 10, secondaryLineStyle),
+        SVGCircle.fromPoint(penta.center, 9, secondaryLineStyle),
+        SVGCircle.fromPoint(penta.center, 22, secondaryLineStyle),
         SVGCircle.fromPoint(penta.center, 57, secondaryLineStyle),
+        SVGCircle.fromPoint(penta.center, 150, secondaryLineStyle),
     )
 
     svg.add(...[
@@ -70,8 +81,8 @@ function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
             penta.elbowRight,
         ]
             .map((point, index) =>
-                SVGCircle.fromPoint(point, 5,
-                    PaintStyle.fillAndStroke(PRIMARY_COLOR, colorFromIndex(index), 2)
+                SVGCircle.fromPoint(point, 6,
+                    PaintStyle.fillAndStroke(PRIMARY_COLOR, colorFromIndex(index * 12), 3)
                 )
             )
     )
@@ -99,10 +110,28 @@ function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
         ]
             .map(point =>
                 SVGCircle.fromPoint(point, 12,
-                    PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 1.5)
+                    PaintStyle.fillAndStroke("transparent", SECONDARY_COLOR, 1.5)
                 )
             )
     )
+
+    const SHOW_COLOR_PALETTE = true
+
+    if (SHOW_COLOR_PALETTE) {
+        svg.add(...
+            Array.from(Array(60).keys())
+                .map(i => i * 2 * Math.PI / 60)
+                .map(angle => new Point(
+                    300 + 100 * Math.sin(angle),
+                    200 + 100 * Math.cos(angle)
+                ))
+                .map((point, index) =>
+                    SVGCircle.fromPoint(point, 4,
+                        PaintStyle.fill(colorFromIndex(index, -128 - (255 / 6)))
+                    )
+                )
+        )
+    }
 }
 
 function addForegroundPentaPoints(penta: Penta, svg: SVG) {
@@ -110,24 +139,25 @@ function addForegroundPentaPoints(penta: Penta, svg: SVG) {
     svg.add(...[
             penta.shoulderLeft,
             penta.hipLeft,
+            penta.pubis,
             penta.hipRight,
             penta.shoulderRight,
-            penta.pubis,
         ]
-            .map(point =>
+            .map((point, index) =>
                 SVGCircle.fromPoint(point, 5,
-                    PaintStyle.fillAndStroke(PRIMARY_COLOR, BACKGROUND_COLOR, 2)
+                    PaintStyle.fillAndStroke(PRIMARY_COLOR, colorFromIndex(index * 12, -(255 / 6) + (255 / 10)), 2)
                 )
             )
     )
 }
 
-function colorFromIndex(index) {
-    return [
-        "yellow",
-        "magenta",
-        "lime",
-        "lime ",
-        "magenta",
-    ][index] || BACKGROUND_COLOR
+let colorIndex: string[]
+
+function colorFromIndex(index: number, offset: number = -(255 / 6)): string {
+
+    if (!colorIndex || offset) {
+        colorIndex = getColorPalette(60, offset)
+    }
+
+    return colorIndex[index] || BACKGROUND_COLOR
 }

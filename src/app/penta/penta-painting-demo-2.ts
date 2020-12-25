@@ -3,14 +3,18 @@ import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../svg"
 import { Animator, LineAnimation, SVGShapeAnimationItem } from "../anim"
 import Penta from "./Penta"
+import { addPentaPolygon } from "./addPentaPolygon";
+import { GOLD_COLOR_FILL } from "./penta-painting-demo-3";
 
 export const PRIMARY_COLOR = "#2e878a"
 export const SECONDARY_COLOR = "#00bfc5"
-export const TERTIARY_COLOR = "#73dc00"
+export const TERTIARY_COLOR = "rgba(80, 230, 235, 1)"
 export const BACKGROUND_COLOR = "#fff"
 
-export const DEFAULT_DURATION = 500
+export const DEFAULT_DURATION = 3500
 export const STARTOVER_DELAY = 3000
+
+const goldFill = PaintStyle.fill(GOLD_COLOR_FILL)
 
 export function createPentaPaintingDemo2(container): Div {
 
@@ -20,6 +24,8 @@ export function createPentaPaintingDemo2(container): Div {
     })
 
     const penta = new Penta(300, 200, 150)
+
+    addPentaPolygon(penta, goldFill, svg)
 
     const pentaPainting = new Animator("More Penta Painting")
 
@@ -82,7 +88,7 @@ export function createPentaPaintingDemo2(container): Div {
 
     function createSpot(point: Point): SVGCircle {
         return new SVGCircle(point.x, point.y, 5,
-            PaintStyle.fillAndStroke(BACKGROUND_COLOR, PRIMARY_COLOR, 2)
+            PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2)
         )
     }
 }

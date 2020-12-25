@@ -4,31 +4,69 @@ import { SVG, SVGCircle } from "../svg"
 import { Animator, LineAnimation, SVGShapeAnimationItem } from "../anim"
 import Penta from "./Penta"
 import { addPentaPolygon } from "./addPentaPolygon";
+import { SVGImage } from "../svg/SVGImage";
 
-export const PRIMARY_COLOR = "#2e878a"
+export const PRIMARY_COLOR = "rgba(165, 60, 0, 1)"
 export const SECONDARY_COLOR = "rgba(200, 220, 200, 0.5)"
-export const TERTIARY_COLOR = "#00bfc5"
+export const TERTIARY_COLOR = "rgba(170, 255, 60, 1)"
 export const BACKGROUND_COLOR = "#fff"
-export const GOLD_COLOR = "rgba(225, 205, 75, 0.5)"
-
-export const DEFAULT_DURATION = 500
+export const GOLD_COLOR_FILL = "rgba(255, 190, 10, 0.3)"
+export const GOLD_COLOR_STROKE = "rgba(200, 180, 55, 1)"
+export const COPPER_COLOR_FILL = "rgba(220, 120, 30, 0.5)"
+export const COPPER_COLOR_STROKE = "rgba(100, 50, 35, 1)"
+export const DEFAULT_DURATION = 2500
 export const STARTOVER_DELAY = 3000
 
 const secondaryLineStyle = PaintStyle.fillAndStroke("transparent", SECONDARY_COLOR, 2)
 const tertiaryLineStyle = PaintStyle.fillAndStroke("transparent", TERTIARY_COLOR, 2)
 const secondarySpotStyle = PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2)
 const tertiarySpotStyle = PaintStyle.fillAndStroke(BACKGROUND_COLOR, TERTIARY_COLOR, 2)
-const goldFill = PaintStyle.fill(GOLD_COLOR)
-const goldStroke = PaintStyle.fillAndStroke(BACKGROUND_COLOR, GOLD_COLOR, 2)
+const yellowSpotStyle = PaintStyle.fillAndStroke(BACKGROUND_COLOR, "rgba(255, 255, 0, 1)", 2)
+const copperFill = PaintStyle.fill(COPPER_COLOR_FILL)
+const copperStroke = PaintStyle.fillAndStroke("transparent", COPPER_COLOR_STROKE, 2)
+const goldFill = PaintStyle.fill(GOLD_COLOR_FILL)
+const goldStroke = PaintStyle.fillAndStroke("transparent", GOLD_COLOR_STROKE, 2)
+const goldStrokeFull = PaintStyle.fillAndStroke(BACKGROUND_COLOR, GOLD_COLOR_STROKE, 2)
+
+// const imageWidth = 600
+//
+// const image = new SVGImage(
+//     "Vitruvian_Man_by_Leonardo_da_Vinci.jpg",
+//     0,
+//     -26,
+//     imageWidth,
+//     Math.round(imageWidth * (5671 / 4196)),
+// )
+
+const imageWidth = 500
+
+const image = new SVGImage(
+    "Vitruvian_Man_by_Leonardo_da_Vinci.jpg",
+    50,
+    -10, // 15,
+    imageWidth,
+    Math.round(imageWidth * (5671 / 4196)),
+)
 
 export function createPentaPaintingDemo3(container): Div {
 
     const svg = SVG.create({
         width: 600,
-        height: 400,
+        height: 700,
     })
 
-    const penta = new Penta(300, 200, 150)
+    // const svgBackgroundImage = svg.createSVGElement()
+    // svgBackgroundImage.appendChild(image.element);
+
+    // svg.htmlElement.style.perspective = "500px"
+    // svgBackgroundImage.style.transform = "rotateX(45deg)"
+    // svg.htmlElement.style.position = "relative"
+    // svgBackgroundImage.style.position = "absolute"
+    // svgBackgroundImage.style.top = "0"
+    // svgBackgroundImage.style.left = "0"
+
+
+    const penta = new Penta(300, 280, 200)
 
     addBackgroundShapes(penta, svg);
 
@@ -87,7 +125,6 @@ export function createPentaPaintingDemo3(container): Div {
         .append("<h2>More Penta Painting</h2>")
         .append(svg)
 
-
     function displaySpot(point: Point, startMillis: number, endMillis?: number) {
         animation.add(new SVGShapeAnimationItem(
             svg,
@@ -99,13 +136,26 @@ export function createPentaPaintingDemo3(container): Div {
 
     function createSpot(point: Point): SVGCircle {
         return new SVGCircle(point.x, point.y, 5,
-            tertiarySpotStyle
+            yellowSpotStyle
         )
     }
 }
 
 
 function addBackgroundShapes(penta: Penta, svg: SVG) {
+
+    svg.add(
+        image,
+        new SVGCircle(penta.center.x, penta.center.y, penta.radius,
+            PaintStyle.fillAndStroke("transparent", COPPER_COLOR_STROKE, 0.5)
+        ),
+        new SVGCircle(penta.center.x, penta.center.y, 77,
+            PaintStyle.fillAndStroke("transparent", COPPER_COLOR_STROKE, 0.5)
+        ),
+        new SVGCircle(penta.center.x, penta.center.y, 29,
+            PaintStyle.fillAndStroke("transparent", COPPER_COLOR_STROKE, 0.5)
+        )
+    )
 
     addPentaPolygon(penta, goldFill, svg)
 
@@ -128,7 +178,7 @@ function addBackgroundShapes(penta: Penta, svg: SVG) {
 function addForegroundShapes(penta: Penta, svg: SVG) {
 
     svg.add(
-        SVGCircle.fromPoint(penta.center, 5, goldStroke),
-        SVGCircle.fromPoint(penta.neck, 5, tertiarySpotStyle),
+        SVGCircle.fromPoint(penta.center, 5, yellowSpotStyle),
+        SVGCircle.fromPoint(penta.neck, 5, yellowSpotStyle),
     )
 }

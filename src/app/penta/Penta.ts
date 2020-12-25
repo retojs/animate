@@ -3,6 +3,7 @@ import { Line, Point } from "comicvm-geometry-2d"
 export default class Penta {
 
     center: Point
+    radius: number
 
     head: Point
     elbowLeft: Point
@@ -47,7 +48,8 @@ export default class Penta {
     kidneyRight: Point
 
     constructor(x: number, y: number, radius: number) {
-        this.center = new Point(x, y);
+        this.center = new Point(x, y)
+        this.radius = radius
 
         const edges = [0, 1, 2, 3, 4]
             .map(i => i * 2 * Math.PI / 5 + Math.PI / 2)
@@ -97,6 +99,5 @@ export default class Penta {
         this.lungRight = this.rightTorso.intersection(this.leftRibs)
         this.kidneyLeft = this.leftTorso.intersection(this.hips)
         this.kidneyRight = this.rightTorso.intersection(this.hips)
-
     }
 }

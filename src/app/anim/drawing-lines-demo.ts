@@ -27,7 +27,7 @@ export function drawingLinesDemo(container): Div {
             .lineTo(180, 130)
             .lineTo(490, 310, PaintStyle.stroke("red"))
             .lineTo(160, 160, PaintStyle.stroke("red"))
-            .lineTo(480, 320)
+            .lineTo(480, 320, PaintStyle.stroke("red"))
             .lineTo(140, 190)
             .lineTo(470, 330)
             .lineTo(120, 220)
