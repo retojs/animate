@@ -37,4 +37,20 @@ export class LineAnimationSection extends AnimationSection {
             this.line.y2 = this.y1 + (this.y2 - this.y1) * progress
         }
     }
+
+    clone() {
+        return new LineAnimationSection(
+            this.line.clone(),
+            this.startMillis,
+            this.endMillis
+        )
+    }
+
+    cloneSilent() {
+        return new LineAnimationSection(
+            this.line.cloneSilent(),
+            this.startMillis,
+            this.endMillis
+        )
+    }
 }

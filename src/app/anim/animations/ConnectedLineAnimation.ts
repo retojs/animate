@@ -5,10 +5,10 @@ import { Line } from "comicvm-geometry-2d";
 
 export class ConnectedLineAnimation extends LineAnimation {
 
-    connections: SVGLine[]
-    connectionLineAnimations: LineAnimationSection[]
+    lineAnimationSection: LineAnimationSection
 
-    lineAnimationItem: LineAnimationSection
+    connectionLines: SVGLine[]
+    connectionLineAnimationSections: LineAnimationSection[]
 
     static fromLineAnimationSection(
         section: LineAnimationSection,
@@ -34,37 +34,78 @@ export class ConnectedLineAnimation extends LineAnimation {
         public connectionGaps: number,
         startMillis: number,
         duration: number,
-        style: PaintStyle
+        public style: PaintStyle
     ) {
         super(svg, startMillis, duration)
 
-        this.lineAnimationItem = new LineAnimationSection(line, startMillis, startMillis + duration)
-        this.add(this.lineAnimationItem)
+        this.lineAnimationSection = new LineAnimationSection(line, startMillis, startMillis + duration)
+        this.add(this.lineAnimationSection)
 
-        this.connectionLineAnimations = this.createConnections(connectionGaps, style, svg)
-        this.add(...this.connectionLineAnimations)
-        this.connectionLineAnimations.forEach(anim =>
-            anim.line && anim.line.svg.insertBefore(this.lineAnimationItem.line, anim.line))
+        this.connectionLineAnimationSections = this.createConnectionLines(connectionGaps, style, svg)
+        this.add(...this.connectionLineAnimationSections)
+        this.connectionLineAnimationSections.forEach(section =>
+            section.line && section.line.svg.insertBefore(this.lineAnimationSection.line, section.line)
+        )
     }
 
-    createConnections(connectionGaps: number, style: PaintStyle, svg: SVG) {
+    createConnectionLines(connectionGaps: number, style: PaintStyle, svg: SVG): LineAnimationSection[] {
         const nofConnections = Math.round(this.line.length / connectionGaps)
 
-        this.connections = Array.from(Array(nofConnections).keys())
+        this.connectionLines = Array.from(Array(nofConnections).keys())
             .map(i => {
-                const cFromX = this.line.x1 + (this.line.x2 - this.line.x1) * i / (nofConnections - 1)
-                const cFromY = this.line.y1 + (this.line.y2 - this.line.y1) * i / (nofConnections - 1)
-                const cToX = this.connectedLine.from.x + (this.connectedLine.to.x - this.connectedLine.from.x) * i / (nofConnections - 1)
-                const cToY = this.connectedLine.from.y + (this.connectedLine.to.y - this.connectedLine.from.y) * i / (nofConnections - 1)
-                return new SVGLine(cFromX, cFromY, cToX, cToY, style, svg)
+                const {x1, y1, x2, y2} = this.calculateConnectionLine(i, nofConnections)
+                return new SVGLine(x1, y1, x2, y2, style, svg)
             })
 
-        return this.connections.map((connection, index) => {
-            const connectionDuration = this.duration / this.connections.length
+        return this.connectionLines.map((connection, index) => {
+            const connectionDuration = this.duration / this.connectionLines.length
             const start = this.startMillis + index * connectionDuration
             const end = start + connectionDuration
 
             return new LineAnimationSection(connection, start, end)
         })
+    }
+
+    updateConnectionLines() {
+        this.connectionLines.forEach((line: SVGLine, index) => {
+            const {x1, y1, x2, y2} = this.calculateConnectionLine(index, this.connectionLineAnimationSections.length)
+            line.x1 = x1
+            line.y1 = y1
+            line.x2 = x2
+            line.y2 = y2
+        })
+    }
+
+    calculateConnectionLine(index: number, nofConnections: number) {
+        return {
+            x1: this.line.x1 + (this.line.x2 - this.line.x1) * index / (nofConnections - 1),
+            y1: this.line.y1 + (this.line.y2 - this.line.y1) * index / (nofConnections - 1),
+            x2: this.connectedLine.from.x + (this.connectedLine.to.x - this.connectedLine.from.x) * index / (nofConnections - 1),
+            y2: this.connectedLine.from.y + (this.connectedLine.to.y - this.connectedLine.from.y) * index / (nofConnections - 1)
+        }
+    }
+
+    clone() {
+        return new ConnectedLineAnimation(
+            this.svg,
+            this.line.clone(),
+            this.connectedLine.clone(),
+            this.connectionGaps,
+            this.startMillis,
+            this.duration,
+            this.style
+        )
+    }
+
+    cloneSilent() {
+        return new ConnectedLineAnimation(
+            this.svg,
+            this.line.cloneSilent(),
+            this.connectedLine.clone(),
+            this.connectionGaps,
+            this.startMillis,
+            this.duration,
+            this.style
+        )
     }
 }

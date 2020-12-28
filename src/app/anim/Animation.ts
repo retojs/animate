@@ -2,25 +2,25 @@ import { AnimationSection } from "./AnimationSection";
 
 export class Animation {
 
-    sections: (AnimationSection | Animation)[]
+    parts: (AnimationSection | Animation)[]
 
     _sectionsSortedByStart: AnimationSection[]
     _sectionsSortedByEnd: AnimationSection[]
 
     hasCompleted = false
 
-    public constructor(...sections: (AnimationSection | Animation)[]) {
-        this.sections = sections
+    public constructor(...parts: (AnimationSection | Animation)[]) {
+        this.parts = parts
     }
 
     get sectionList(): AnimationSection[] {
-        if (!this.sections || this.sections.length < 1) return [];
+        if (!this.parts || this.parts.length < 1) return [];
 
-        return this.sections.map(section => {
-            if (section instanceof Animation) {
-                return section.sectionList;
+        return this.parts.map(part => {
+            if (part instanceof Animation) {
+                return part.sectionList;
             } else {
-                return [section]
+                return [part]
             }
         }).reduce((flat, arr) => flat.concat(arr), [])
     }
@@ -50,26 +50,26 @@ export class Animation {
     };
 
     hasStarted(time: number): boolean {
-        return this.firstSection.startMillis <= time;
+        return this.firstSection && this.firstSection.startMillis <= time;
     }
 
     isOver(time: number): boolean {
-        return time > this.lastSection.endMillis;
+        return this.lastSection && time > this.lastSection.endMillis;
     }
 
     isRunning(time: number): boolean {
         return this.hasStarted(time) && !this.isOver(time);
     }
 
-    add(...sections: (AnimationSection | Animation)[]) {
-        this.sections = [...this.sections, ...sections];
+    add(...parts: (AnimationSection | Animation)[]) {
+        this.parts = [...this.parts, ...parts];
 
         return this
     }
 
     render(time: number) {
-        if (this.sections && !(this.isOver(time) && this.hasCompleted)) {
-            this.sections.forEach(section => section.render(time))
+        if (this.parts && !(this.isOver(time) && this.hasCompleted)) {
+            this.parts.forEach(part => part.render(time))
         }
         if (!this.hasCompleted && this.isOver(time)) {
             this.hasCompleted = true
@@ -80,23 +80,23 @@ export class Animation {
     }
 
     shiftBy(time: number) {
-        this.sections.forEach(section => {
-            if (section instanceof Animation) {
-                section.shiftBy(time);
-            } else if (section instanceof AnimationSection) {
-                section.startMillis += time
-                section.endMillis += time
+        this.parts.forEach(part => {
+            if (part instanceof Animation) {
+                part.shiftBy(time);
+            } else if (part instanceof AnimationSection) {
+                part.startMillis += time
+                part.endMillis += time
             }
         })
     }
 
     log() {
         // console.log("Animation Sections:")
-        // this.sections.forEach(section => {
-        //     if (section instanceof Animation) {
-        //         section.log();
-        //     } else if (section instanceof AnimationSection) {
-        //         console.log(section.constructor.name, "- startMillis:", section.startMillis, "- endMillis:", section.endMillis);
+        // this.sections.forEach(part => {
+        //     if (part instanceof Animation) {
+        //         part.log();
+        //     } else if (part instanceof AnimationSection) {
+        //         console.log(part.constructor.name, "- startMillis:", part.startMillis, "- endMillis:", part.endMillis);
         //     }
         // });
     }

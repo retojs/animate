@@ -4,29 +4,44 @@ import { AnimationSection } from "./AnimationSection"
 describe("AnimationSection.ts", () => {
 
     let section: AnimationSection
+    let sectionInfinite: AnimationSection
     let animation: Animation
 
     beforeEach(() => {
         section = new AnimationSection(1, 100)
+        sectionInfinite = new AnimationSection(1, 0)
         animation = new Animation(section)
     })
 
     test(".hasStarted(time) returns false if time < startMillis", () => {
         expect(section.hasStarted(0)).toBe(false)
+        expect(sectionInfinite.hasStarted(0)).toBe(false)
     })
     test(".hasStarted(time) returns true if time >= startMillis", () => {
         expect(section.hasStarted(1)).toBe(true)
         expect(section.hasStarted(2)).toBe(true)
         expect(section.hasStarted(100)).toBe(true)
+        expect(section.hasStarted(101)).toBe(true)
+
+        expect(sectionInfinite.hasStarted(1)).toBe(true)
+        expect(sectionInfinite.hasStarted(2)).toBe(true)
+        expect(sectionInfinite.hasStarted(100)).toBe(true)
+        expect(sectionInfinite.hasStarted(101)).toBe(true)
     })
 
-    test(".isOver(time) returns false if time <= endMillis", () => {
+    test(".isOver(time) returns false if time <= endMillis if the section is not infinite", () => {
         expect(section.isOver(0)).toBe(false)
         expect(section.isOver(1)).toBe(false)
         expect(section.isOver(100)).toBe(false)
     })
-    test(".isOver(time) returns false if time > endMillis", () => {
+    test(".isOver(time) returns false if time > endMillis if the section is not infinite", () => {
         expect(section.isOver(101)).toBe(true)
+    })
+    test(".isOver(time) never returns true for an infinite section (endMillis = 0)", () => {
+        expect(sectionInfinite.isOver(0)).toBe(false)
+        expect(sectionInfinite.isOver(1)).toBe(false)
+        expect(sectionInfinite.isOver(100)).toBe(false)
+        expect(sectionInfinite.isOver(1010101)).toBe(false)
     })
 
     test("render will set isCompleted to true when the section is over", () => {

@@ -28,7 +28,8 @@ export class AnimationSection {
     }
 
     isOver(time: number): boolean {
-        return time > this.endMillis
+        // return time > this.endMillis
+        return !(this.endMillis === 0) && time > this.endMillis
     }
 
     isRunning(time: number): boolean {

@@ -68,13 +68,13 @@ export class LineAnimation extends Animation {
     }
 
     get lastPoint(): Point {
-        return this.sections && this.sections.length > 0
+        return this.parts && this.parts.length > 0
             ? this.lastLine.to
             : this.startPoint;
     }
 
     get lastTime() {
-        return this.sections && this.sections.length > 0
+        return this.parts && this.parts.length > 0
             ? this.lastSection.endMillis
             : this.startMillis;
     }
@@ -90,7 +90,7 @@ export class LineAnimation extends Animation {
 
         this.svg.add(line);
 
-        this.sections.push(new LineAnimationSection(
+        this.parts.push(new LineAnimationSection(
             line,
             this.lastTime,
             this.lastTime + this.defaultDuration
@@ -105,16 +105,16 @@ export class LineAnimation extends Animation {
 
     applyStyle(style: PaintStyle, ...lineIndex: number[]) {
         lineIndex.forEach(i => {
-            if (this.sections[i]) {
-                (this.sections[i] as LineAnimationSection).line.style = style
+            if (this.parts[i] && (this.parts[i] as LineAnimationSection).line) {
+                (this.parts[i] as LineAnimationSection).line.style = style
             }
         })
     }
 
     moveSectionsBehind(ref: LineAnimationSection, ...lineIndex: number[]) {
         lineIndex.forEach(i => {
-            if (this.sections[i] && this.sections[i] instanceof LineAnimationSection) {
-                this.svg.insertBefore(ref.line, (this.sections[i] as LineAnimationSection).line)
+            if (this.parts[i] && this.parts[i] instanceof LineAnimationSection) {
+                this.svg.insertBefore(ref.line, (this.parts[i] as LineAnimationSection).line)
             }
         })
     }

@@ -68,4 +68,11 @@ export class SVGLine extends SVGShape {
     clone() {
         return new SVGLine(this.x1, this.y1, this.x2, this.y2, this.style, this.svg)
     }
+
+    /**
+     * Does not add the clone to the SVG
+     */
+    cloneSilent() {
+        return new SVGLine(this.x1, this.y1, this.x2, this.y2, this.style)
+    }
 }

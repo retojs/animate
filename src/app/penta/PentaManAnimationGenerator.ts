@@ -19,7 +19,7 @@ export class PentaManAnimationGenerator {
         public animation: Animation,
         public pentaMan: PentaMan,
         public penta: Penta,
-        public connectionGaps: number = 10,
+        public connectionGaps: number = 5,
         public connectionStyle?: PaintStyle,
     ) {
         this.relation = new PentaManRelation(pentaMan, penta)
@@ -36,11 +36,12 @@ export class PentaManAnimationGenerator {
     toConnectedLineAnimation(
         animation: LineAnimation,
         mappingType: MappingType,
-        styleCallback: (style: PaintStyle) => PaintStyle) {
+        styleCallback: (style: PaintStyle) => PaintStyle
+    ): Animation {
 
         return new Animation(
             ...this.mapAnimationSectionsConnected(
-                animation.sections as LineAnimationSection[],
+                animation.parts as LineAnimationSection[],
                 mappingType,
                 styleCallback
             )
@@ -54,7 +55,7 @@ export class PentaManAnimationGenerator {
             animation.startMillis,
             animation.defaultDuration,
             animation.defaultPaintStyle,
-            ...this.mapAnimationSections(animation.sections as LineAnimationSection[], mappingType)
+            ...this.mapAnimationSections(animation.parts as LineAnimationSection[], mappingType)
         )
     }
 
@@ -139,13 +140,13 @@ export class PentaManAnimationGenerator {
     modifyStyles(
         animation: Animation,
         callback: (section: AnimationSection) => void,
-        sections: (Animation | AnimationSection)[] = animation.sections
+        parts: (Animation | AnimationSection)[] = animation.parts
     ) {
-        sections.forEach(section => {
-            if (section instanceof Animation) {
-                return this.modifyStyles(animation, callback, section.sections || []);
+        parts.forEach(part => {
+            if (part instanceof Animation) {
+                return this.modifyStyles(animation, callback, part.parts || []);
             } else {
-                callback(section)
+                callback(part)
             }
         })
     }

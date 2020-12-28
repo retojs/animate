@@ -5,6 +5,13 @@ export class SVGShapeAnimationSection extends AnimationSection {
 
     readonly shape: SVGShape
 
+    /**
+     * @param svg
+     * @param shape
+     * @param startMillis
+     * @param endMillis - if endMillis is 0 the animation will not terminate
+     * @param insertBefore
+     */
     constructor(
         svg: SVG,
         shape: SVGShape,
@@ -19,7 +26,7 @@ export class SVGShapeAnimationSection extends AnimationSection {
         svg.insertBefore(insertBefore, shape)
 
         this.renderFn = function (time: number) {
-            const show = this.startMillis === this.endMillis
+            const show = this.endMillis === 0
                 ? this.hasStarted(time)
                 : this.isRunning(time)
 

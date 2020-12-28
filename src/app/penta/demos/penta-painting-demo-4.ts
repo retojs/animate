@@ -1,11 +1,11 @@
-import { Line } from "comicvm-geometry-2d"
-import { ArrowKeyInput, Div, PaintStyle } from "comicvm-dom"
+import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animation, Animator, LineAnimation, LineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
+import { Animation, Animator, LineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
 import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
-import { addPentaPolygon } from "../addPentaPolygon";
 import { MappingType, PentaManAnimationGenerator } from "../PentaManAnimationGenerator";
+import { addPentaPolygon } from "../addPentaPolygon";
+import { createPentaLineAnimation } from "./createPentaLineAnimation";
 
 const BACKGROUND_COLOR = "white"
 const GOLD_COLOR_FILL = "rgba(255, 190, 10, 0.3)"
@@ -52,9 +52,6 @@ export function createPentaPaintingDemo4(container): Div {
     return Div.create({container})
         .append("<h2>More Penta Painting</h2>")
         .append(svg)
-        .append(ArrowKeyInput.create({
-            name: "zoom", onKeyUp: () => 0
-        }))
 }
 
 
@@ -64,7 +61,7 @@ function createAnimations(svg: SVG) {
 
     addBackgroundShapes(penta, pentaMan, svg);
 
-    const pentaLineAnimation = createPentaLineAnimation(penta, svg, 0, pentagramLines, centralLines)
+    const pentaLineAnimation = createPentaLineAnimation(penta, svg, 0, DEFAULT_DURATION, pentagramLines, centralLines)
 
     const animationGenerator = new PentaManAnimationGenerator(pentaLineAnimation, pentaMan, penta)
 
@@ -86,8 +83,8 @@ function createAnimations(svg: SVG) {
             return style
         })
 
-    pentaLineAnimation.shiftBy(5 * DEFAULT_DURATION)
-    connectedLineAnimation.shiftBy(5 * DEFAULT_DURATION)
+    pentaLineAnimation.shiftBy(7 * DEFAULT_DURATION)
+    connectedLineAnimation.shiftBy(7 * DEFAULT_DURATION)
 
     animationGenerator.replaceLineStyle(
         pentaLineAnimation,
@@ -105,7 +102,7 @@ function createAnimations(svg: SVG) {
             centralLines,
             centralLinesDisabled
             ),
-            500)
+            2.5 * DEFAULT_DURATION)
     }
 
     connectedLineAnimation.onEnd = () => {
@@ -122,11 +119,11 @@ function createAnimations(svg: SVG) {
     addForegroundShapes(penta, pentaLineAnimation, svg);
 
     svg.insertBefore(
-        (pentaLineAnimation.sections[0] as LineAnimationSection).line,
+        (pentaLineAnimation.parts[0] as LineAnimationSection).line,
         ...pentaMan.getPentagramSpots(3, pentaManSpots)
     )
     svg.insertBefore(
-        (pentaLineAnimation.sections[0] as LineAnimationSection).line,
+        (pentaLineAnimation.parts[0] as LineAnimationSection).line,
         ...pentaMan.getCentralSpots(4, centralSpots)
     )
 
@@ -137,124 +134,6 @@ function createAnimations(svg: SVG) {
     )
 }
 
-
-function createPentaLineAnimation(
-    penta: Penta | PentaMan,
-    svg,
-    startMillis = 0,
-    pentagramStroke: PaintStyle,
-    centralLineStroke: PaintStyle
-): LineAnimation {
-
-    const animation = LineAnimation.fromLines(
-        svg,
-        startMillis,
-        DEFAULT_DURATION,
-        centralLineStroke,
-
-        new Line(penta.pubis, penta.neck),
-    )
-
-    const fromHeadAndNeckToShoulders = LineAnimation.fromLines(svg,
-        startMillis + DEFAULT_DURATION,
-        DEFAULT_DURATION / 2,
-        pentagramStroke,
-        [
-            new Line(penta.neck, penta.head),
-            new Line(penta.neck, penta.shoulderLeft),
-            new Line(penta.neck, penta.shoulderRight),
-        ]
-    )
-    fromHeadAndNeckToShoulders.applyStyle(centralLineStroke, 0)
-    animation.add(fromHeadAndNeckToShoulders)
-
-    animation.add(LineAnimation.fromLines(svg,
-        startMillis + DEFAULT_DURATION * 1.5,
-        DEFAULT_DURATION,
-        pentagramStroke,
-        [
-            new Line(penta.shoulderLeft, penta.elbowLeft),
-            new Line(penta.shoulderRight, penta.elbowRight),
-            new Line(penta.head, penta.shoulderLeft),
-            new Line(penta.head, penta.shoulderRight),
-        ],
-        [
-            new Line(penta.shoulderRight, penta.pubis),
-            new Line(penta.shoulderLeft, penta.pubis),
-        ], [
-            new Line(penta.pubis, penta.kneeLeft),
-            new Line(penta.pubis, penta.kneeRight),
-            new Line(penta.hipLeft, penta.kneeLeft),
-            new Line(penta.hipRight, penta.kneeRight),
-        ]
-    ))
-
-    // extended extremities
-
-    animation.add(LineAnimation.fromLines(svg,
-        startMillis + DEFAULT_DURATION * 1.5,
-        DEFAULT_DURATION,
-        centralLineStroke,
-
-        new Line(penta.head, penta.overhead),
-        [
-            new Line(penta.elbowLeft, penta.handLeft),
-            new Line(penta.elbowRight, penta.handRight)
-        ],
-        [],
-        [
-            new Line(penta.kneeLeft, penta.footLeft),
-            new Line(penta.kneeRight, penta.footRight)
-        ]
-    ))
-
-    // central arms line,
-
-    animation.add(LineAnimation.fromLines(svg,
-        startMillis + DEFAULT_DURATION * 2.5,
-        DEFAULT_DURATION / 3,
-        centralLineStroke,
-        [
-            new Line(penta.elbowLeft, penta.scapulaLeft),
-            new Line(penta.elbowRight, penta.scapulaRight)
-        ], [
-            new Line(penta.scapulaLeft, penta.middle),
-            new Line(penta.scapulaRight, penta.middle),
-        ], [
-            new Line(penta.middle, penta.hipRight),
-            new Line(penta.middle, penta.hipLeft),
-        ]
-    ))
-
-    // central leg line
-
-    animation.add(LineAnimation.fromLines(svg,
-        startMillis + DEFAULT_DURATION * 4.5,
-        DEFAULT_DURATION / 3,
-        centralLineStroke,
-        [
-            new Line(penta.kneeLeft, penta.ischiumLeft),
-            new Line(penta.kneeRight, penta.ischiumRight),
-        ], [
-            new Line(penta.ischiumLeft, penta.middle),
-            new Line(penta.ischiumRight, penta.middle),
-        ], [
-            new Line(penta.middle, penta.shoulderRight),
-            new Line(penta.middle, penta.shoulderLeft),
-        ]
-    ))
-
-    const factory = new SVGShapeAnimationFactory(svg, animation, centralSpots)
-
-    factory.addDot(penta.middle, 0)
-    factory.addDot(penta.neck, startMillis + DEFAULT_DURATION)
-    factory.addDot(penta.scapulaRight, startMillis + DEFAULT_DURATION * (2.5 + 1 / 3))
-    factory.addDot(penta.scapulaLeft, startMillis + DEFAULT_DURATION * (2.5 + 1 / 3))
-    factory.addDot(penta.ischiumRight, startMillis + DEFAULT_DURATION * (4.5 + 1 / 3))
-    factory.addDot(penta.ischiumLeft, startMillis + DEFAULT_DURATION * (4.5 + 1 / 3))
-
-    return animation
-}
 
 function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
 
@@ -269,17 +148,18 @@ function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
 }
 
 
-function addForegroundShapes(penta: Penta, pentaLineAnimation: LineAnimation, svg: SVG) {
+function addForegroundShapes(penta: Penta, animation: Animation, svg: SVG) {
     svg.add(
         SVGCircle.create(penta.middle, 5, yellowSpots),
     )
 
-    const factory = new SVGShapeAnimationFactory(svg, pentaLineAnimation, centralSpots)
+    const factory = new SVGShapeAnimationFactory(svg, animation, centralSpots)
+    const startMillis = 7 * DEFAULT_DURATION
 
     factory.addDot(penta.middle, 0)
-    factory.addDot(penta.neck, 5 * DEFAULT_DURATION + DEFAULT_DURATION)
-    factory.addDot(penta.scapulaRight, 5 * DEFAULT_DURATION + DEFAULT_DURATION * (2.5 + 1 / 3))
-    factory.addDot(penta.scapulaLeft, 5 * DEFAULT_DURATION + DEFAULT_DURATION * (2.5 + 1 / 3))
-    factory.addDot(penta.ischiumRight, 5 * DEFAULT_DURATION + DEFAULT_DURATION * (4.5 + 1 / 3))
-    factory.addDot(penta.ischiumLeft, 5 * DEFAULT_DURATION + DEFAULT_DURATION * (4.5 + 1 / 3))
+    factory.addDot(penta.neck, startMillis + DEFAULT_DURATION)
+    factory.addDot(penta.scapulaRight, startMillis + DEFAULT_DURATION * (2.5 + 1 / 3))
+    factory.addDot(penta.scapulaLeft, startMillis + DEFAULT_DURATION * (2.5 + 1 / 3))
+    factory.addDot(penta.ischiumRight, startMillis + DEFAULT_DURATION * (4.5 + 1 / 3))
+    factory.addDot(penta.ischiumLeft, startMillis + DEFAULT_DURATION * (4.5 + 1 / 3))
 }
