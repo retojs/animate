@@ -69,6 +69,16 @@ export class SVG extends DomElement<HTMLDivElement> {
         )
     }
 
+    insertBefore(ref: SVGShape, ...svgShape: SVGShape[]) {
+        if (!ref) {
+            this.add(...svgShape)
+        } else {
+            (svgShape || []).forEach(shape =>
+                this.svgElement.insertBefore(shape.element, ref.element)
+            )
+        }
+    }
+
     remove(...svgShape: SVGShape[]) {
         (svgShape || []).forEach(shape =>
             this.svgElement.removeChild(shape.element)

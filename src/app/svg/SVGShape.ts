@@ -1,17 +1,20 @@
 import { PaintStyle } from "comicvm-dom";
+import { SVG } from "./SVG";
 
 export class SVGShape {
 
     element: SVGElement
+    svg: SVG
 
     private _style: PaintStyle
     private _transform: string
     private _css: string
 
-    constructor(style: PaintStyle, transform?: string, css?: string) {
+    constructor(style: PaintStyle, svg?: SVG, transform?: string, css?: string) {
         this._style = style;
         this._transform = transform
         this._css = css
+        this.svg = svg
     }
 
     get style(): PaintStyle {

@@ -12,7 +12,7 @@ export class SVGRect extends SVGShape {
         style: PaintStyle,
         svg?: SVG
     ) {
-        super(style);
+        super(style, svg);
 
         this.element = document.createElementNS(SVG_NAMESPACE, "rect")
         this.element.setAttributeNS(null, "x", x.toString())

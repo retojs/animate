@@ -8,8 +8,13 @@ export class Animator {
     startTime = 0
 
     constructor(
-        public name: String = ""
-    ) {}
+        public name: String = "",
+        repeatDelay?: number
+    ) {
+        if (Number.isInteger(repeatDelay) && repeatDelay >= 0) {
+            this.onEnd = () => this.startOver(repeatDelay)
+        }
+    }
 
     getTime() {
         return this.isRunning
@@ -38,7 +43,7 @@ export class Animator {
         if (this.isRunning && animation.isRunning(this.getTime())) {
             window.requestAnimationFrame(() => this.animate(animation))
         } else {
-           setTimeout(() => this.onEnd(), 100)
+            setTimeout(() => this.onEnd(), 100)
         }
     }
 

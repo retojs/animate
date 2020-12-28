@@ -1,7 +1,7 @@
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG } from "../svg"
 import { Animator } from "./Animator"
-import { LineAnimation } from "./animation-items/LineAnimation"
+import { LineAnimation } from "./animations/LineAnimation"
 
 export const PRIMARY_COLOR = "#2e878a"
 
@@ -20,6 +20,7 @@ export function drawingLinesDemo(container): Div {
         LineAnimation.create(
             svg,
             200, 100,
+            0,
             200,
             PaintStyle.stroke(PRIMARY_COLOR, 1.5)
         )

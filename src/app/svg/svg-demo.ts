@@ -2,7 +2,7 @@ import { Div, PaintStyle } from "comicvm-dom"
 import { SVG } from "./SVG"
 import { SVGRect } from "./SVGRect";
 import { SVGCircle } from "./SVGCircle";
-import { Animation, Animator, CirclePulseAnimationItem } from "../anim";
+import { Animation, Animator, CirclePulseAnimationSection } from "../anim";
 
 export function createSVGDemo(container): Div {
 
@@ -33,8 +33,8 @@ export function createSVGDemo(container): Div {
     )
 
     new Animator("SVGs").start(new Animation(
-        new CirclePulseAnimationItem(circle1, 0, 10 * 1000),
-        new CirclePulseAnimationItem(circle2, 60, 10 * 1000)
+        new CirclePulseAnimationSection(circle1, 0, 10 * 1000),
+        new CirclePulseAnimationSection(circle2, 60, 10 * 1000)
     ))
 
     return Div.create({container})

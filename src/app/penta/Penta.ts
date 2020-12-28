@@ -1,9 +1,19 @@
 import { Line, Point } from "comicvm-geometry-2d"
 
-export default class Penta {
+export const GOLDEN_RELATION = (1.0 + Math.sqrt(5)) * 0.5;
+
+export class Penta {
 
     center: Point
     radius: number
+
+    middle: Point
+
+    overhead: Point
+    handLeft: Point
+    handRight: Point
+    footLeft: Point
+    footRight: Point
 
     head: Point
     elbowLeft: Point
@@ -51,18 +61,23 @@ export default class Penta {
         this.center = new Point(x, y)
         this.radius = radius
 
-        const edges = [0, 1, 2, 3, 4]
-            .map(i => i * 2 * Math.PI / 5 + Math.PI / 2)
-            .map(angle => new Point(
-                x + Math.cos(-angle) * radius,
-                y + Math.sin(-angle) * radius
-            ))
+        this.middle = this.center
+
+        let edges = Penta.getEdges(this.center, this.radius)
 
         this.head = edges[0]
         this.elbowLeft = edges[1]
         this.kneeLeft = edges[2]
         this.kneeRight = edges[3]
         this.elbowRight = edges[4]
+
+        edges = Penta.getEdges(this.center, this.radius * GOLDEN_RELATION)
+
+        this.overhead = edges[0]
+        this.handLeft = edges[1]
+        this.footLeft = edges[2]
+        this.footRight = edges[3]
+        this.handRight = edges[4]
 
         this.upperArms = new Line(this.elbowLeft, this.elbowRight)
         this.leftSide = new Line(this.head, this.kneeLeft)
@@ -99,5 +114,14 @@ export default class Penta {
         this.lungRight = this.rightTorso.intersection(this.leftRibs)
         this.kidneyLeft = this.leftTorso.intersection(this.hips)
         this.kidneyRight = this.rightTorso.intersection(this.hips)
+    }
+
+    static getEdges(center: Point, radius: number) {
+        return [0, 1, 2, 3, 4]
+            .map(i => i * 2 * Math.PI / 5 + Math.PI / 2)
+            .map(angle => new Point(
+                center.x + Math.cos(-angle) * radius,
+                center.y + Math.sin(-angle) * radius
+            ))
     }
 }

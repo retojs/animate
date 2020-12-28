@@ -1,7 +1,7 @@
 import { Div, PaintStyle } from "comicvm-dom"
+import { Animation, AnimationSection, Animator } from "../anim";
 import { SVG, SVGRect, SVGShape } from "../svg"
 import { getColorPalette } from "./getColorPalette";
-import { Animation, AnimationItem, Animator } from "../anim";
 
 const COLOR_PIXEL_SIZE = 20
 const COLOR_COUNT = Math.round(560 / COLOR_PIXEL_SIZE)
@@ -34,7 +34,7 @@ export function colorDemo(container): Div {
     colorAnim.onEnd = () => colorAnim.startOver(0)
 
     colorAnim.start(new Animation(
-        AnimationItem.create(0, 60 * 1000,
+        AnimationSection.create(0, 60 * 1000,
             (t) => {
                 colorField.forEach((line, y) => {
 

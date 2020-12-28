@@ -13,7 +13,7 @@ export class SVGPolygon extends SVGShape {
     }
 
     constructor(points: Point[], style: PaintStyle, svg?: SVG) {
-        super(style);
+        super(style, svg);
 
         this._points = points;
 
@@ -22,7 +22,7 @@ export class SVGPolygon extends SVGShape {
 
         this.applyPaintStyle()
 
-        if (svg) svg.add(this);
+        if (svg) svg.add(this)
     }
 
     get points(): Point[] {

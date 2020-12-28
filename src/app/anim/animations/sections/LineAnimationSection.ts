@@ -1,8 +1,8 @@
 import { Point } from "comicvm-geometry-2d";
-import { SVGLine } from "../../svg";
-import { AnimationItem } from "../AnimationItem"
+import { SVGLine } from "../../../svg";
+import { AnimationSection } from "../../AnimationSection"
 
-export class LineAnimationItem extends AnimationItem {
+export class LineAnimationSection extends AnimationSection {
 
     readonly x1: number
     readonly y1: number
@@ -30,11 +30,11 @@ export class LineAnimationItem extends AnimationItem {
 
         this.from = new Point(line.x1, line.y1)
         this.to = new Point(line.x2, line.y2)
-    }
 
-    render(t: number) {
-        const progress = this.getProgress(t)
-        this.line.x2 = this.x1 + (this.x2 - this.x1) * progress
-        this.line.y2 = this.y1 + (this.y2 - this.y1) * progress
+        this.renderFn = function (time: number) {
+            const progress = this.getProgress(time)
+            this.line.x2 = this.x1 + (this.x2 - this.x1) * progress
+            this.line.y2 = this.y1 + (this.y2 - this.y1) * progress
+        }
     }
 }

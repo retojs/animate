@@ -1,10 +1,9 @@
 import { Line, Point } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
-import { SVG, SVGCircle } from "../svg"
-import { Animator, LineAnimation, SVGShapeAnimationItem } from "../anim"
-import Penta from "./Penta"
-import { addPentaPolygon } from "./addPentaPolygon";
-import { GOLD_COLOR_FILL } from "./penta-painting-demo-3";
+import { SVG, SVGCircle } from "../../svg"
+import { Animator, LineAnimation, LineAnimationSection, SVGShapeAnimationSection } from "../../anim"
+import { addPentaPolygon } from "../addPentaPolygon";
+import { Penta } from "../Penta"
 
 export const PRIMARY_COLOR = "#2e878a"
 export const SECONDARY_COLOR = "#00bfc5"
@@ -14,7 +13,7 @@ export const BACKGROUND_COLOR = "#fff"
 export const DEFAULT_DURATION = 3500
 export const STARTOVER_DELAY = 3000
 
-const goldFill = PaintStyle.fill(GOLD_COLOR_FILL)
+const goldFill = PaintStyle.fill("rgba(255, 190, 10, 0.3)")
 
 export function createPentaPaintingDemo2(container): Div {
 
@@ -27,12 +26,11 @@ export function createPentaPaintingDemo2(container): Div {
 
     addPentaPolygon(penta, goldFill, svg)
 
-    const pentaPainting = new Animator("More Penta Painting")
-
-    pentaPainting.onEnd = () => pentaPainting.startOver(STARTOVER_DELAY)
+    const pentaPainting = new Animator("More Penta Painting", STARTOVER_DELAY)
 
     const animation = LineAnimation.fromLines(
         svg,
+        0,
         DEFAULT_DURATION,
         PaintStyle.stroke(PRIMARY_COLOR, 2),
 
@@ -64,6 +62,9 @@ export function createPentaPaintingDemo2(container): Div {
     animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR), 7, 8)
     animation.applyStyle(PaintStyle.stroke(TERTIARY_COLOR), 13, 14)
 
+    animation.moveSectionsBehind(animation.firstSection as LineAnimationSection, 7, 8, 13, 14)
+
+    displaySpot(penta.middle, DEFAULT_DURATION * 0.25)
     displaySpot(penta.neck, DEFAULT_DURATION * 0.5)
     displaySpot(penta.scapulaLeft, DEFAULT_DURATION * 2.5)
     displaySpot(penta.scapulaRight, DEFAULT_DURATION * 2.5)
@@ -78,7 +79,7 @@ export function createPentaPaintingDemo2(container): Div {
 
 
     function displaySpot(point: Point, startMillis: number, endMillis?: number) {
-        animation.add(new SVGShapeAnimationItem(
+        animation.add(new SVGShapeAnimationSection(
             svg,
             createSpot(point),
             startMillis,

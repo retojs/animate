@@ -1,80 +1,105 @@
-import { AnimationItem } from "./AnimationItem";
+import { AnimationSection } from "./AnimationSection";
 
 export class Animation {
 
-    items: (AnimationItem | Animation)[]
+    sections: (AnimationSection | Animation)[]
 
-    _itemsSortedByStart: AnimationItem[]
-    _itemsSortedByEnd: AnimationItem[]
+    _sectionsSortedByStart: AnimationSection[]
+    _sectionsSortedByEnd: AnimationSection[]
 
-    public constructor(...items: (AnimationItem | Animation)[]) {
-        this.items = items
+    hasCompleted = false
+
+    public constructor(...sections: (AnimationSection | Animation)[]) {
+        this.sections = sections
     }
 
-    get itemList(): AnimationItem[] {
-        if (!this.items || this.items.length < 1) return [];
+    get sectionList(): AnimationSection[] {
+        if (!this.sections || this.sections.length < 1) return [];
 
-        return this.items.map(item => {
-            if (item instanceof Animation) {
-                return item.itemList;
+        return this.sections.map(section => {
+            if (section instanceof Animation) {
+                return section.sectionList;
             } else {
-                return [item]
+                return [section]
             }
         }).reduce((flat, arr) => flat.concat(arr), [])
     }
 
-    get firstItem(): AnimationItem {
-        this._itemsSortedByStart = this.itemList.sort((a, b) => {
+    get firstSection(): AnimationSection {
+        this._sectionsSortedByStart = this.sectionList.sort((a, b) => {
             if (a.startMillis < b.startMillis) return -1
             if (a.startMillis > b.startMillis) return 1
             return 0
         });
 
-        return this._itemsSortedByStart[0];
+        return this._sectionsSortedByStart[0];
     }
 
-    get lastItem(): AnimationItem {
-        this._itemsSortedByEnd = this.itemList.sort((a, b) => {
+    get lastSection(): AnimationSection {
+        this._sectionsSortedByEnd = this.sectionList.sort((a, b) => {
             if (a.endMillis < b.endMillis) return -1
             if (a.endMillis > b.endMillis) return 1
             return 0
         });
 
-        return this._itemsSortedByEnd[this._itemsSortedByEnd.length - 1];
+        return this._sectionsSortedByEnd[this._sectionsSortedByEnd.length - 1];
     }
 
     get duration(): number {
-        return this.lastItem.endMillis - this.firstItem.startMillis;
+        return this.lastSection.endMillis - this.firstSection.startMillis;
     };
 
-    hasStarted(t: number): boolean {
-        return this.firstItem.startMillis < t;
+    hasStarted(time: number): boolean {
+        return this.firstSection.startMillis <= time;
     }
 
-    isOver(t: number): boolean {
-        return t > this.lastItem.endMillis;
+    isOver(time: number): boolean {
+        return time > this.lastSection.endMillis;
     }
 
-    isRunning(t: number): boolean {
-        return this.hasStarted(t) && !this.isOver(t);
+    isRunning(time: number): boolean {
+        return this.hasStarted(time) && !this.isOver(time);
     }
 
-    add(...items: AnimationItem[]) {
-        this.items = [...this.items, ...items];
+    add(...sections: (AnimationSection | Animation)[]) {
+        this.sections = [...this.sections, ...sections];
+
+        return this
     }
 
-    render(t: number) {
-        this.items.forEach(item => item.render(t))
+    render(time: number) {
+        if (this.sections && !(this.isOver(time) && this.hasCompleted)) {
+            this.sections.forEach(section => section.render(time))
+        }
+        if (!this.hasCompleted && this.isOver(time)) {
+            this.hasCompleted = true
+            this.onEnd()
+        } else if (!this.isOver(time)) {
+            this.hasCompleted = false
+        }
+    }
+
+    shiftBy(time: number) {
+        this.sections.forEach(section => {
+            if (section instanceof Animation) {
+                section.shiftBy(time);
+            } else if (section instanceof AnimationSection) {
+                section.startMillis += time
+                section.endMillis += time
+            }
+        })
     }
 
     log() {
-        console.log("Animation Items:")
-        this.items.forEach(item => {
-            if (item instanceof Animation) {
-                item.log();
-            } else if (item instanceof AnimationItem) {
-                console.log(item.constructor.name, "- startMillis:", item.startMillis, "- endMillis:", item.endMillis);
-            }
-        });
+        // console.log("Animation Sections:")
+        // this.sections.forEach(section => {
+        //     if (section instanceof Animation) {
+        //         section.log();
+        //     } else if (section instanceof AnimationSection) {
+        //         console.log(section.constructor.name, "- startMillis:", section.startMillis, "- endMillis:", section.endMillis);
+        //     }
+        // });
     }
+
+    onEnd = () => undefined
 }

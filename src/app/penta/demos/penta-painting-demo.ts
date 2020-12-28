@@ -1,9 +1,9 @@
 import { Div, PaintStyle } from "comicvm-dom";
 import { Point } from "comicvm-geometry-2d";
-import { getColorPalette } from "../style/getColorPalette";
-import { SVG, SVGCircle } from "../svg";
-import { Animator, LineAnimation } from "../anim";
-import Penta from "./Penta";
+import { getColorPalette } from "../../style";
+import { SVG, SVGCircle } from "../../svg";
+import { Animator, LineAnimation } from "../../anim";
+import { Penta } from "../Penta";
 
 export const DEFAULT_DURATION = 300
 export const STARTOVER_DELAY = 3000
@@ -27,6 +27,7 @@ export function createPentaPaintingDemo(container): Div {
 
     const animation = LineAnimation.fromLines(
         svg,
+        0,
         DEFAULT_DURATION,
         PaintStyle.stroke(PRIMARY_COLOR, 2),
 
@@ -51,9 +52,7 @@ export function createPentaPaintingDemo(container): Div {
 
     animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR, 1.5), 10, 11, 12, 13, 14)
 
-    const pentaPainting = new Animator("Penta Painting");
-
-    pentaPainting.onEnd = () => pentaPainting.startOver(STARTOVER_DELAY)
+    const pentaPainting = new Animator("Penta Painting", STARTOVER_DELAY);
 
     pentaPainting.start(animation)
 
@@ -67,10 +66,10 @@ export function createPentaPaintingDemo(container): Div {
 function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
 
     svg.add(
-        SVGCircle.fromPoint(penta.center, 9, secondaryLineStyle),
-        SVGCircle.fromPoint(penta.center, 22, secondaryLineStyle),
-        SVGCircle.fromPoint(penta.center, 57, secondaryLineStyle),
-        SVGCircle.fromPoint(penta.center, 150, secondaryLineStyle),
+        SVGCircle.create(penta.center, 9, secondaryLineStyle),
+        SVGCircle.create(penta.center, 22, secondaryLineStyle),
+        SVGCircle.create(penta.center, 57, secondaryLineStyle),
+        SVGCircle.create(penta.center, 150, secondaryLineStyle),
     )
 
     svg.add(...[
@@ -81,7 +80,7 @@ function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
             penta.elbowRight,
         ]
             .map((point, index) =>
-                SVGCircle.fromPoint(point, 6,
+                SVGCircle.create(point, 6,
                     PaintStyle.fillAndStroke(PRIMARY_COLOR, colorFromIndex(index * 12), 3)
                 )
             )
@@ -95,7 +94,7 @@ function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
             penta.ischiumRight,
         ]
             .map(point =>
-                SVGCircle.fromPoint(point, 5,
+                SVGCircle.create(point, 5,
                     PaintStyle.fillAndStroke(BACKGROUND_COLOR, PRIMARY_COLOR, 2)
                 )
             )
@@ -109,7 +108,7 @@ function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
             penta.kidneyRight,
         ]
             .map(point =>
-                SVGCircle.fromPoint(point, 12,
+                SVGCircle.create(point, 12,
                     PaintStyle.fillAndStroke("transparent", SECONDARY_COLOR, 1.5)
                 )
             )
@@ -126,7 +125,7 @@ function addBackgroundPentaPoints(penta: Penta, svg: SVG) {
                     200 + 100 * Math.cos(angle)
                 ))
                 .map((point, index) =>
-                    SVGCircle.fromPoint(point, 4,
+                    SVGCircle.create(point, 4,
                         PaintStyle.fill(colorFromIndex(index, -128 - (255 / 6)))
                     )
                 )
@@ -144,7 +143,7 @@ function addForegroundPentaPoints(penta: Penta, svg: SVG) {
             penta.shoulderRight,
         ]
             .map((point, index) =>
-                SVGCircle.fromPoint(point, 5,
+                SVGCircle.create(point, 5,
                     PaintStyle.fillAndStroke(PRIMARY_COLOR, colorFromIndex(index * 12, -(255 / 6) + (255 / 10)), 2)
                 )
             )

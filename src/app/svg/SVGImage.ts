@@ -20,7 +20,7 @@ export class SVGImage extends SVGShape {
         height: number,
         svg?: SVG
     ) {
-        super(null);
+        super(null, svg);
 
         this.element = document.createElementNS(SVG_NAMESPACE, "image")
         this.element.setAttributeNS(null, "href", href)
@@ -31,7 +31,7 @@ export class SVGImage extends SVGShape {
 
         this.applyPaintStyle()
 
-        if (svg) svg.add(this);
+        if (svg) svg.add(this)
     }
 
     get x() {

@@ -1,7 +1,7 @@
 import { PaintStyle } from "comicvm-dom";
 import { SVG, SVG_NAMESPACE } from "./SVG";
 import { SVGShape } from "./SVGShape";
-import { Line } from "comicvm-geometry-2d";
+import { Line, Point } from "comicvm-geometry-2d";
 
 export class SVGLine extends SVGShape {
 
@@ -9,8 +9,12 @@ export class SVGLine extends SVGShape {
         return new SVGLine(line.from.x, line.from.y, line.to.x, line.to.y, style, svg)
     }
 
-    constructor(x1: number, y1: number, x2: number, y2: number, style: PaintStyle, svg?:SVG) {
-        super(style);
+    static fromPoints(from: Point, to: Point, style: PaintStyle, svg?: SVG): SVGLine {
+        return new SVGLine(from.x, from.y, to.x, to.y, style, svg)
+    }
+
+    constructor(x1: number, y1: number, x2: number, y2: number, style: PaintStyle, svg?: SVG) {
+        super(style, svg);
 
         this.element = document.createElementNS(SVG_NAMESPACE, 'line')
         this.element.setAttributeNS(null, 'x1', x1.toString())
@@ -20,7 +24,7 @@ export class SVGLine extends SVGShape {
 
         this.applyPaintStyle()
 
-        if (svg) svg.add(this);
+        if (svg) svg.add(this)
     }
 
     get x1() {
@@ -53,5 +57,15 @@ export class SVGLine extends SVGShape {
 
     set y2(y: number) {
         this.element.setAttributeNS(null, "y2", y.toString())
+    }
+
+    get length(): number {
+        const a = this.x1 - this.x2
+        const b = this.y1 - this.y2
+        return Math.sqrt(a * a + b * b)
+    }
+
+    clone() {
+        return new SVGLine(this.x1, this.y1, this.x2, this.y2, this.style, this.svg)
     }
 }

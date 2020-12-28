@@ -6,7 +6,7 @@ module.exports = {
         "<rootDir>/src"
     ],
 
-    testEnvironment: 'node',
+    testEnvironment: 'jsdom',
 
     testPathIgnorePatterns: [
         "/node_modules/",
