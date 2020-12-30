@@ -1,11 +1,11 @@
 import { Div, PaintStyle } from "comicvm-dom";
-import { Point } from "comicvm-geometry-2d";
+import { Line, Point } from "comicvm-geometry-2d";
 import { getColorPalette } from "../../style";
 import { SVG, SVGCircle } from "../../svg";
 import { Animator, LineAnimation } from "../../anim";
 import { Penta } from "../Penta";
 
-export const DEFAULT_DURATION = 300
+export const DEFAULT_DURATION = 2500
 export const STARTOVER_DELAY = 3000
 
 export const PRIMARY_COLOR = "#2e878a";
@@ -31,26 +31,34 @@ export function createPentaPaintingDemo(container): Div {
         DEFAULT_DURATION,
         PaintStyle.stroke(PRIMARY_COLOR, 2),
 
-        penta.upperArms,
-        penta.leftSide,
-        penta.rightSide,
-        penta.leftExt,
-        penta.rightExt,
-
-        penta.spine,
-        penta.armLeft,
-        penta.armRight,
-        penta.legLeft,
-        penta.legRight,
-
-        penta.hips,
-        penta.leftTorso,
-        penta.rightTorso,
-        penta.leftRibs,
-        penta.rightRibs,
+        [
+            new Line(penta.neck, penta.elbowLeft),
+            new Line(penta.neck, penta.elbowRight),
+        ],
+        [
+            penta.leftSide,
+            penta.rightSide,
+            penta.leftExt,
+            penta.rightExt,
+        ],
+        [
+            penta.spine,
+            penta.armLeft.invert(),
+            penta.armRight.invert(),
+            penta.legLeft.invert(),
+            penta.legRight.invert(),
+        ],
+        [
+            new Line(penta.hipLeft, penta.spine.intersection(penta.hips)),
+            new Line(penta.hipRight, penta.spine.intersection(penta.hips)),
+            penta.leftTorso,
+            penta.rightTorso,
+            penta.leftRibs.invert(),
+            penta.rightRibs.invert(),
+        ]
     )
 
-    animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR, 1.5), 10, 11, 12, 13, 14)
+    animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR, 2.5), 11, 12, 13, 14, 15, 16)
 
     const pentaPainting = new Animator("Penta Painting", STARTOVER_DELAY);
 
@@ -156,6 +164,7 @@ function colorFromIndex(index: number, offset: number = -(255 / 6)): string {
 
     if (!colorIndex || offset) {
         colorIndex = getColorPalette(60, offset)
+        //  colorIndex = getRainbowPalette(60)
     }
 
     return colorIndex[index] || BACKGROUND_COLOR

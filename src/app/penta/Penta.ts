@@ -104,8 +104,8 @@ export class Penta {
         this.ischiumRight = this.legRight.intersection(this.rightExt)
 
         this.hips = new Line(this.hipLeft, this.hipRight)
-        this.leftTorso = new Line(this.shoulderLeft, this.pubis)
-        this.rightTorso = new Line(this.shoulderRight, this.pubis)
+        this.leftTorso = new Line(this.pubis, this.shoulderLeft)
+        this.rightTorso = new Line(this.pubis, this.shoulderRight)
         this.leftRibs = new Line(this.shoulderLeft, this.hipRight)
         this.rightRibs = new Line(this.shoulderRight, this.hipLeft)
 

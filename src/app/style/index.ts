@@ -1,2 +1,5 @@
 export { colorDemo } from "./color-demo"
+export { colorPaletteDemo } from "./color-palette-demo"
 export { getColorPalette } from "./getColorPalette"
+export { getRainbowPalette } from "./getRainbowPalette"
+export { ColorPalette } from "./ColorPalette"
