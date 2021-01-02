@@ -54,7 +54,7 @@ export class Animation {
     }
 
     isOver(time: number): boolean {
-        return this.lastSection && time > this.lastSection.endMillis;
+        return this.lastSection && !(this.lastSection.endMillis === 0) && time > this.lastSection.endMillis;
     }
 
     isRunning(time: number): boolean {

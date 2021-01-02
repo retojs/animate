@@ -90,7 +90,7 @@ export class PentaMan {
         this.kneeLeft = this.getPoint(-60, 70)
         this.kneeRight = this.getSymmetricPoint(this.kneeLeft)
 
-        this.overhead = this.getPoint(0, -267)
+        this.overhead = this.getPoint(0, -207)
         this.handLeft = this.getPoint(-180, -130)
         this.footLeft = this.getPoint(-115, 165)
         this.footRight = this.getSymmetricPoint(this.footLeft)
@@ -188,7 +188,7 @@ export class PentaMan {
             this.kidneyLeft,
             this.kidneyRight,
 
-        ].map(point =>
+        ].map((point: Point) =>
             new SVGCircle(point.x, point.y, radius, style)
         )
     }

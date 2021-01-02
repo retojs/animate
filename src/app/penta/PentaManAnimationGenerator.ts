@@ -1,5 +1,5 @@
 import { PentaManRelation } from "./PentaManRelation";
-import { Animation, AnimationSection, ConnectedLineAnimation, LineAnimation, LineAnimationSection } from "../anim";
+import { Animation, AnimationSection, ConnectedLineAnimation, DrawingLineAnimation, DrawingLineAnimationSection } from "../anim";
 import { SVGLine } from "../svg";
 import { Line, Point } from "comicvm-geometry-2d";
 import { PentaMan } from "./PentaMan";
@@ -25,46 +25,46 @@ export class PentaManAnimationGenerator {
         this.relation = new PentaManRelation(pentaMan, penta)
     }
 
-    toPentaAnimation(manAnimation: LineAnimation) {
+    toPentaAnimation(manAnimation: DrawingLineAnimation) {
         return this.mapAnimation(manAnimation, MappingType.MAN_TO_PENTA)
     }
 
-    toManAnimation(pentaAnimation: LineAnimation) {
+    toManAnimation(pentaAnimation: DrawingLineAnimation) {
         return this.mapAnimation(pentaAnimation, MappingType.PENTA_TO_MAN)
     }
 
     toConnectedLineAnimation(
-        animation: LineAnimation,
+        animation: DrawingLineAnimation,
         mappingType: MappingType,
         styleCallback: (style: PaintStyle) => PaintStyle
     ): Animation {
 
         return new Animation(
             ...this.mapAnimationSectionsConnected(
-                animation.parts as LineAnimationSection[],
+                animation.parts as DrawingLineAnimationSection[],
                 mappingType,
                 styleCallback
             )
         )
     }
 
-    mapAnimation(animation: LineAnimation, mappingType: MappingType) {
+    mapAnimation(animation: DrawingLineAnimation, mappingType: MappingType) {
 
-        return new LineAnimation(
+        return new DrawingLineAnimation(
             animation.svg,
             animation.startMillis,
             animation.defaultDuration,
             animation.defaultPaintStyle,
-            ...this.mapAnimationSections(animation.parts as LineAnimationSection[], mappingType)
+            ...this.mapAnimationSections(animation.parts as DrawingLineAnimationSection[], mappingType)
         )
     }
 
-    mapAnimationSections(sections: LineAnimationSection[], mappingType: MappingType): LineAnimationSection[] {
+    mapAnimationSections(sections: DrawingLineAnimationSection[], mappingType: MappingType): DrawingLineAnimationSection[] {
 
         return sections.map(section => {
             if (section instanceof Animation) {
-                return this.mapAnimationSections(section.sectionList as LineAnimationSection[], mappingType);
-            } else if (section instanceof LineAnimationSection) {
+                return this.mapAnimationSections(section.sectionList as DrawingLineAnimationSection[], mappingType);
+            } else if (section instanceof DrawingLineAnimationSection) {
                 return [this.mapAnimationSection(section, mappingType)]
             } else {
                 return []
@@ -76,7 +76,7 @@ export class PentaManAnimationGenerator {
     }
 
     mapAnimationSectionsConnected(
-        sections: LineAnimationSection[],
+        sections: DrawingLineAnimationSection[],
         mappingType: MappingType,
         styleCallback: (style: PaintStyle) => PaintStyle
     ): ConnectedLineAnimation[] {
@@ -84,15 +84,15 @@ export class PentaManAnimationGenerator {
         return sections.map(section => {
             if (section instanceof Animation) {
                 return this.mapAnimationSectionsConnected(
-                    section.sectionList as LineAnimationSection[],
+                    section.sectionList as DrawingLineAnimationSection[],
                     mappingType,
                     styleCallback
                 );
-            } else if (section instanceof LineAnimationSection) {
+            } else if (section instanceof DrawingLineAnimationSection) {
                 const style = styleCallback && styleCallback(section.line.style.clone())
 
                 return [
-                    ConnectedLineAnimation.fromLineAnimationSection(
+                    ConnectedLineAnimation.fromDrawingLineAnimationSection(
                         section,
                         this.mapLine(section.line, mappingType),
                         this.connectionGaps,
@@ -108,9 +108,9 @@ export class PentaManAnimationGenerator {
         )
     }
 
-    mapAnimationSection(section: LineAnimationSection, direction: MappingType): LineAnimationSection {
+    mapAnimationSection(section: DrawingLineAnimationSection, direction: MappingType): DrawingLineAnimationSection {
 
-        return new LineAnimationSection(
+        return new DrawingLineAnimationSection(
             this.mapLineSVG(section.line, direction),
             section.startMillis,
             section.endMillis
@@ -159,11 +159,11 @@ export class PentaManAnimationGenerator {
         return style
     }
 
-    replaceLineStyle(animation: LineAnimation, ...currentNewStylePairs: PaintStyle[]) {
+    replaceLineStyle(animation: DrawingLineAnimation, ...currentNewStylePairs: PaintStyle[]) {
         PentaManAnimationGenerator.getPairs(currentNewStylePairs)
             .forEach(([currentStyle, newStyle]) => {
                 this.modifyStyles(animation, section => {
-                    if (section instanceof LineAnimationSection) {
+                    if (section instanceof DrawingLineAnimationSection) {
                         if (section.line.style === currentStyle) {
                             section.line.style = newStyle
                         }

@@ -2,11 +2,11 @@ import { Div, PaintStyle } from "comicvm-dom";
 import { Line, Point } from "comicvm-geometry-2d";
 import { getColorPalette } from "../../style";
 import { SVG, SVGCircle } from "../../svg";
-import { Animator, LineAnimation } from "../../anim";
+import { Animator, DrawingLineAnimation } from "../../anim";
 import { Penta } from "../Penta";
 
 export const DEFAULT_DURATION = 2500
-export const STARTOVER_DELAY = 3000
+export const STARTOVER_DELAY = 5000
 
 export const PRIMARY_COLOR = "#2e878a";
 export const SECONDARY_COLOR = "#00bfc5"
@@ -25,7 +25,7 @@ export function createPentaPaintingDemo(container): Div {
 
     addBackgroundPentaPoints(penta, svg);
 
-    const animation = LineAnimation.fromLines(
+    const animation = DrawingLineAnimation.fromLines(
         svg,
         0,
         DEFAULT_DURATION,
@@ -60,14 +60,18 @@ export function createPentaPaintingDemo(container): Div {
 
     animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR, 2.5), 11, 12, 13, 14, 15, 16)
 
-    const pentaPainting = new Animator("Penta Painting", STARTOVER_DELAY);
+    const animator = new Animator({
+        name: "Drawing Pentagrams",
+        repeatDelay: STARTOVER_DELAY,
+        mouseWheelAnimate: svg.htmlElement
+    })
 
-    pentaPainting.start(animation)
+    animator.start(animation)
 
     addForegroundPentaPoints(penta, svg)
 
     return Div.create({container})
-        .append("<h2>Penta Painting</h2>")
+        .append(`<h2>${animator.name}</h2>`)
         .append(svg);
 }
 

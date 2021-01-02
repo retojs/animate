@@ -1,7 +1,7 @@
 import { Line, Point } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animator, LineAnimation, LineAnimationSection, SVGShapeAnimationSection } from "../../anim"
+import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, SVGShapeAnimationSection } from "../../anim"
 import { addPentaPolygon } from "../addPentaPolygon";
 import { Penta } from "../Penta"
 
@@ -26,9 +26,13 @@ export function createPentaPaintingDemo2(container): Div {
 
     addPentaPolygon(penta, goldFill, svg)
 
-    const pentaPainting = new Animator("More Penta Painting", STARTOVER_DELAY)
+    const animator =new Animator({
+        name: "Drawing Essential Lines",
+        repeatDelay: STARTOVER_DELAY,
+        mouseWheelAnimate: svg.htmlElement
+    })
 
-    const animation = LineAnimation.fromLines(
+    const animation = DrawingLineAnimation.fromLines(
         svg,
         0,
         DEFAULT_DURATION,
@@ -62,7 +66,7 @@ export function createPentaPaintingDemo2(container): Div {
     animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR), 7, 8)
     animation.applyStyle(PaintStyle.stroke(TERTIARY_COLOR), 13, 14)
 
-    animation.moveSectionsBehind(animation.firstSection as LineAnimationSection, 7, 8, 13, 14)
+    animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 7, 8, 13, 14)
 
     displaySpot(penta.middle, DEFAULT_DURATION * 0.25)
     displaySpot(penta.neck, DEFAULT_DURATION * 0.5)
@@ -71,10 +75,10 @@ export function createPentaPaintingDemo2(container): Div {
     displaySpot(penta.ischiumLeft, DEFAULT_DURATION * 4.5)
     displaySpot(penta.ischiumRight, DEFAULT_DURATION * 4.5)
 
-    pentaPainting.start(animation);
+    animator.start(animation);
 
     return Div.create({container})
-        .append("<h2>More Penta Painting</h2>")
+        .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 
 

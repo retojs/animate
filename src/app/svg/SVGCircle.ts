@@ -23,19 +23,19 @@ export class SVGCircle extends SVGShape {
     }
 
     get x() {
-        return parseFloat(this.element.getAttribute("x"));
+        return parseFloat(this.element.getAttribute("cx"));
     }
 
     set x(x: number) {
-        this.element.setAttributeNS(null, "x", x.toString())
+        this.element.setAttributeNS(null, "cx", x.toString())
     }
 
     get y() {
-        return parseFloat(this.element.getAttribute("y"));
+        return parseFloat(this.element.getAttribute("cy"));
     }
 
     set y(y: number) {
-        this.element.setAttributeNS(null, "y", y.toString())
+        this.element.setAttributeNS(null, "cy", y.toString())
     }
 
     get radius() {
@@ -44,5 +44,15 @@ export class SVGCircle extends SVGShape {
 
     set radius(radius: number) {
         this.element.setAttributeNS(null, "r", radius.toString())
+    }
+
+    clone(): SVGCircle {
+        return new SVGCircle(
+            this.x,
+            this.y,
+            this.radius,
+            this.style,
+            this.svg
+        )
     }
 }

@@ -70,4 +70,13 @@ export class SVGShape {
 
         this.element.setAttributeNS(null, 'style', this.css)
     }
+
+    clone(): any{
+        return new SVGShape(
+            this.style,
+            this.svg,
+            this.transform,
+            this.css
+        )
+    }
 }

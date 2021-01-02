@@ -1,4 +1,6 @@
 import { Line, Point } from "comicvm-geometry-2d"
+import { PaintStyle } from "comicvm-dom";
+import { SVGCircle } from "../svg";
 
 export const GOLDEN_RELATION = (1.0 + Math.sqrt(5)) * 0.5;
 
@@ -123,5 +125,51 @@ export class Penta {
                 center.x + Math.cos(-angle) * radius,
                 center.y + Math.sin(-angle) * radius
             ))
+    }
+
+    getPentagramSpots(radius: number, style: PaintStyle): SVGCircle[] {
+        return [
+            this.head,
+            this.elbowLeft,
+            this.elbowRight,
+            this.kneeLeft,
+            this.kneeRight,
+
+            this.pubis,
+            this.hipLeft,
+            this.hipRight,
+            this.shoulderLeft,
+            this.shoulderRight,
+
+            this.heart,
+            this.lungLeft,
+            this.lungRight,
+            this.kidneyLeft,
+            this.kidneyRight,
+
+        ].map(point =>
+            new SVGCircle(point.x, point.y, radius, style)
+        )
+    }
+
+    getCentralSpots(radius: number, style: PaintStyle): SVGCircle[] {
+        return [
+            this.middle,
+
+            this.neck,
+            this.scapulaLeft,
+            this.scapulaRight,
+            this.ischiumLeft,
+            this.ischiumRight,
+
+            this.overhead,
+            this.handLeft,
+            this.handRight,
+            this.footLeft,
+            this.footRight,
+
+        ].map(point =>
+            new SVGCircle(point.x, point.y, radius, style)
+        )
     }
 }

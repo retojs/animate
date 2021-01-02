@@ -7,7 +7,7 @@ const COLOR_PIXEL_SIZE = 20
 const COLOR_COUNT = Math.round(560 / COLOR_PIXEL_SIZE)
 const COLOR_PALETTES_COUNT = Math.round(360 / COLOR_PIXEL_SIZE)
 
-export function colorDemo(container): Div {
+export function rainbowPaletteDemo(container): Div {
 
     const svg = SVG.create({
         width: 600,
@@ -29,11 +29,14 @@ export function colorDemo(container): Div {
                 )
         )
 
-    const colorAnim = new Animator("Color Palette");
+    const animator = new Animator({
+        name: "Rainbow Colors",
+        mouseWheelAnimate: svg.htmlElement
+    })
 
-    colorAnim.onEnd = () => colorAnim.startOver(0)
+    animator.onEnd = () => animator.startOver(0)
 
-    colorAnim.start(new Animation(
+    animator.start(new Animation(
         AnimationSection.create(0, 60 * 1000,
             (t) => {
                 colorField.forEach((line, y) => {
@@ -63,6 +66,6 @@ export function colorDemo(container): Div {
     ))
 
     return Div.create({container})
-        .append("<h2>Color Palette</h2>")
+        .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }

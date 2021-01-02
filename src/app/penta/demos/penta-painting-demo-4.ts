@@ -1,6 +1,6 @@
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animation, Animator, LineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
+import { Animation, Animator, DrawingLineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
 import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
 import { MappingType, PentaManAnimationGenerator } from "../PentaManAnimationGenerator";
@@ -41,16 +41,16 @@ export function createPentaPaintingDemo4(container): Div {
         height: 700,
     })
 
-    svg.onClick = (e: MouseEvent) => {
-        console.log("svg clicked: ", e.offsetX, e.offsetY)
-    }
+    const animator = new Animator({
+        name: "Drawing Connected Lines",
+        repeatDelay: STARTOVER_DELAY,
+        mouseWheelAnimate: svg.htmlElement
+    })
 
-    const pentaPainting = new Animator("Penta Painting 4", STARTOVER_DELAY)
-
-    pentaPainting.start(createAnimations(svg));
+    animator.start(createAnimations(svg));
 
     return Div.create({container})
-        .append("<h2>More Penta Painting</h2>")
+        .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }
 
@@ -66,7 +66,7 @@ function createAnimations(svg: SVG) {
     const animationGenerator = new PentaManAnimationGenerator(pentaLineAnimation, pentaMan, penta)
 
     const manAnimation = animationGenerator.mapAnimation(pentaLineAnimation, MappingType.PENTA_TO_MAN)
-    manAnimation.moveBehind(pentaLineAnimation.firstSection as LineAnimationSection)
+    manAnimation.moveBehind(pentaLineAnimation.firstSection as DrawingLineAnimationSection)
 
     animationGenerator.connectionGaps = 5
     const connectedLineAnimation = animationGenerator.toConnectedLineAnimation(
@@ -119,11 +119,11 @@ function createAnimations(svg: SVG) {
     addForegroundShapes(penta, pentaLineAnimation, svg);
 
     svg.insertBefore(
-        (pentaLineAnimation.parts[0] as LineAnimationSection).line,
+        (pentaLineAnimation.parts[0] as DrawingLineAnimationSection).line,
         ...pentaMan.getPentagramSpots(3, pentaManSpots)
     )
     svg.insertBefore(
-        (pentaLineAnimation.parts[0] as LineAnimationSection).line,
+        (pentaLineAnimation.parts[0] as DrawingLineAnimationSection).line,
         ...pentaMan.getCentralSpots(4, centralSpots)
     )
 

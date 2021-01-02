@@ -1,17 +1,17 @@
-import { LineAnimation, LineAnimationSection } from "../index";
+import { DrawingLineAnimation, DrawingLineAnimationSection } from "../index";
 import { SVG, SVGLine } from "../../svg";
 import { PaintStyle } from "comicvm-dom";
 import { Line } from "comicvm-geometry-2d";
 
-export class ConnectedLineAnimation extends LineAnimation {
+export class ConnectedLineAnimation extends DrawingLineAnimation {
 
-    lineAnimationSection: LineAnimationSection
+    lineAnimationSection: DrawingLineAnimationSection
 
     connectionLines: SVGLine[]
-    connectionLineAnimationSections: LineAnimationSection[]
+    connectionLineAnimationSections: DrawingLineAnimationSection[]
 
-    static fromLineAnimationSection(
-        section: LineAnimationSection,
+    static fromDrawingLineAnimationSection(
+        section: DrawingLineAnimationSection,
         connectedLine: Line,
         connectionGaps: number = 10,
         style: PaintStyle = section.line.style.clone()
@@ -38,7 +38,7 @@ export class ConnectedLineAnimation extends LineAnimation {
     ) {
         super(svg, startMillis, duration)
 
-        this.lineAnimationSection = new LineAnimationSection(line, startMillis, startMillis + duration)
+        this.lineAnimationSection = new DrawingLineAnimationSection(line, startMillis, startMillis + duration)
         this.add(this.lineAnimationSection)
 
         this.connectionLineAnimationSections = this.createConnectionLines(connectionGaps, style, svg)
@@ -48,7 +48,7 @@ export class ConnectedLineAnimation extends LineAnimation {
         )
     }
 
-    createConnectionLines(connectionGaps: number, style: PaintStyle, svg: SVG): LineAnimationSection[] {
+    createConnectionLines(connectionGaps: number, style: PaintStyle, svg: SVG): DrawingLineAnimationSection[] {
         const nofConnections = Math.round(this.line.length / connectionGaps)
 
         this.connectionLines = Array.from(Array(nofConnections).keys())
@@ -62,7 +62,7 @@ export class ConnectedLineAnimation extends LineAnimation {
             const start = this.startMillis + index * connectionDuration
             const end = start + connectionDuration
 
-            return new LineAnimationSection(connection, start, end)
+            return new DrawingLineAnimationSection(connection, start, end)
         })
     }
 

@@ -1,7 +1,7 @@
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG } from "../svg"
 import { Animator } from "./Animator"
-import { LineAnimation } from "./animations/LineAnimation"
+import { DrawingLineAnimation } from "./animations/DrawingLineAnimation"
 
 export const PRIMARY_COLOR = "#2e878a"
 
@@ -12,12 +12,15 @@ export function drawingLinesDemo(container): Div {
         height: 400,
     })
 
-    const drawingLines: Animator = new Animator("Drawing Lines")
+    const drawingLines: Animator = new Animator({
+        name: "Drawing Lines",
+        mouseWheelAnimate: svg.htmlElement
+    })
 
     drawingLines.onEnd = () => drawingLines.startOver(5000)
 
     drawingLines.start(
-        LineAnimation.create(
+        DrawingLineAnimation.create(
             svg,
             200, 100,
             0,

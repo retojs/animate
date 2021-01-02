@@ -1,5 +1,6 @@
-export { colorDemo } from "./color-demo"
 export { colorPaletteDemo } from "./color-palette-demo"
+export { ColorPalette } from "./ColorPalette"
+export { colorPaletteToSVG } from "./colorPaletteToSVG"
 export { getColorPalette } from "./getColorPalette"
 export { getRainbowPalette } from "./getRainbowPalette"
-export { ColorPalette } from "./ColorPalette"
+export { rainbowPaletteDemo } from "./rainbow-palette-demo"

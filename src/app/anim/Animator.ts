@@ -1,18 +1,45 @@
 import { Animation } from "./Animation"
 
+export interface AnimatorConfig {
+    name: String,
+    repeatDelay?: number,
+    mouseWheelAnimate?: HTMLElement
+}
+
 export class Animator {
 
+    name: String
     animation: Animation
 
     isRunning = false
     startTime = 0
 
+    isPaused = false
+    pauseTime = 0
+
+    repeatDelay: number
+
     constructor(
-        public name: String = "",
-        repeatDelay?: number
+        config: AnimatorConfig
     ) {
-        if (Number.isInteger(repeatDelay) && repeatDelay >= 0) {
-            this.onEnd = () => this.startOver(repeatDelay)
+        this.name = config.name
+        this.repeatDelay = config.repeatDelay
+
+        if (Number.isInteger(this.repeatDelay) && this.repeatDelay >= 0) {
+            this.onEnd = () => this.startOver(this.repeatDelay)
+        }
+
+        if (config.mouseWheelAnimate) {
+            config.mouseWheelAnimate.addEventListener("mouseenter", () => {
+                this.pause()
+            })
+            config.mouseWheelAnimate.addEventListener("mouseleave", () => {
+                this.resume()
+            })
+            config.mouseWheelAnimate.addEventListener("wheel", (e: WheelEvent) => {
+                this.renderIncrement(e.deltaY)
+                e.preventDefault()
+            })
         }
     }
 
@@ -27,7 +54,7 @@ export class Animator {
         this.isRunning = true
         this.startTime = new Date().getTime()
 
-        window.requestAnimationFrame(() => this.animate(animation))
+        window.requestAnimationFrame(() => this.animate())
 
         console.log("Starting animation", this.name)
         animation.log()
@@ -38,13 +65,34 @@ export class Animator {
         this.startTime = 0
     }
 
-    animate(animation: Animation) {
-        animation.render(this.getTime())
-        if (this.isRunning && animation.isRunning(this.getTime())) {
-            window.requestAnimationFrame(() => this.animate(animation))
-        } else {
-            setTimeout(() => this.onEnd(), 100)
+    pause() {
+        this.isPaused = true
+        this.pauseTime = this.getTime()
+    }
+
+    resume() {
+        this.isPaused = false
+        this.startTime += this.getTime() - this.pauseTime
+        this.animate()
+    }
+
+    animate() {
+        this.animation.render(this.getTime())
+
+        if (!this.isPaused) {
+            if (this.isRunning && this.animation.isRunning(this.getTime())) {
+                window.requestAnimationFrame(() => this.animate())
+            } else {
+                setTimeout(() => this.onEnd(), 100)
+            }
         }
+    }
+
+    renderIncrement(deltaTime: number) {
+        this.pauseTime += deltaTime
+        window.requestAnimationFrame(() => {
+            this.animation.render(this.pauseTime)
+        })
     }
 
     startOver(delay: number = 0) {

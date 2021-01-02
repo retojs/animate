@@ -1,13 +1,12 @@
-import { Point } from "comicvm-geometry-2d";
-import { Animation, AnimationSection, ConnectedLineAnimation, LineAnimationSection } from "../anim";
+import { Animation, AnimationSection, ConnectedLineAnimation, DrawingLineAnimationSection } from "../anim";
 import { PentaManRelation } from "./PentaManRelation";
-
-const PULSE_INTERVAL = 5000
+import { movePoint } from "../anim/animations/movePoint";
+import { getSinusValue } from "../anim/animations/getSinusValue";
 
 export class MovingPentaLineAnimationSection extends AnimationSection {
 
-    sourceSections: LineAnimationSection[]
-    sections: LineAnimationSection[]
+    sourceSections: DrawingLineAnimationSection[]
+    sections: DrawingLineAnimationSection[]
 
     sourceConnectedLineAnimations: ConnectedLineAnimation[]
     connectedLineAnimations: ConnectedLineAnimation[]
@@ -15,16 +14,16 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
     static fromConnectedLineAnimation(
         animation: Animation,
         relation: PentaManRelation,
-        startMillis = 0,
-        endMillis = 0
+        startMillis: number = 0,
+        interval: number
     ): MovingPentaLineAnimationSection {
 
-        const section = new MovingPentaLineAnimationSection(animation, relation, startMillis, endMillis)
+        const section = new MovingPentaLineAnimationSection(animation, relation, startMillis)
 
         section.processConnectedLineAnimations()
 
         section.renderFn = (time: number) => {
-            const value = section.getValue(time)
+            const value = getSinusValue(section.startMillis, time, interval)
             section.moveConnectedLineAnimations(value)
         }
 
@@ -34,16 +33,16 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
     static fromLineAnimation(
         animation: Animation,
         relation: PentaManRelation,
-        startMillis = 0,
-        endMillis = 0
+        startMillis: number = 0,
+        interval: number
     ): MovingPentaLineAnimationSection {
 
-        const section = new MovingPentaLineAnimationSection(animation, relation, startMillis, endMillis)
+        const section = new MovingPentaLineAnimationSection(animation, relation, startMillis)
 
         section.processLineAnimations()
 
         section.renderFn = (time: number) => {
-            const value = section.getValue(time)
+            const value = getSinusValue(section.startMillis, time, interval)
             section.moveLineAnimationSections(value)
         }
 
@@ -53,22 +52,21 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
     constructor(
         public animation: Animation,
         public relation: PentaManRelation,
-        startMillis = 0,
-        endMillis = 0
+        startMillis: number = 0,
     ) {
-        super(startMillis, endMillis)
+        super(startMillis, 0)
     }
 
     processLineAnimations() {
-        const lineAnimationSections: LineAnimationSection[] = this.animation.sectionList
-            .filter(section => section instanceof LineAnimationSection) as LineAnimationSection[]
+        const lineAnimationSections: DrawingLineAnimationSection[] = this.animation.sectionList
+            .filter(section => section instanceof DrawingLineAnimationSection) as DrawingLineAnimationSection[]
 
         this.animation.render(this.animation.firstSection.startMillis + this.animation.duration) // make lines visible
 
         this.sourceSections = lineAnimationSections
-            .map((section: LineAnimationSection) => section.cloneSilent())
+            .map((section: DrawingLineAnimationSection) => section.cloneSilent())
         this.sections = lineAnimationSections
-            .map((section: LineAnimationSection) => section.clone())
+            .map((section: DrawingLineAnimationSection) => section.clone())
 
         this.animation.render(0) // make lines invisible
     }
@@ -86,15 +84,9 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
         })
     }
 
-    getValue(time: number) {
-        const dt = time - this.startMillis
-        const value = 0.5 * (1 + Math.cos(dt / PULSE_INTERVAL * Math.PI * 2))
-        return Math.max(0, Math.min(1, value))
-    }
-
     moveLineAnimationSection(
-        srcSection: LineAnimationSection,
-        targetSection: LineAnimationSection,
+        srcSection: DrawingLineAnimationSection,
+        targetSection: DrawingLineAnimationSection,
         progress: number
     ) {
         srcSection.render(srcSection.endMillis)
@@ -102,16 +94,16 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
         const targetFrom = this.relation.getManPoint(srcSection.line.x1, srcSection.line.y1);
         const targetTo = this.relation.getManPoint(srcSection.line.x2, srcSection.line.y2);
 
-        if (!targetFrom || !targetTo) return
+        if (!targetFrom || !targetTo || !srcSection) return
 
-        const from = this.transformPoint(
+        const from = movePoint(
             srcSection.line.x1,
             srcSection.line.y1,
             targetFrom.x,
             targetFrom.y,
             progress
         )
-        const to = this.transformPoint(
+        const to = movePoint(
             srcSection.line.x2,
             srcSection.line.y2,
             targetTo.x,
@@ -142,12 +134,5 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
             )
             targetAnimation.updateConnectionLines()
         })
-    }
-
-    transformPoint(srcX: number, srcY: number, targetX: number, targetY: number, progress: number): Point {
-        const dx = (targetX - srcX) * progress
-        const dy = (targetY - srcY) * progress
-
-        return new Point(srcX + dx, srcY + dy)
     }
 }

@@ -1,6 +1,6 @@
 import { Line } from "comicvm-geometry-2d";
 import { PaintStyle } from "comicvm-dom";
-import { LineAnimation } from "../../anim";
+import { DrawingLineAnimation } from "../../anim";
 import { Penta } from "../Penta";
 import { PentaMan } from "../PentaMan";
 
@@ -11,9 +11,9 @@ export function createPentaLineAnimation(
     defaultDuration,
     pentagramStroke: PaintStyle,
     centralLineStroke: PaintStyle
-): LineAnimation {
+): DrawingLineAnimation {
 
-    const animation = LineAnimation.fromLines(
+    const animation = DrawingLineAnimation.fromLines(
         svg,
         startMillis,
         defaultDuration,
@@ -22,7 +22,7 @@ export function createPentaLineAnimation(
         new Line(penta.pubis, penta.neck),
     )
 
-    const fromHeadAndNeckToShoulders = LineAnimation.fromLines(svg,
+    const fromHeadAndNeckToShoulders = DrawingLineAnimation.fromLines(svg,
         startMillis + defaultDuration,
         defaultDuration / 2,
         pentagramStroke,
@@ -35,7 +35,7 @@ export function createPentaLineAnimation(
     fromHeadAndNeckToShoulders.applyStyle(centralLineStroke, 0)
     animation.add(fromHeadAndNeckToShoulders)
 
-    animation.add(LineAnimation.fromLines(svg,
+    animation.add(DrawingLineAnimation.fromLines(svg,
         startMillis + defaultDuration * 1.5,
         defaultDuration,
         pentagramStroke,
@@ -58,7 +58,7 @@ export function createPentaLineAnimation(
 
     // extended extremities
 
-    animation.add(LineAnimation.fromLines(svg,
+    animation.add(DrawingLineAnimation.fromLines(svg,
         startMillis + defaultDuration * 1.5,
         defaultDuration,
         centralLineStroke,
@@ -77,7 +77,7 @@ export function createPentaLineAnimation(
 
     // central arms line,
 
-    animation.add(LineAnimation.fromLines(svg,
+    animation.add(DrawingLineAnimation.fromLines(svg,
         startMillis + defaultDuration * 2.5,
         defaultDuration / 3,
         centralLineStroke,
@@ -95,7 +95,7 @@ export function createPentaLineAnimation(
 
     // central leg line
 
-    animation.add(LineAnimation.fromLines(svg,
+    animation.add(DrawingLineAnimation.fromLines(svg,
         startMillis + defaultDuration * 4.5,
         defaultDuration / 3,
         centralLineStroke,

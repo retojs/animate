@@ -32,7 +32,9 @@ export function createSVGDemo(container): Div {
         circle2
     )
 
-    new Animator("SVGs").start(new Animation(
+    new Animator({
+        name: "SVGs"
+    }).start(new Animation(
         new CirclePulseAnimationSection(circle1, 0, 10 * 1000),
         new CirclePulseAnimationSection(circle2, 60, 10 * 1000)
     ))

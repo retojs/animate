@@ -1,7 +1,7 @@
 import { Line } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animator, LineAnimation, LineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
+import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
 import { addPentaPolygon } from "../addPentaPolygon";
 import { PentaMan } from "../PentaMan";
 import { Penta } from "../Penta"
@@ -32,16 +32,19 @@ export function createPentaPaintingDemo3(container): Div {
 
     addBackgroundShapes(penta, pentaMan, svg);
 
-    const pentaPainting = new Animator("Penta Painting 3", STARTOVER_DELAY)
-
+    const animator = new Animator({
+        name: "Drawing Lines with Background Image",
+        repeatDelay: STARTOVER_DELAY,
+        mouseWheelAnimate: svg.htmlElement
+    })
     const animation = createPentaLineAnimation(penta, svg)
 
-    pentaPainting.start(animation);
+    animator.start(animation);
 
     addForegroundShapes(penta, svg);
 
     return Div.create({container})
-        .append("<h2>More Penta Painting</h2>")
+        .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }
 
@@ -75,9 +78,9 @@ function addForegroundShapes(penta: Penta, svg: SVG) {
 }
 
 
-function createPentaLineAnimation(penta: Penta | PentaMan, svg): LineAnimation {
+function createPentaLineAnimation(penta: Penta | PentaMan, svg): DrawingLineAnimation {
 
-    const animation = LineAnimation.fromLines(
+    const animation = DrawingLineAnimation.fromLines(
         svg,
         0,
         DEFAULT_DURATION,
@@ -118,7 +121,7 @@ function createPentaLineAnimation(penta: Penta | PentaMan, svg): LineAnimation {
 
     animation.applyStyle(centralLines, 0, 1, 14, 15, 18, 19, 20, 21)
 
-    animation.moveSectionsBehind(animation.firstSection as LineAnimationSection, 12, 13, 14, 15, 16, 17)
+    animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 12, 13, 14, 15, 16, 17)
 
     const factory = new SVGShapeAnimationFactory(svg, animation, yellowSpots)
 
@@ -127,7 +130,7 @@ function createPentaLineAnimation(penta: Penta | PentaMan, svg): LineAnimation {
     factory.addDot(penta.ischiumRight, DEFAULT_DURATION * 4.25)
     factory.addDot(penta.ischiumLeft, DEFAULT_DURATION * 4.25)
 
-    factory.insertBeforeRef = (animation.sectionList[0] as LineAnimationSection).line
+    factory.insertBeforeRef = (animation.sectionList[0] as DrawingLineAnimationSection).line
     factory.style = yellowLines
 
     factory.addLine(new Line(penta.shoulderLeft, penta.shoulderRight), 0)

@@ -1,5 +1,5 @@
 import { PaintStyle } from "comicvm-dom";
-import { LineAnimation, LineAnimationSection } from "../anim"
+import { DrawingLineAnimation, DrawingLineAnimationSection } from "../anim"
 import { SVGLine } from "../svg";
 import { PentaManAnimationGenerator } from "./PentaManAnimationGenerator"
 import { PentaMan } from "./PentaMan"
@@ -13,9 +13,9 @@ describe("PentaManAnimationGenerator.ts", () => {
     let lineStyle2: PaintStyle
     let lineStyle3: PaintStyle
     let lineStyle4: PaintStyle
-    let section1: LineAnimationSection
-    let section2: LineAnimationSection
-    let animation: LineAnimation
+    let section1: DrawingLineAnimationSection
+    let section2: DrawingLineAnimationSection
+    let animation: DrawingLineAnimation
     let pentaMan: PentaMan
     let penta: Penta
     let generator: PentaManAnimationGenerator
@@ -27,9 +27,9 @@ describe("PentaManAnimationGenerator.ts", () => {
         lineStyle4 = PaintStyle.fillAndStroke("#444", "#456")
         line1 = new SVGLine(0, 0, 100, 100, lineStyle1)
         line2 = new SVGLine(20, 20, 120, 120, lineStyle2)
-        section1 = new LineAnimationSection(line1, 0, 1000)
-        section2 = new LineAnimationSection(line2, 0, 1000)
-        animation = new LineAnimation(null, 0, 1000, null, section1, section2)
+        section1 = new DrawingLineAnimationSection(line1, 0, 1000)
+        section2 = new DrawingLineAnimationSection(line2, 0, 1000)
+        animation = new DrawingLineAnimation(null, 0, 1000, null, section1, section2)
         penta = new Penta(0, 0, 100)
         pentaMan = new PentaMan(0, 0, 100)
         generator = new PentaManAnimationGenerator(animation, pentaMan, penta)

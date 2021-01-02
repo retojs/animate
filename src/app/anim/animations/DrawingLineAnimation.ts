@@ -1,10 +1,10 @@
 import { Line, Point } from "comicvm-geometry-2d";
 import { PaintStyle } from "comicvm-dom";
 import { SVG, SVGLine } from "../../svg";
-import { LineAnimationSection } from "./sections/LineAnimationSection";
+import { DrawingLineAnimationSection } from "./sections/DrawingLineAnimationSection";
 import { Animation } from "../Animation";
 
-export class LineAnimation extends Animation {
+export class DrawingLineAnimation extends Animation {
 
     startPoint: Point;
 
@@ -15,9 +15,9 @@ export class LineAnimation extends Animation {
         startMillis: number,
         defaultDuration?: number,
         defaultPaintStyle?: PaintStyle,
-    ): LineAnimation {
+    ): DrawingLineAnimation {
 
-        const lineAnimation = new LineAnimation(svg, startMillis, defaultDuration, defaultPaintStyle);
+        const lineAnimation = new DrawingLineAnimation(svg, startMillis, defaultDuration, defaultPaintStyle);
         lineAnimation.startPoint = new Point(x, y);
 
         return lineAnimation;
@@ -39,18 +39,18 @@ export class LineAnimation extends Animation {
         defaultDuration?: number,
         defaultPaintStyle?: PaintStyle,
         ...lines: (Line | Line[])[]
-    ): LineAnimation {
+    ): DrawingLineAnimation {
 
         const lineAnimations = lines.map((lineGroup, index) => {
             const lineArray = Array.isArray(lineGroup) ? lineGroup : [lineGroup]
-            return lineArray.map(line => new LineAnimationSection(
+            return lineArray.map(line => new DrawingLineAnimationSection(
                 SVGLine.fromLine(line, defaultPaintStyle, svg),
                 startMillis + index * defaultDuration,
                 startMillis + index * defaultDuration + defaultDuration
             ))
         }).reduce((flat, arr) => flat.concat(arr), [])
 
-        return new LineAnimation(svg, startMillis, defaultDuration, defaultPaintStyle, ...lineAnimations);
+        return new DrawingLineAnimation(svg, startMillis, defaultDuration, defaultPaintStyle, ...lineAnimations);
     }
 
     constructor(
@@ -58,13 +58,13 @@ export class LineAnimation extends Animation {
         public startMillis = 0,
         public defaultDuration = 300,
         public defaultPaintStyle: PaintStyle = PaintStyle.stroke("black"),
-        ...lines: LineAnimationSection[]
+        ...lines: DrawingLineAnimationSection[]
     ) {
         super(...lines);
     }
 
-    get lastLine(): LineAnimationSection {
-        return this.lastSection as LineAnimationSection;
+    get lastLine(): DrawingLineAnimationSection {
+        return this.lastSection as DrawingLineAnimationSection;
     }
 
     get lastPoint(): Point {
@@ -79,7 +79,7 @@ export class LineAnimation extends Animation {
             : this.startMillis;
     }
 
-    lineTo(x: number, y: number, style?: PaintStyle): LineAnimation {
+    lineTo(x: number, y: number, style?: PaintStyle): DrawingLineAnimation {
 
         const line = new SVGLine(
             this.lastPoint.x,
@@ -90,7 +90,7 @@ export class LineAnimation extends Animation {
 
         this.svg.add(line);
 
-        this.parts.push(new LineAnimationSection(
+        this.parts.push(new DrawingLineAnimationSection(
             line,
             this.lastTime,
             this.lastTime + this.defaultDuration
@@ -99,30 +99,30 @@ export class LineAnimation extends Animation {
         return this;
     }
 
-    lineToo(next: Point): LineAnimation {
+    lineToo(next: Point): DrawingLineAnimation {
         return this.lineTo(next.x, next.y);
     }
 
     applyStyle(style: PaintStyle, ...lineIndex: number[]) {
         lineIndex.forEach(i => {
-            if (this.parts[i] && (this.parts[i] as LineAnimationSection).line) {
-                (this.parts[i] as LineAnimationSection).line.style = style
+            if (this.parts[i] && (this.parts[i] as DrawingLineAnimationSection).line) {
+                (this.parts[i] as DrawingLineAnimationSection).line.style = style
             }
         })
     }
 
-    moveSectionsBehind(ref: LineAnimationSection, ...lineIndex: number[]) {
+    moveSectionsBehind(ref: DrawingLineAnimationSection, ...lineIndex: number[]) {
         lineIndex.forEach(i => {
-            if (this.parts[i] && this.parts[i] instanceof LineAnimationSection) {
-                this.svg.insertBefore(ref.line, (this.parts[i] as LineAnimationSection).line)
+            if (this.parts[i] && this.parts[i] instanceof DrawingLineAnimationSection) {
+                this.svg.insertBefore(ref.line, (this.parts[i] as DrawingLineAnimationSection).line)
             }
         })
     }
 
-    moveBehind(ref: LineAnimationSection) {
+    moveBehind(ref: DrawingLineAnimationSection) {
         this.sectionList.forEach(section => {
-            if (section instanceof LineAnimationSection) {
-                this.svg.insertBefore(ref.line, (section as LineAnimationSection).line)
+            if (section instanceof DrawingLineAnimationSection) {
+                this.svg.insertBefore(ref.line, (section as DrawingLineAnimationSection).line)
             }
         })
     }

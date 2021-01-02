@@ -2,7 +2,7 @@ import { Point } from "comicvm-geometry-2d";
 import { SVGLine } from "../../../svg";
 import { AnimationSection } from "../../AnimationSection"
 
-export class LineAnimationSection extends AnimationSection {
+export class DrawingLineAnimationSection extends AnimationSection {
 
     readonly x1: number
     readonly y1: number
@@ -39,7 +39,7 @@ export class LineAnimationSection extends AnimationSection {
     }
 
     clone() {
-        return new LineAnimationSection(
+        return new DrawingLineAnimationSection(
             this.line.clone(),
             this.startMillis,
             this.endMillis
@@ -47,7 +47,7 @@ export class LineAnimationSection extends AnimationSection {
     }
 
     cloneSilent() {
-        return new LineAnimationSection(
+        return new DrawingLineAnimationSection(
             this.line.cloneSilent(),
             this.startMillis,
             this.endMillis
