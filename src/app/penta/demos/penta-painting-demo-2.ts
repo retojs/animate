@@ -1,7 +1,7 @@
-import { Line, Point } from "comicvm-geometry-2d"
+import { Line } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
-import { SVG, SVGCircle } from "../../svg"
-import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, SVGShapeAnimationSection } from "../../anim"
+import { SVG } from "../../svg"
+import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
 import { addPentaPolygon } from "../addPentaPolygon";
 import { Penta } from "../Penta"
 
@@ -26,7 +26,7 @@ export function createPentaPaintingDemo2(container): Div {
 
     addPentaPolygon(penta, goldFill, svg)
 
-    const animator =new Animator({
+    const animator = new Animator({
         name: "Drawing Essential Lines",
         repeatDelay: STARTOVER_DELAY,
         mouseWheelAnimate: svg.htmlElement
@@ -68,12 +68,14 @@ export function createPentaPaintingDemo2(container): Div {
 
     animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 7, 8, 13, 14)
 
-    displaySpot(penta.middle, DEFAULT_DURATION * 0.25)
-    displaySpot(penta.neck, DEFAULT_DURATION * 0.5)
-    displaySpot(penta.scapulaLeft, DEFAULT_DURATION * 2.5)
-    displaySpot(penta.scapulaRight, DEFAULT_DURATION * 2.5)
-    displaySpot(penta.ischiumLeft, DEFAULT_DURATION * 4.5)
-    displaySpot(penta.ischiumRight, DEFAULT_DURATION * 4.5)
+    const factory = new SVGShapeAnimationFactory(svg, animation, PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2))
+
+    factory.addDot(penta.middle, DEFAULT_DURATION * 0.25)
+    factory.addDot(penta.neck, DEFAULT_DURATION * 0.5)
+    factory.addDot(penta.scapulaLeft, DEFAULT_DURATION * 2.5)
+    factory.addDot(penta.scapulaRight, DEFAULT_DURATION * 2.5)
+    factory.addDot(penta.ischiumLeft, DEFAULT_DURATION * 4.5)
+    factory.addDot(penta.ischiumRight, DEFAULT_DURATION * 4.5)
 
     animator.start(animation);
 
@@ -81,19 +83,4 @@ export function createPentaPaintingDemo2(container): Div {
         .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 
-
-    function displaySpot(point: Point, startMillis: number, endMillis?: number) {
-        animation.add(new SVGShapeAnimationSection(
-            svg,
-            createSpot(point),
-            startMillis,
-            endMillis
-        ))
-    }
-
-    function createSpot(point: Point): SVGCircle {
-        return new SVGCircle(point.x, point.y, 5,
-            PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2)
-        )
-    }
 }

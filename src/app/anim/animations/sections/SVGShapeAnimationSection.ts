@@ -19,7 +19,7 @@ export class SVGShapeAnimationSection extends AnimationSection {
         endMillis?: number,
         insertBefore?: SVGShape
     ) {
-        super(startMillis, endMillis || startMillis)
+        super(startMillis, endMillis)
 
         this.shape = shape
 

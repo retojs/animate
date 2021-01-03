@@ -23,10 +23,6 @@ export function createPentaPaintingDemo3(container): Div {
         height: 700,
     })
 
-    svg.onClick = (e: MouseEvent) => {
-        console.log("svg clicked: ", e.offsetX, e.offsetY)
-    }
-
     const pentaMan = new PentaMan(300, 347, 500)
     const penta = new Penta(300, 300, 200)
 

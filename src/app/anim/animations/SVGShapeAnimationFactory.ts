@@ -18,7 +18,7 @@ export class SVGShapeAnimationFactory {
     addDot(
         point: Point,
         startMillis: number = 0,
-        endMillis?: number,
+        endMillis: number = 0,
     ) {
         this.animation.add(new SVGShapeAnimationSection(
             this.svg,
@@ -32,7 +32,7 @@ export class SVGShapeAnimationFactory {
     addLine(
         line: Line,
         startMillis: number = 0,
-        endMillis?: number,
+        endMillis: number = 0,
     ) {
         this.animation.add(new SVGShapeAnimationSection(
             this.svg,
