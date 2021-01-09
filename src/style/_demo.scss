@@ -22,7 +22,7 @@ main {
   min-height: 90vh;
   max-width: 1080px;
 
-  div {
+  & > div {
     margin: $gap-size 0;
   }
 }
@@ -79,3 +79,6 @@ $sample-code-background-color: #eee;
     }
   }
 }
+
+
+@import "demos/color-palette-demo";

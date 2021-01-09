@@ -1,6 +1,6 @@
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animation, Animator } from "../../anim"
+import { Animation, Animator, MovingCircleAnimationSection } from "../../anim"
 import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
 import { addPentaPolygon } from "../addPentaPolygon";
@@ -8,7 +8,6 @@ import { createPentaLineAnimation } from "./createPentaLineAnimation";
 import { MovingPentaLineAnimation } from "../MovingPentaLineAnimation";
 import { PentaManRelation } from "../PentaManRelation";
 import { MappingType, PentaManAnimationGenerator } from "../PentaManAnimationGenerator";
-import { MovingCircleAnimationSection } from "../../anim/animations/sections/MovingCircleAnimationSection";
 
 const BACKGROUND_COLOR = "white"
 const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
@@ -24,9 +23,10 @@ export const STARTOVER_DELAY = 3000
 
 const style = {
     transparent: PaintStyle.fillAndStroke(TRANSPARENT, TRANSPARENT),
-    pentaManSpots: PaintStyle.fillAndStroke(BROWN, BACKGROUND_COLOR, 3),
+    pentaManSpots: PaintStyle.fillAndStroke(COPPER, BACKGROUND_COLOR, 3),
     centralSpots: PaintStyle.fillAndStroke(COPPER, TRANSPARENT_9_YELLOW, 4),
-    pentaManOuterSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, BROWN, 2),
+    pentaManOuterSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
+    pentaManInnerSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
 }
 const goldFill = PaintStyle.fill(GOLD_COLOR_FILL)
 const yellowSpots = PaintStyle.fillAndStroke(BACKGROUND_COLOR, "rgba(255, 255, 0, 1)", 2)
@@ -150,6 +150,10 @@ function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animat
             )
             if (index < 5) {
                 anim.circle.style = style.pentaManOuterSpots
+                anim.circle.radius = 4
+            }
+            if (index >= 10) {
+                anim.circle.style = style.pentaManInnerSpots
                 anim.circle.radius = 4
             }
 

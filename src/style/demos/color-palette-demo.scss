@@ -1,0 +1,31 @@
+
+.color-inspector-container {
+  text-align: center;
+  padding: 10px;
+
+  .color-inspector {
+    text-align: left;
+    display: inline-block;
+    width: 300px;
+    margin-left: 278px;
+  }
+}
+
+.color-sample {
+  display: inline-block;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 5px;
+}
+
+.color-info {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.color-label {
+  font-family: monospace;
+  padding: 0 10px !important;
+  display: block;
+}

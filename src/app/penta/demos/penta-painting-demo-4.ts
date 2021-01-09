@@ -1,3 +1,4 @@
+import { Point } from "comicvm-geometry-2d";
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
 import { Animation, Animator, DrawingLineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
@@ -6,6 +7,7 @@ import { PentaMan } from "../PentaMan";
 import { MappingType, PentaManAnimationGenerator } from "../PentaManAnimationGenerator";
 import { addPentaPolygon } from "../addPentaPolygon";
 import { createPentaLineAnimation } from "./createPentaLineAnimation";
+import { ColorPalette, Colors } from "../../style";
 
 const BACKGROUND_COLOR = "white"
 const GOLD_COLOR_FILL = "rgba(255, 190, 10, 0.3)"
@@ -17,8 +19,18 @@ const TRANSPARENT_9_YELLOW = "rgba(255, 255, 0, 0.9)"
 const TRANSPARENT_3_YELLOW = "rgba(255, 255, 0, 0.3)"
 const TRANSPARENT_5_YELLOW = "rgba(255, 255, 0, 0.5)"
 
+const color: Colors = ColorPalette.getColors()
+
 export const DEFAULT_DURATION = 1500
 export const STARTOVER_DELAY = 3000
+
+const style = {
+    transparent: PaintStyle.fillAndStroke(color.transparent, color.transparent),
+    pentaManSpots: PaintStyle.fillAndStroke(color.val5.sat8.hue1, color.white, 3),
+    centralSpots: PaintStyle.fillAndStroke(color.val5.sat8.hue1, TRANSPARENT_9_YELLOW, 4),
+    pentaManOuterSpots: PaintStyle.fillAndStroke(color.white, color.val5.sat8.hue1, 2),
+    pentaManInnerSpots: PaintStyle.fillAndStroke(color.white, color.val5.sat8.hue1, 2),
+}
 
 const goldFill = PaintStyle.fill(GOLD_COLOR_FILL)
 const yellowSpots = PaintStyle.fillAndStroke(BACKGROUND_COLOR, "rgba(255, 255, 0, 1)", 2)
@@ -116,16 +128,7 @@ function createAnimations(svg: SVG) {
             STARTOVER_DELAY + 1)
     }
 
-    addForegroundShapes(penta, pentaLineAnimation, svg);
-
-    svg.insertBefore(
-        (pentaLineAnimation.parts[0] as DrawingLineAnimationSection).line,
-        ...pentaMan.getPentagramSpots(3, pentaManSpots)
-    )
-    svg.insertBefore(
-        (pentaLineAnimation.parts[0] as DrawingLineAnimationSection).line,
-        ...pentaMan.getCentralSpots(4, centralSpots)
-    )
+    addForegroundShapes(penta, pentaMan, pentaLineAnimation, svg);
 
     return new Animation(
         manAnimation,
@@ -148,12 +151,13 @@ function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
 }
 
 
-function addForegroundShapes(penta: Penta, animation: Animation, svg: SVG) {
+function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animation, svg: SVG) {
     svg.add(
         SVGCircle.create(penta.middle, 5, yellowSpots),
     )
 
     const factory = new SVGShapeAnimationFactory(svg, animation, centralSpots)
+
     const startMillis = 7 * DEFAULT_DURATION
 
     factory.addDot(penta.middle, 0)
@@ -162,4 +166,20 @@ function addForegroundShapes(penta: Penta, animation: Animation, svg: SVG) {
     factory.addDot(penta.scapulaLeft, startMillis + DEFAULT_DURATION * (2.5 + 1 / 3))
     factory.addDot(penta.ischiumRight, startMillis + DEFAULT_DURATION * (4.5 + 1 / 3))
     factory.addDot(penta.ischiumLeft, startMillis + DEFAULT_DURATION * (4.5 + 1 / 3))
+
+    pentaMan.getPentagramPoints()
+        .forEach((point: Point, index: number) => {
+            const spotStyle = (index < 5)
+                ? style.pentaManOuterSpots
+                : (index >= 10)
+                    ? style.pentaManInnerSpots
+                    : style.pentaManSpots
+
+            factory.addDot(point, 0, 0, {style: spotStyle, radius: 3})
+        })
+
+    pentaMan.getCentralPoints()
+        .forEach(point => {
+            factory.addDot(point, 0, 0, {style: style.centralSpots, radius: 4})
+        })
 }

@@ -168,7 +168,7 @@ export class PentaMan {
         return this.svgImage
     }
 
-    getPentagramSpots(radius: number, style: PaintStyle): SVGCircle[] {
+    getPentagramPoints() {
         return [
             this.head,
             this.elbowLeft,
@@ -187,13 +187,10 @@ export class PentaMan {
             this.lungRight,
             this.kidneyLeft,
             this.kidneyRight,
-
-        ].map((point: Point) =>
-            new SVGCircle(point.x, point.y, radius, style)
-        )
+        ]
     }
 
-    getCentralSpots(radius: number, style: PaintStyle): SVGCircle[] {
+    getCentralPoints() {
         return [
             this.middle,
 
@@ -208,9 +205,20 @@ export class PentaMan {
             this.handRight,
             this.footLeft,
             this.footRight,
+        ]
+    }
 
-        ].map(point =>
-            new SVGCircle(point.x, point.y, radius, style)
-        )
+    getPentagramSpots(radius: number, style: PaintStyle): SVGCircle[] {
+        return this.getPentagramPoints()
+            .map((point: Point) =>
+                new SVGCircle(point.x, point.y, radius, style)
+            )
+    }
+
+    getCentralSpots(radius: number, style: PaintStyle): SVGCircle[] {
+        return this.getCentralPoints()
+            .map(point =>
+                new SVGCircle(point.x, point.y, radius, style)
+            )
     }
 }

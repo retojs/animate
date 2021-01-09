@@ -1,5 +1,5 @@
 export { colorPaletteDemo } from "./color-palette-demo"
-export { ColorPalette } from "./ColorPalette"
+export { ColorPalette, Colors, ColorHue, ColorValue, ColorSaturation } from "./ColorPalette"
 export { colorPaletteToSVG } from "./colorPaletteToSVG"
 export { getColorPalette } from "./getColorPalette"
 export { getRainbowPalette } from "./getRainbowPalette"

@@ -3,6 +3,17 @@ import { PaintStyle } from "comicvm-dom";
 import { Animation, SVGShapeAnimationSection } from "../index";
 import { SVG, SVGCircle, SVGLine, SVGShape } from "../../svg";
 
+export interface SVGShapeAnimationFactoryConfig {
+    svg?: SVG,
+    animation?: Animation,
+    style?: PaintStyle,
+    radius?: number
+}
+
+export const defaultConfig = {
+    radius: 5
+}
+
 export class SVGShapeAnimationFactory {
 
     insertBeforeRef: SVGShape
@@ -19,10 +30,11 @@ export class SVGShapeAnimationFactory {
         point: Point,
         startMillis: number = 0,
         endMillis: number = 0,
+        config: SVGShapeAnimationFactoryConfig = defaultConfig
     ) {
         this.animation.add(new SVGShapeAnimationSection(
             this.svg,
-            new SVGCircle(point.x, point.y, this.radius, this.style, this.svg),
+            new SVGCircle(point.x, point.y, config.radius || this.radius, config.style || this.style, this.svg),
             startMillis,
             endMillis,
             this.insertBeforeRef
@@ -33,10 +45,11 @@ export class SVGShapeAnimationFactory {
         line: Line,
         startMillis: number = 0,
         endMillis: number = 0,
+        style?: PaintStyle,
     ) {
         this.animation.add(new SVGShapeAnimationSection(
             this.svg,
-            SVGLine.fromLine(line, this.style, this.svg),
+            SVGLine.fromLine(line, style || this.style, this.svg),
             startMillis,
             endMillis,
             this.insertBeforeRef

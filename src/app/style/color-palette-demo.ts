@@ -1,5 +1,5 @@
-import { Div } from "comicvm-dom"
-import { SVG } from "../svg"
+import { Div, Label } from "comicvm-dom"
+import { SVG, SVGRect } from "../svg"
 import { colorPaletteToSVG } from "./colorPaletteToSVG";
 import { ColorPalette } from "./ColorPalette";
 
@@ -9,6 +9,13 @@ export function colorPaletteDemo(container): Div {
         width: 600,
         height: 400,
     })
+
+    const colorInspectorContainer = Div.create({styleClass: "color-inspector-container"})
+    const colorInspector = Div.create({container: colorInspectorContainer, styleClass: "color-inspector"})
+    const colorSample = Div.create({container: colorInspector, styleClass: "color-sample"})
+    const colorInfo = Div.create({container: colorInspector, styleClass: "color-info"})
+    const colorName = Label.create({container: colorInfo, styleClass: "color-label"})
+    const colorComponents = Label.create({container: colorInfo, styleClass: "color-label"})
 
     const screenWidth = 600 - 2 * 20
     const screenHeight = 400 - 2 * 20
@@ -25,38 +32,52 @@ export function colorPaletteDemo(container): Div {
         colors.push(colorPalette.color["hue" + h])
     }
 
-    colorPaletteToSVG(
-        colors.slice(0, 8),
-        svg,
-        offsetX,
-        offsetY,
-        colorFieldWidth * 10,
-        colorFieldHeight * 10
-    )
-    colorPaletteToSVG(
-        colors.slice(8, 16),
-        svg,
-        offsetX,
-        offsetY + colorFieldHeight * 20,
-        colorFieldWidth * 10,
-        colorFieldHeight * 10
-    )
-    colorPaletteToSVG(
-        colors.slice(16, 24),
-        svg,
-        offsetX,
-        offsetY + colorFieldHeight * 40,
-        colorFieldWidth * 10,
-        colorFieldHeight * 10
-    )
+    const colorFields = [
+        ...colorPaletteToSVG(
+            colors.slice(0, 8),
+            svg,
+            offsetX,
+            offsetY,
+            colorFieldWidth * 10,
+            colorFieldHeight * 10
+        ),
+        ...colorPaletteToSVG(
+            colors.slice(8, 16),
+            svg,
+            offsetX,
+            offsetY + colorFieldHeight * 20,
+            colorFieldWidth * 10,
+            colorFieldHeight * 10
+        ),
+        ...colorPaletteToSVG(
+            colors.slice(16, 24),
+            svg,
+            offsetX,
+            offsetY + colorFieldHeight * 40,
+            colorFieldWidth * 10,
+            colorFieldHeight * 10
+        )
+    ]
+
+    colorFields.forEach((rect, index) => {
+        rect.element.onmouseenter = () => {
+            colorName.text = "color.hue" + index
+            colorSample.htmlElement.style.backgroundColor = rect.style.fillStyle as string
+            colorComponents.text = rect.style.fillStyle as string
+        }
+    })
 
     for (let h = 0; h < colorPalette.nofColors; h++) {
         for (let i = 0; i < 10; i++) {
             colors = []
+            let colorNames = []
+
             for (let j = 9; j >= 0; j--) {
+                colorNames.push("color.val" + i + ".sat" + j + ".hue" + h)
                 colors.push(colorPalette.color["val" + i]["sat" + j]["hue" + h])
             }
-            colorPaletteToSVG(
+
+            const colorRects: SVGRect[] = colorPaletteToSVG(
                 colors,
                 svg,
                 offsetX + h % 8 * colorFieldWidth * 10,
@@ -64,6 +85,14 @@ export function colorPaletteDemo(container): Div {
                 colorFieldWidth,
                 colorFieldHeight
             )
+
+            colorRects.forEach((rect, index) => {
+                rect.element.onmouseenter = () => {
+                    colorName.text = colorNames[index]
+                    colorSample.htmlElement.style.backgroundColor = rect.style.fillStyle as string
+                    colorComponents.text = rect.style.fillStyle as string
+                }
+            })
         }
     }
 
@@ -75,5 +104,6 @@ export function colorPaletteDemo(container): Div {
         .append("<pre>color.sat{s}.hue{h}</pre>")
         .append("<pre>color.val{v}.hue{h}</pre>")
         .append("<pre>color.hue{h}</pre>")
+        .append(colorInspectorContainer)
         .append(svg)
 }

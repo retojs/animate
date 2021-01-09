@@ -8,7 +8,7 @@ export function colorPaletteToSVG(
     y = 20,
     width = 20,
     height = 20,
-) {
+): SVGRect[] {
 
     return colors.map((color, i) =>
         new SVGRect(
