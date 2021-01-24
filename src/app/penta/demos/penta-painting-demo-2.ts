@@ -1,7 +1,7 @@
 import { Line } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG } from "../../svg"
-import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
+import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, ShowShapeAnimationFactory } from "../../anim"
 import { addPentaPolygon } from "../addPentaPolygon";
 import { Penta } from "../Penta"
 
@@ -68,7 +68,7 @@ export function createPentaPaintingDemo2(container): Div {
 
     animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 7, 8, 13, 14)
 
-    const factory = new SVGShapeAnimationFactory(svg, animation, PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2))
+    const factory = new ShowShapeAnimationFactory(svg, animation, PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2))
 
     factory.addDot(penta.middle, DEFAULT_DURATION * 0.25)
     factory.addDot(penta.neck, DEFAULT_DURATION * 0.5)

@@ -1,9 +1,9 @@
 import { Line, Point } from "comicvm-geometry-2d";
 import { PaintStyle } from "comicvm-dom";
-import { Animation, SVGShapeAnimationSection } from "../index";
+import { Animation, ShowShapeAnimationSection } from "../index";
 import { SVG, SVGCircle, SVGLine, SVGShape } from "../../svg";
 
-export interface SVGShapeAnimationFactoryConfig {
+export interface ShowShapeAnimationFactoryConfig {
     svg?: SVG,
     animation?: Animation,
     style?: PaintStyle,
@@ -14,7 +14,7 @@ export const defaultConfig = {
     radius: 5
 }
 
-export class SVGShapeAnimationFactory {
+export class ShowShapeAnimationFactory {
 
     insertBeforeRef: SVGShape
 
@@ -30,15 +30,24 @@ export class SVGShapeAnimationFactory {
         point: Point,
         startMillis: number = 0,
         endMillis: number = 0,
-        config: SVGShapeAnimationFactoryConfig = defaultConfig
-    ) {
-        this.animation.add(new SVGShapeAnimationSection(
+        config?: ShowShapeAnimationFactoryConfig
+    ): ShowShapeAnimationSection {
+        const animationSection = new ShowShapeAnimationSection(
             this.svg,
-            new SVGCircle(point.x, point.y, config.radius || this.radius, config.style || this.style, this.svg),
+            new SVGCircle(
+                point.x,
+                point.y,
+                (config && config.radius) || this.radius,
+                (config && config.style) || this.style,
+                this.svg
+            ),
             startMillis,
             endMillis,
             this.insertBeforeRef
-        ))
+        )
+        this.animation.add(animationSection)
+
+        return animationSection
     }
 
     addLine(
@@ -46,14 +55,17 @@ export class SVGShapeAnimationFactory {
         startMillis: number = 0,
         endMillis: number = 0,
         style?: PaintStyle,
-    ) {
-        this.animation.add(new SVGShapeAnimationSection(
+    ): ShowShapeAnimationSection {
+        const animationSection = new ShowShapeAnimationSection(
             this.svg,
             SVGLine.fromLine(line, style || this.style, this.svg),
             startMillis,
             endMillis,
             this.insertBeforeRef
-        ))
+        )
+        this.animation.add(animationSection)
+
+        return animationSection
     }
 }
 

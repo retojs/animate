@@ -69,4 +69,8 @@ export class MovingCircleAnimationSection extends AnimationSection {
             this.circle.y = p.y
         }
     }
+
+    remove() {
+        this.circle.svg.remove(this.circle)
+    }
 }

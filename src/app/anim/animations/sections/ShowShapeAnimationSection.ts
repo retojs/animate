@@ -1,7 +1,7 @@
 import { SVG, SVGShape } from "../../../svg";
 import { AnimationSection } from "../../AnimationSection"
 
-export class SVGShapeAnimationSection extends AnimationSection {
+export class ShowShapeAnimationSection extends AnimationSection {
 
     readonly shape: SVGShape
 
@@ -36,5 +36,9 @@ export class SVGShapeAnimationSection extends AnimationSection {
                 this.shape.element.style.opacity = "0"
             }
         }
+    }
+
+    remove() {
+        this.shape.svg.remove(this.shape)
     }
 }

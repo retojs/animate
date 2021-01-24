@@ -60,4 +60,8 @@ export class AnimationSection {
             this.hasCompleted = false
         }
     }
+
+    remove() {
+        console.log("AnimationSection.remove() not implemented by", this.constructor.name)
+    }
 }

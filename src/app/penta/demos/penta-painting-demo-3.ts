@@ -1,7 +1,7 @@
 import { Line } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
+import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, ShowShapeAnimationFactory } from "../../anim"
 import { addPentaPolygon } from "../addPentaPolygon";
 import { PentaMan } from "../PentaMan";
 import { Penta } from "../Penta"
@@ -119,7 +119,7 @@ function createPentaLineAnimation(penta: Penta | PentaMan, svg): DrawingLineAnim
 
     animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 12, 13, 14, 15, 16, 17)
 
-    const factory = new SVGShapeAnimationFactory(svg, animation, yellowSpots)
+    const factory = new ShowShapeAnimationFactory(svg, animation, yellowSpots)
 
     factory.addDot(penta.scapulaRight, DEFAULT_DURATION * 3.5)
     factory.addDot(penta.scapulaLeft, DEFAULT_DURATION * 3.5)

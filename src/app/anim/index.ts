@@ -1,13 +1,13 @@
 export { DrawingLineAnimation } from "./animations/DrawingLineAnimation";
 export { ConnectedLineAnimation } from "./animations/ConnectedLineAnimation";
 export { ConnectedLineAnimationBuilder } from "./animations/ConnectedLineAnimationBuilder";
-export { SVGShapeAnimationFactory } from "./animations/SVGShapeAnimationFactory";
+export { ShowShapeAnimationFactory } from "./animations/ShowShapeAnimationFactory";
 export { getSinusValue } from "./animations/getSinusValue";
 export { movePoint } from "./animations/movePoint";
 
 export { DrawingLineAnimationSection } from "./animations/sections/DrawingLineAnimationSection";
-export { SVGShapeAnimationSection } from "./animations/sections/SVGShapeAnimationSection";
-export { CirclePulseAnimationSection } from "./animations/sections/CirclePulseAnimationSection";
+export { ShowShapeAnimationSection } from "./animations/sections/ShowShapeAnimationSection";
+export { RadiusAnimationSection } from "./animations/sections/RadiusAnimationSection";
 export { MovingCircleAnimationSection } from "./animations/sections/MovingCircleAnimationSection";
 
 export { Animator } from "./Animator";

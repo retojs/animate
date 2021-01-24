@@ -53,4 +53,8 @@ export class DrawingLineAnimationSection extends AnimationSection {
             this.endMillis
         )
     }
+
+    remove() {
+        this.line.svg.remove(this.line)
+    }
 }

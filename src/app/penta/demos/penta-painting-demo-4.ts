@@ -1,7 +1,7 @@
 import { Point } from "comicvm-geometry-2d";
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animation, Animator, DrawingLineAnimationSection, SVGShapeAnimationFactory } from "../../anim"
+import { Animation, Animator, DrawingLineAnimationSection, ShowShapeAnimationFactory } from "../../anim"
 import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
 import { MappingType, PentaManAnimationGenerator } from "../PentaManAnimationGenerator";
@@ -156,7 +156,7 @@ function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animat
         SVGCircle.create(penta.middle, 5, yellowSpots),
     )
 
-    const factory = new SVGShapeAnimationFactory(svg, animation, centralSpots)
+    const factory = new ShowShapeAnimationFactory(svg, animation, centralSpots)
 
     const startMillis = 7 * DEFAULT_DURATION
 

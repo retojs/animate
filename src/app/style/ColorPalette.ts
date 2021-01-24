@@ -149,7 +149,7 @@ export class ColorPalette {
     }
 
     createLightnessScale(color: string, nofLevels = 10): string[] {
-        const [r, g, b] = this.colorFromString(color)
+        const [r, g, b] = ColorPalette.colorFromString(color)
         const initialLightness = Math.max(r, g, b) / 255
 
         return Array.from(Array(nofLevels).keys())
@@ -161,11 +161,11 @@ export class ColorPalette {
                     b / initialLightness * lightness,
                 ]
             })
-            .map(c => this.colorToString(c[0], c[1], c[2]))
+            .map(c => ColorPalette.colorToString(c[0], c[1], c[2]))
     }
 
     createSaturationScale(color: string, nofLevels = 10): string[] {
-        const [r, g, b] = this.colorFromString(color)
+        const [r, g, b] = ColorPalette.colorFromString(color)
         const maxComponent = Math.max(r, g, b)
 
         return Array.from(Array(nofLevels).keys())
@@ -177,10 +177,10 @@ export class ColorPalette {
                     b + (maxComponent - b) * (1 - saturation),
                 ]
             })
-            .map(c => this.colorToString(c[0], c[1], c[2]))
+            .map(c => ColorPalette.colorToString(c[0], c[1], c[2]))
     }
 
-    colorToString(r: number, g: number, b: number, a: number = 1.0) {
+    static colorToString(r: number, g: number, b: number, a: number = 1.0) {
         r = Math.min(255, Math.max(0, Math.round(r)))
         g = Math.min(255, Math.max(0, Math.round(g)))
         b = Math.min(255, Math.max(0, Math.round(b)))
@@ -188,7 +188,7 @@ export class ColorPalette {
         return `rgba(${r},${g},${b},${a})`
     }
 
-    colorFromString(color: string): number[] {
+    static colorFromString(color: string): number[] {
         color = color.trim()
         let values = color.substring(5, color.length - 1)
         return values.split(',').map(str => parseFloat(str))

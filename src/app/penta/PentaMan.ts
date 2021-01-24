@@ -142,7 +142,7 @@ export class PentaMan {
             p.y)
     }
 
-    getImage(svg?: SVG): SVGImage {
+    getImage(svg?: SVG, opacity?: number): SVGImage {
         this.svg = svg || this.svg
 
         if (!this.svgImage) {
@@ -163,6 +163,10 @@ export class PentaMan {
             this.svgImage.height = Math.round(
                 this.scaledImageWidth * (this.nativeImageHeight / this.nativeImageWidth)
             )
+        }
+
+        if (opacity != null) {
+            this.svgImage.element.style.opacity = "" + opacity
         }
 
         return this.svgImage

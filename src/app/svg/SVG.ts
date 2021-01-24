@@ -80,8 +80,11 @@ export class SVG extends DomElement<HTMLDivElement> {
     }
 
     remove(...svgShape: SVGShape[]) {
-        (svgShape || []).forEach(shape =>
-            this.svgElement.removeChild(shape.element)
+        (svgShape || []).forEach(shape => {
+                if (this.svgElement.contains(shape.element)) {
+                    this.svgElement.removeChild(shape.element)
+                }
+            }
         )
     }
 

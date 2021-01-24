@@ -79,6 +79,10 @@ export class Animation {
         }
     }
 
+    remove() {
+        (this.sectionList || []).forEach(section => section.remove())
+    }
+
     shiftBy(time: number) {
         this.parts.forEach(part => {
             if (part instanceof Animation) {
