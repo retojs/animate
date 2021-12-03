@@ -29,14 +29,7 @@ export function rainbowPaletteDemo(container): Div {
                 )
         )
 
-    const animator = new Animator({
-        name: "Rainbow Colors",
-        mouseWheelAnimate: svg.htmlElement
-    })
-
-    animator.onEnd = () => animator.startOver(0)
-
-    animator.start(new Animation(
+    const animation = new Animation(
         AnimationSection.create(0, 60 * 1000,
             (t) => {
                 colorField.forEach((line, y) => {
@@ -63,9 +56,18 @@ export function rainbowPaletteDemo(container): Div {
                 })
             }
         )
-    ))
+    )
 
-    return Div.create({container})
+    const animator = new Animator(animation, {
+        name: "Rainbow Colors",
+        mouseWheelAnimate: svg.htmlElement
+    })
+
+    animator.onEnd = () => animator.startOver(0)
+
+    animator.start();
+
+    return Div.create({container, styleClass: "demo"})
         .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }

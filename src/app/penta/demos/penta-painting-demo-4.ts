@@ -53,15 +53,15 @@ export function createPentaPaintingDemo4(container): Div {
         height: 700,
     })
 
-    const animator = new Animator({
+    const animator = new Animator(createAnimations(svg), {
         name: "Drawing Connected Lines",
         repeatDelay: STARTOVER_DELAY,
         mouseWheelAnimate: svg.htmlElement
     })
 
-    animator.start(createAnimations(svg));
+    animator.start();
 
-    return Div.create({container})
+    return Div.create({container, styleClass: "demo"})
         .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }
@@ -106,7 +106,7 @@ function createAnimations(svg: SVG) {
         centralLinesBold
     )
 
-    manAnimation.onEnd = () => {
+    manAnimation.notifyComplete = () => {
         setTimeout(() => animationGenerator.replaceLineStyle(
             manAnimation,
             pentagramLines,
@@ -117,7 +117,7 @@ function createAnimations(svg: SVG) {
             2.5 * DEFAULT_DURATION)
     }
 
-    connectedLineAnimation.onEnd = () => {
+    connectedLineAnimation.notifyComplete = () => {
         setTimeout(() => animationGenerator.replaceLineStyle(
             manAnimation,
             pentagramLinesDisabled,
@@ -153,7 +153,7 @@ function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
 
 function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animation, svg: SVG) {
     svg.add(
-        SVGCircle.create(penta.middle, 5, yellowSpots),
+        SVGCircle.fromPoint(penta.middle, 5, yellowSpots),
     )
 
     const factory = new ShowShapeAnimationFactory(svg, animation, centralSpots)

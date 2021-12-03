@@ -1,6 +1,6 @@
 import { Point } from "comicvm-geometry-2d";
-import { SVGLine } from "../../../svg";
-import { AnimationSection } from "../../AnimationSection"
+import { SVGLine } from "../../svg";
+import { AnimationSection } from "../AnimationSection"
 
 export class DrawingLineAnimationSection extends AnimationSection {
 

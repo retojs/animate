@@ -8,26 +8,37 @@ export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, sv
     svg.add(SVGPolygon.fromPoints([
             penta.head,
             penta.shoulderLeft,
-            penta.elbowLeft,
-            penta.scapulaLeft,
-            penta.middle,
-            penta.hipRight,
-            penta.kneeRight,
-            penta.pubis
+            penta.pubis,
+            penta.shoulderRight,
         ],
         style,
         svg)
     )
 
     svg.add(SVGPolygon.fromPoints([
-            penta.head,
+            penta.shoulderRight,
+            penta.hipLeft,
+            penta.kneeLeft,
+            penta.pubis,
+        ],
+        style,
+        svg)
+    )
+    svg.add(SVGPolygon.fromPoints([
+            penta.shoulderLeft,
+            penta.hipRight,
+            penta.kneeRight,
+            penta.pubis,
+        ],
+        style,
+        svg)
+    )
+
+    svg.add(SVGPolygon.fromPoints([
             penta.shoulderRight,
             penta.elbowRight,
             penta.scapulaRight,
-            penta.middle,
-            penta.hipLeft,
-            penta.kneeLeft,
-            penta.pubis
+            penta.lungRight,
         ],
         style,
         svg)
@@ -35,8 +46,9 @@ export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, sv
 
     svg.add(SVGPolygon.fromPoints([
             penta.shoulderLeft,
-            penta.pubis,
-            penta.shoulderRight,
+            penta.elbowLeft,
+            penta.scapulaLeft,
+            penta.lungLeft,
         ],
         style,
         svg)

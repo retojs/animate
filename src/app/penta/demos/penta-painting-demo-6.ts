@@ -6,8 +6,8 @@ import { PentaMan } from "../PentaMan";
 import { addPentaPolygon } from "../addPentaPolygon";
 import { createEssentialPentagramAnimation } from "./createEssentialPentagramAnimation";
 
-export const DEFAULT_DURATION = 1500
-export const STARTOVER_DELAY = 3000
+export const DEFAULT_DURATION = 3000
+export const STARTOVER_DELAY = 1000
 
 const BACKGROUND_COLOR = "white"
 const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
@@ -36,15 +36,16 @@ export function createPentaPaintingDemo6(container): Div {
         height: 700,
     })
 
-    const animator = new Animator({
-        name: "Essential Pentagramming",
-        repeatDelay: STARTOVER_DELAY,
-        mouseWheelAnimate: svg.htmlElement
-    })
+    const animator = new Animator(
+        createAnimations(svg), {
+            name: "Essential Pentagramming",
+            repeatDelay: STARTOVER_DELAY,
+            mouseWheelAnimate: svg.htmlElement
+        })
 
-    animator.start(createAnimations(svg));
+    animator.start();
 
-    return Div.create({container})
+    return Div.create({container, styleClass: "demo"})
         .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }
@@ -67,7 +68,7 @@ function createAnimations(svg: SVG) {
         }
     })
 
-    animationPenta.onEnd = () => {
+    animationPenta.notifyComplete = () => {
         console.log("on end called")
         setTimeout(() => animationPenta.remove(), STARTOVER_DELAY)
     }
@@ -106,7 +107,7 @@ function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
 
 function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animation, svg: SVG) {
     svg.add(
-        SVGCircle.create(penta.middle, 5, STYLE.middleSpot),
+        SVGCircle.fromPoint(penta.middle, 5, STYLE.middleSpot),
     )
 
 }

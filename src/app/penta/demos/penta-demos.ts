@@ -3,6 +3,7 @@ import { createPentaPaintingDemo } from "./penta-painting-demo";
 import { createPentaPaintingDemo2 } from "./penta-painting-demo-2";
 import { createPentaPaintingDemo3 } from "./penta-painting-demo-3";
 import { createPentaPaintingDemo4 } from "./penta-painting-demo-4";
+import { createPentaPaintingDemo6 } from "./penta-painting-demo-6";
 
 export function runPentaDemos(container) {
 
@@ -11,6 +12,7 @@ export function runPentaDemos(container) {
     createPentaPaintingDemo3(container);
     createPentaPaintingDemo4(container);
     createPentaPaintingDemo5(container);
+    createPentaPaintingDemo6(container);
 
     const explanation = `
     

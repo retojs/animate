@@ -28,18 +28,19 @@ export function createPentaPaintingDemo3(container): Div {
 
     addBackgroundShapes(penta, pentaMan, svg);
 
-    const animator = new Animator({
+    const animation = createPentaLineAnimation(penta, svg)
+
+    const animator = new Animator(animation, {
         name: "Drawing Lines with Background Image",
         repeatDelay: STARTOVER_DELAY,
         mouseWheelAnimate: svg.htmlElement
     })
-    const animation = createPentaLineAnimation(penta, svg)
 
-    animator.start(animation);
+    animator.start();
 
     addForegroundShapes(penta, svg);
 
-    return Div.create({container})
+    return Div.create({container, styleClass: "demo"})
         .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }
@@ -68,8 +69,8 @@ function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
 function addForegroundShapes(penta: Penta, svg: SVG) {
 
     svg.add(
-        SVGCircle.create(penta.center, 5, yellowSpots),
-        SVGCircle.create(penta.neck, 5, yellowSpots),
+        SVGCircle.fromPoint(penta.center, 5, yellowSpots),
+        SVGCircle.fromPoint(penta.neck, 5, yellowSpots),
     )
 }
 

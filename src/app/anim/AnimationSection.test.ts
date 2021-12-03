@@ -13,57 +13,68 @@ describe("AnimationSection.ts", () => {
         animation = new Animation(section)
     })
 
-    test(".hasStarted(time) returns false if time < startMillis", () => {
-        expect(section.hasStarted(0)).toBe(false)
-        expect(sectionInfinite.hasStarted(0)).toBe(false)
-    })
-    test(".hasStarted(time) returns true if time >= startMillis", () => {
-        expect(section.hasStarted(1)).toBe(true)
-        expect(section.hasStarted(2)).toBe(true)
-        expect(section.hasStarted(100)).toBe(true)
-        expect(section.hasStarted(101)).toBe(true)
+    describe(".hasStarted(time)", () => {
 
-        expect(sectionInfinite.hasStarted(1)).toBe(true)
-        expect(sectionInfinite.hasStarted(2)).toBe(true)
-        expect(sectionInfinite.hasStarted(100)).toBe(true)
-        expect(sectionInfinite.hasStarted(101)).toBe(true)
-    })
+        test("returns false if time < startMillis", () => {
+            expect(section.hasStarted(0)).toBe(false)
+            expect(sectionInfinite.hasStarted(0)).toBe(false)
+        })
 
-    test(".isOver(time) returns false if time <= endMillis if the section is not infinite", () => {
-        expect(section.isOver(0)).toBe(false)
-        expect(section.isOver(1)).toBe(false)
-        expect(section.isOver(100)).toBe(false)
-    })
-    test(".isOver(time) returns false if time > endMillis if the section is not infinite", () => {
-        expect(section.isOver(101)).toBe(true)
-    })
-    test(".isOver(time) never returns true for an infinite section (endMillis = 0)", () => {
-        expect(sectionInfinite.isOver(0)).toBe(false)
-        expect(sectionInfinite.isOver(1)).toBe(false)
-        expect(sectionInfinite.isOver(100)).toBe(false)
-        expect(sectionInfinite.isOver(1010101)).toBe(false)
+        test("returns true if time >= startMillis", () => {
+            expect(section.hasStarted(1)).toBe(true)
+            expect(section.hasStarted(2)).toBe(true)
+            expect(section.hasStarted(100)).toBe(true)
+            expect(section.hasStarted(101)).toBe(true)
+
+            expect(sectionInfinite.hasStarted(1)).toBe(true)
+            expect(sectionInfinite.hasStarted(2)).toBe(true)
+            expect(sectionInfinite.hasStarted(100)).toBe(true)
+            expect(sectionInfinite.hasStarted(101)).toBe(true)
+        })
     })
 
-    test("render will set isCompleted to true when the section is over", () => {
-        expect(section.hasCompleted).toBe(false)
-        section.render(101)
-        expect(section.hasCompleted).toBe(true)
-    })
-    test("render will set isCompleted to false when the section is not over", () => {
-        section.render(101)
-        expect(section.hasCompleted).toBe(true)
-        section.render(1)
-        expect(section.hasCompleted).toBe(false)
-    })
-    test("render will not be executed after a section has completed", () => {
-        section.renderFn = () => 0
+    describe(".hasEnded(time)", () => {
 
-        section.render(101)
-        expect(section.hasCompleted).toBe(true)
+        test("returns false if time <= endMillis if the section is not infinite.", () => {
+            expect(section.hasEnded(0)).toBe(false)
+            expect(section.hasEnded(1)).toBe(false)
+            expect(section.hasEnded(100)).toBe(false)
+        })
 
-        const renderSpy = jest.spyOn(section, "renderFn")
-        section.render(102)
-        expect(renderSpy).not.toHaveBeenCalled()
+        test("returns false if time > endMillis if the section is not infinite.", () => {
+            expect(section.hasEnded(101)).toBe(true)
+        })
+
+        test("never returns true for an infinite section (endMillis = 0).", () => {
+            expect(sectionInfinite.hasEnded(0)).toBe(false)
+            expect(sectionInfinite.hasEnded(1)).toBe(false)
+            expect(sectionInfinite.hasEnded(100)).toBe(false)
+            expect(sectionInfinite.hasEnded(1010101)).toBe(false)
+        })
     })
 
+    describe(".isVisible(time)", () => {
+        test("returns the same values as is running with the default settings.", () => {
+            expect(section.isVisible(0)).toBe(section.isRunning(0))
+            expect(section.isVisible(1)).toBe(section.isRunning(1))
+            expect(section.isVisible(100)).toBe(section.isRunning(100))
+            expect(section.isVisible(101)).toBe(section.isRunning(101))
+        })
+
+        test("returns true if time is between visibleFrom and visibleUntil if the section is not infinite.", () => {
+            section.visibleFrom = 5
+            section.visibleUntil = 105
+            expect(section.isVisible(4)).toBe(false)
+            expect(section.isVisible(5)).toBe(true)
+            expect(section.isVisible(105)).toBe(true)
+            expect(section.isVisible(106)).toBe(false)
+        })
+
+        test("never returns false for an infinite section (visibleUntil = 0).", () => {
+            expect(sectionInfinite.isVisible(0)).toBe(false)
+            expect(sectionInfinite.isVisible(1)).toBe(true)
+            expect(sectionInfinite.isVisible(100)).toBe(true)
+            expect(sectionInfinite.isVisible(1010101)).toBe(true)
+        })
+    })
 })

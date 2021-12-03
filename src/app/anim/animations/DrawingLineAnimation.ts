@@ -1,7 +1,7 @@
 import { Line, Point } from "comicvm-geometry-2d";
 import { PaintStyle } from "comicvm-dom";
 import { SVG, SVGLine } from "../../svg";
-import { DrawingLineAnimationSection } from "./sections/DrawingLineAnimationSection";
+import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
 import { Animation } from "../Animation";
 
 export class DrawingLineAnimation extends Animation {
@@ -97,10 +97,6 @@ export class DrawingLineAnimation extends Animation {
         ));
 
         return this;
-    }
-
-    lineToo(next: Point): DrawingLineAnimation {
-        return this.lineTo(next.x, next.y);
     }
 
     applyStyle(style: PaintStyle, ...lineIndex: number[]) {

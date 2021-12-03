@@ -18,7 +18,7 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
     ) {
         return new ConnectedLineAnimation(
             section.line.svg,
-            section.line.clone(),
+            section.line.clone(), 
             connectedLine,
             connectionGaps,
             section.startMillis,

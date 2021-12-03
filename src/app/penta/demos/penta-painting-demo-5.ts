@@ -1,6 +1,6 @@
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animation, Animator, MovingCircleAnimationSection } from "../../anim"
+import { Animation, Animator, MovingCircleAnimationSection, ShowShapeAnimationSection } from "../../anim"
 import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
 import { addPentaPolygon } from "../addPentaPolygon";
@@ -14,6 +14,7 @@ const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
 const GOLD_COLOR_FILL = "rgba(255, 180, 40, 0.4)"
 const BROWN = "rgba(100, 50, 35, 1)"
 const COPPER = "rgba(165, 60, 0, 1)"
+const COPPER_LIGHT = "rgba(165, 60, 0, 0.5)"
 const TRANSPARENT_5_COPPER = "rgba(165, 60, 0, 0.5)"
 const TRANSPARENT_9_YELLOW = "rgba(255, 255, 0, 0.9)"
 const TRANSPARENT_5_YELLOW = "rgba(255, 255, 0, 0.5)"
@@ -25,6 +26,7 @@ const style = {
     transparent: PaintStyle.fillAndStroke(TRANSPARENT, TRANSPARENT),
     pentaManSpots: PaintStyle.fillAndStroke(COPPER, BACKGROUND_COLOR, 3),
     centralSpots: PaintStyle.fillAndStroke(COPPER, TRANSPARENT_9_YELLOW, 4),
+    centralSpotsLight: PaintStyle.fillAndStroke(COPPER_LIGHT, TRANSPARENT_5_YELLOW, 4),
     pentaManOuterSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
     pentaManInnerSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
 }
@@ -43,15 +45,16 @@ export function createPentaPaintingDemo5(container): Div {
         height: 700,
     })
 
-    const animator = new Animator({
-        name: "Moving Lines and Circles",
-        repeatDelay: STARTOVER_DELAY,
-        mouseWheelAnimate: svg.htmlElement
-    })
+    const animator = new Animator(
+        createAnimations(svg, true), {
+            name: "Moving Lines and Circles",
+            repeatDelay: STARTOVER_DELAY,
+            mouseWheelAnimate: svg.htmlElement
+        })
 
-    animator.start(createAnimations(svg, true));
+    animator.start();
 
-    return Div.create({container})
+    return Div.create({container, styleClass: "demo"})
         .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 }
@@ -132,7 +135,7 @@ function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
 
 function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animation, svg: SVG) {
     svg.add(
-        SVGCircle.create(penta.middle, 5, yellowSpots),
+        SVGCircle.fromPoint(penta.middle, 5, yellowSpots),
     )
 
     const pentaManPentagramSpots = pentaMan.getPentagramSpots(3, style.pentaManSpots)
@@ -177,4 +180,25 @@ function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animat
             animation.add(anim)
         })
 
+    // pentaManPentagramSpots.forEach((sourceCircle: SVGCircle, index: number) => {
+    //     const anim = new ShowShapeAnimationSection(
+    //         svg,
+    //         sourceCircle,
+    //         0,
+    //         0,
+    //     )
+    //
+    //     animation.add(anim)
+    // })
+
+    pentaManCentralSpots.forEach((sourceCircle: SVGCircle, index: number) => {
+        const anim = new ShowShapeAnimationSection(
+            svg,
+            sourceCircle.evolve({style: style.centralSpotsLight}),
+            0,
+            0,
+        )
+
+        animation.add(anim)
+    })
 }

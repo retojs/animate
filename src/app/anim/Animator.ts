@@ -1,15 +1,18 @@
 import { Animation } from "./Animation"
 
 export interface AnimatorConfig {
-    name: String,
-    repeatDelay?: number,
+    name?: String
+    repeatDelay?: number
     mouseWheelAnimate?: HTMLElement
 }
 
-export class Animator {
+const defaultConfig: AnimatorConfig = {
+    name: "",
+    repeatDelay: 0,
+    mouseWheelAnimate: null
+}
 
-    name: String
-    animation: Animation
+export class Animator {
 
     isRunning = false
     startTime = 0
@@ -17,30 +20,16 @@ export class Animator {
     isPaused = false
     pauseTime = 0
 
-    repeatDelay: number
+    get name() {
+        return this.config.name
+    }
 
     constructor(
-        config: AnimatorConfig
+        public animation: Animation,
+        public config: AnimatorConfig = defaultConfig
     ) {
-        this.name = config.name
-        this.repeatDelay = config.repeatDelay
-
-        if (Number.isInteger(this.repeatDelay) && this.repeatDelay >= 0) {
-            this.onEnd = () => this.startOver(this.repeatDelay)
-        }
-
-        if (config.mouseWheelAnimate) {
-            config.mouseWheelAnimate.addEventListener("mouseenter", () => {
-                this.pause()
-            })
-            config.mouseWheelAnimate.addEventListener("mouseleave", () => {
-                this.resume()
-            })
-            config.mouseWheelAnimate.addEventListener("wheel", (e: WheelEvent) => {
-                this.renderIncrement(e.deltaY)
-                e.preventDefault()
-            })
-        }
+        animation.onComplete = () => this.startOver(this.config.repeatDelay)
+        this.setupMouseWheelAnimate();
     }
 
     getTime() {
@@ -49,15 +38,14 @@ export class Animator {
             : 0
     }
 
-    start(animation: Animation) {
-        this.animation = animation
+    start() {
         this.isRunning = true
         this.startTime = new Date().getTime()
 
         window.requestAnimationFrame(() => this.animate())
 
-        console.log("Starting animation", this.name)
-        animation.log()
+        console.log("Starting animation", this.config.name)
+        this.animation.log()
     }
 
     stop() {
@@ -76,14 +64,16 @@ export class Animator {
         this.animate()
     }
 
+    render(time) {
+        this.animation.render(time)
+    }
+
     animate() {
-        this.animation.render(this.getTime())
+        this.render(this.getTime())
 
         if (!this.isPaused) {
-            if (this.isRunning && this.animation.isRunning(this.getTime())) {
+            if (this.isRunning) {
                 window.requestAnimationFrame(() => this.animate())
-            } else {
-                setTimeout(() => this.onEnd(), 100)
             }
         }
     }
@@ -96,9 +86,24 @@ export class Animator {
     }
 
     startOver(delay: number = 0) {
-        setTimeout(() => this.start(this.animation), delay)
+        setTimeout(() => this.start(), delay)
     }
 
     onEnd = () => undefined
 
+    setupMouseWheelAnimate() {
+        if (this.config.mouseWheelAnimate) {
+            this.config.mouseWheelAnimate.addEventListener("mouseenter", () => {
+                this.pause()
+            })
+            this.config.mouseWheelAnimate.addEventListener("mouseleave", () => {
+                this.resume()
+            })
+            this.config.mouseWheelAnimate.addEventListener("wheel", (e: WheelEvent) => {
+                this.renderIncrement(e.deltaY)
+                e.preventDefault()
+            })
+        }
+    }
 }
+

@@ -1,5 +1,5 @@
-import { AnimationSection } from "../../AnimationSection"
-import { SVGCircle } from "../../../svg";
+import { AnimationSection } from "../AnimationSection"
+import { SVGCircle } from "../../svg";
 
 export const PULSE_INTERVAL = 3000
 

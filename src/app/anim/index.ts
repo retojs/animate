@@ -5,10 +5,10 @@ export { ShowShapeAnimationFactory } from "./animations/ShowShapeAnimationFactor
 export { getSinusValue } from "./animations/getSinusValue";
 export { movePoint } from "./animations/movePoint";
 
-export { DrawingLineAnimationSection } from "./animations/sections/DrawingLineAnimationSection";
-export { ShowShapeAnimationSection } from "./animations/sections/ShowShapeAnimationSection";
-export { RadiusAnimationSection } from "./animations/sections/RadiusAnimationSection";
-export { MovingCircleAnimationSection } from "./animations/sections/MovingCircleAnimationSection";
+export { DrawingLineAnimationSection } from "./animations/DrawingLineAnimationSection";
+export { ShowShapeAnimationSection } from "./animations/ShowShapeAnimationSection";
+export { RadiusAnimationSection } from "./animations/RadiusAnimationSection";
+export { MovingCircleAnimationSection } from "./animations/MovingCircleAnimationSection";
 
 export { Animator } from "./Animator";
 export { Animation } from "./Animation";

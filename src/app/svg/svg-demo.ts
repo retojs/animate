@@ -32,14 +32,16 @@ export function createSVGDemo(container): Div {
         circle2
     )
 
-    new Animator({
-        name: "SVGs"
-    }).start(new Animation(
-        new RadiusAnimationSection(circle1, 0, 10 * 1000),
-        new RadiusAnimationSection(circle2, 60, 10 * 1000)
-    ))
+    new Animator(
+        new Animation(
+            new RadiusAnimationSection(circle1, 0, 10 * 1000),
+            new RadiusAnimationSection(circle2, 60, 10 * 1000)
+        ), {
+            name: "SVGs"
+        }
+    ).start()
 
-    return Div.create({container})
+    return Div.create({container, styleClass: "demo"})
         .append("<h2>SVGs</h2>")
         .append(svg)
 }

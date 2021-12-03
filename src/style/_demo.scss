@@ -36,8 +36,10 @@ canvas, .svg-canvas {
 $sample-code-color: #333;
 $sample-code-background-color: #eee;
 
-#demo {
+#demos {
   line-height: 1.5em;
+  display: flex;
+  flex-direction: column;
 
   button,
   label,
@@ -45,6 +47,10 @@ $sample-code-background-color: #eee;
   select,
   textarea {
     padding: 5px 10px;
+  }
+
+  .demo {
+    margin: 24px 16px;
   }
 
   .demo-section {

@@ -46,6 +46,7 @@ export class SVGShape {
 
     applyPaintStyle() {
         if (!this.style) return
+        if (!this.element) return
 
         this.element.setAttributeNS(null, 'shape-rendering', 'geometricPrecision')
         if (this.style.fillStyle) {

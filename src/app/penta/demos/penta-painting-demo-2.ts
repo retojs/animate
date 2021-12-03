@@ -10,7 +10,7 @@ export const SECONDARY_COLOR = "#00bfc5"
 export const TERTIARY_COLOR = "rgba(80, 230, 235, 1)"
 export const BACKGROUND_COLOR = "#fff"
 
-export const DEFAULT_DURATION = 3500
+export const DEFAULT_DURATION = 1500
 export const STARTOVER_DELAY = 3000
 
 const goldFill = PaintStyle.fill("rgba(255, 190, 10, 0.3)")
@@ -26,26 +26,24 @@ export function createPentaPaintingDemo2(container): Div {
 
     addPentaPolygon(penta, goldFill, svg)
 
-    const animator = new Animator({
-        name: "Drawing Essential Lines",
-        repeatDelay: STARTOVER_DELAY,
-        mouseWheelAnimate: svg.htmlElement
-    })
-
     const animation = DrawingLineAnimation.fromLines(
         svg,
         0,
         DEFAULT_DURATION,
         PaintStyle.stroke(PRIMARY_COLOR, 2),
 
-        penta.spine,
+        new Line(penta.pubis, penta.neck),
         [
-            new Line(penta.neck, penta.elbowLeft),
-            new Line(penta.neck, penta.elbowRight),
+            new Line(penta.neck, penta.head),
+            new Line(penta.neck, penta.shoulderLeft),
+            new Line(penta.neck, penta.shoulderRight),
+        ],
+        [
+            new Line(penta.shoulderLeft, penta.elbowLeft),
+            new Line(penta.shoulderRight, penta.elbowRight),
             new Line(penta.head, penta.shoulderLeft),
             new Line(penta.head, penta.shoulderRight),
         ],
-
         [
             new Line(penta.shoulderRight, penta.pubis),
             new Line(penta.shoulderLeft, penta.pubis),
@@ -61,10 +59,18 @@ export function createPentaPaintingDemo2(container): Div {
         [
             penta.legRight.invert(),
             penta.legLeft.invert(),
+        ],
+        [
+            new Line(penta.shoulderLeft, penta.hipRight),
+            new Line(penta.shoulderRight, penta.hipLeft),
+        ],
+        [
+            new Line(penta.hipLeft, penta.kidneyLeft),
+            new Line(penta.hipRight, penta.kidneyRight),
         ])
 
-    animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR), 7, 8)
-    animation.applyStyle(PaintStyle.stroke(TERTIARY_COLOR), 13, 14)
+    animation.applyStyle(PaintStyle.stroke(SECONDARY_COLOR), 0, 1, 10, 11)
+    animation.applyStyle(PaintStyle.stroke(TERTIARY_COLOR), 16, 17)
 
     animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 7, 8, 13, 14)
 
@@ -77,9 +83,15 @@ export function createPentaPaintingDemo2(container): Div {
     factory.addDot(penta.ischiumLeft, DEFAULT_DURATION * 4.5)
     factory.addDot(penta.ischiumRight, DEFAULT_DURATION * 4.5)
 
-    animator.start(animation);
+    const animator = new Animator(animation, {
+        name: "Drawing Essential Lines",
+        repeatDelay: STARTOVER_DELAY,
+        mouseWheelAnimate: svg.htmlElement
+    })
 
-    return Div.create({container})
+    animator.start();
+
+    return Div.create({container, styleClass: "demo"})
         .append(`<h2>${animator.name}</h2>`)
         .append(svg)
 

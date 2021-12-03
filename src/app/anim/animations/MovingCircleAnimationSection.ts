@@ -1,7 +1,7 @@
-import { AnimationSection } from "../../AnimationSection";
-import { SVG, SVGCircle, SVGShape } from "../../../svg";
-import { movePoint } from "../movePoint";
-import { getSinusValue } from "../getSinusValue";
+import { AnimationSection } from "../AnimationSection";
+import { SVG, SVGCircle, SVGShape } from "../../svg";
+import { movePoint } from "./movePoint";
+import { getSinusValue } from "./getSinusValue";
 import { PaintStyle } from "comicvm-dom";
 
 export class MovingCircleAnimationSection extends AnimationSection {

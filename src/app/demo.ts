@@ -1,19 +1,18 @@
 import "../style/index.scss"
-
-import { Div } from "comicvm-dom"
-import { createSVGDemo } from "./svg"
-import { drawingLinesDemo } from "./anim"
-import { colorPaletteDemo, rainbowPaletteDemo } from "./style"
+import { colorPaletteDemo, rainbowPaletteDemo } from "./style";
+import { createSVGAnimationDemo } from "./anim/animations/svg-shape-animation-demo";
 import { runPentaDemos } from "./penta";
+import { drawingLinesDemo } from "./anim";
+import { createSVGDemo } from "./svg";
+
 
 export function runDemo() {
 
-    const demo = Div.create({container: "demo"})
+    colorPaletteDemo("demos")
+    rainbowPaletteDemo("demos")
+    drawingLinesDemo("demos")
+    createSVGDemo("demos")
+    createSVGAnimationDemo("demos")
 
-    createSVGDemo(demo)
-    drawingLinesDemo(demo)
-    colorPaletteDemo(demo)
-    rainbowPaletteDemo(demo)
-
-    runPentaDemos(demo)
+    runPentaDemos("demos")
 }

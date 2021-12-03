@@ -1,5 +1,5 @@
-import { SVG, SVGShape } from "../../../svg";
-import { AnimationSection } from "../../AnimationSection"
+import { SVG, SVGShape } from "../../svg";
+import { AnimationSection } from "../AnimationSection"
 
 export class ShowShapeAnimationSection extends AnimationSection {
 

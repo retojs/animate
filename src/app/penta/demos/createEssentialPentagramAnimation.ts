@@ -175,7 +175,7 @@ function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
     const spotTimingPenta = [
         config.startMillis + DEFAULT_DURATION * 0.35, // shoulders
         config.startMillis + DEFAULT_DURATION,        // elbows, knees
-        config.startMillis + DEFAULT_DURATION * 1.65,  // hips
+        config.startMillis + DEFAULT_DURATION * 1.65, // hips
         config.startMillis + DEFAULT_DURATION * 2,    // pubis
         config.startMillis + DEFAULT_DURATION * 2.35,
         config.startMillis + DEFAULT_DURATION * 3,
@@ -187,7 +187,7 @@ function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
     const spotTimingPentaMan = [
         config.startMillis + DEFAULT_DURATION * 0.35, // shoulders
         config.startMillis + DEFAULT_DURATION,        // elbows, knees
-        config.startMillis + DEFAULT_DURATION * 1.65,  // hips
+        config.startMillis + DEFAULT_DURATION * 1.65, // hips
         config.startMillis + DEFAULT_DURATION * 2,    // pubis
         config.startMillis + DEFAULT_DURATION * 2.35,
         config.startMillis + DEFAULT_DURATION * 3,

@@ -1,7 +1,7 @@
 import { SVG, SVGShape } from "../../svg";
 import { Animation } from "../Animation";
 import { PaintStyle } from "comicvm-dom";
-import { StyleAnimationSection } from "./sections/StyleAnimationSection";
+import { StyleAnimationSection } from "./StyleAnimationSection";
 
 export class StyleAnimationFactory {
 

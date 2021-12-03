@@ -1,15 +1,26 @@
 import { PaintStyle } from "comicvm-dom";
 import { SVG, SVG_NAMESPACE } from "./SVG";
 import { SVGShape } from "./SVGShape";
-import { Point } from "comicvm-geometry-2d";
+import { Circle, Point } from "comicvm-geometry-2d";
+
+export interface CircleConfig {
+    x?: number,
+    y?: number,
+    radius?: number,
+    style?: PaintStyle
+}
 
 export class SVGCircle extends SVGShape {
 
-    static create(center: Point, radius: number, style: PaintStyle) {
-        return new SVGCircle(center.x, center.y, radius, style)
+    static fromCircle(circle: Circle, style?: PaintStyle, svg?: SVG): SVGCircle {
+        return new SVGCircle(circle.x, circle.y, circle.radius, style, svg)
     }
 
-    constructor(x: number, y: number, r: number, style: PaintStyle, svg?: SVG) {
+    static fromPoint(point: Point, radius: number, style?: PaintStyle, svg?: SVG): SVGCircle {
+        return new SVGCircle(point.x, point.y, radius, style, svg)
+    }
+
+    constructor(x: number, y: number, r: number, style?: PaintStyle, svg?: SVG) {
         super(style, svg);
 
         this.element = document.createElementNS(SVG_NAMESPACE, "circle")
@@ -46,13 +57,29 @@ export class SVGCircle extends SVGShape {
         this.element.setAttributeNS(null, "r", radius.toString())
     }
 
-    clone(): SVGCircle {
+    clone(): SVGCircle{
         return new SVGCircle(
+            this.x,
+            this.y,
+            this.radius,
+            this.style,
+            this.svg,
+        )
+    }
+
+    evolve(config?: CircleConfig): SVGCircle {
+        const circle = new SVGCircle(
             this.x,
             this.y,
             this.radius,
             this.style,
             this.svg
         )
+        circle.x = (config && config.x) || circle.x
+        circle.y = (config && config.y) || circle.y
+        circle.radius = (config && config.radius) || circle.radius
+        circle.style = (config && config.style) || circle.style
+
+        return circle
     }
 }

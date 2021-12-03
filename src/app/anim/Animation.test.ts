@@ -6,9 +6,17 @@ describe("AnimationSection.ts", () => {
     let section: AnimationSection
     let animation: Animation
 
+    let section1: AnimationSection
+    let section2: AnimationSection
+    let section3: AnimationSection
+
     beforeEach(() => {
         section = new AnimationSection(1, 100)
         animation = new Animation(section)
+
+        section1 = new AnimationSection(50, 150)
+        section2 = new AnimationSection(0, 100)
+        section3 = new AnimationSection(1, 50)
     })
 
     test(".hasStarted(time) returns false if time < startMillis", () => {
@@ -16,79 +24,171 @@ describe("AnimationSection.ts", () => {
     })
     test(".hasStarted(time) returns true if time >= startMillis", () => {
         expect(animation.hasStarted(1)).toBe(true)
-        expect(animation.hasStarted(2)).toBe(true)
+        expect(animation.hasStarted(50)).toBe(true)
         expect(animation.hasStarted(100)).toBe(true)
     })
 
-    test(".isOver(time) returns false if time <= endMillis", () => {
-        expect(animation.isOver(0)).toBe(false)
-        expect(animation.isOver(1)).toBe(false)
-        expect(animation.isOver(100)).toBe(false)
+    test(".hasEnded(time) returns false if time <= endMillis", () => {
+        expect(animation.hasEnded(0)).toBe(false)
+        expect(animation.hasEnded(1)).toBe(false)
+        expect(animation.hasEnded(100)).toBe(false)
     })
-    test(".isOver(time) returns false if time > endMillis", () => {
-        expect(animation.isOver(101)).toBe(true)
-    })
-
-    test("render will set isCompleted to true when the animation is over", () => {
-        expect(animation.hasCompleted).toBe(false)
-        animation.render(101)
-        expect(animation.hasCompleted).toBe(true)
-    })
-    test("render will set isCompleted to false when the animation is not over", () => {
-        animation.render(101)
-        expect(animation.hasCompleted).toBe(true)
-        animation.render(1)
-        expect(animation.hasCompleted).toBe(false)
+    test(".hasEnded(time) returns false if time > endMillis", () => {
+        expect(animation.hasEnded(101)).toBe(true)
     })
 
-    test("onEnd will be called after the animation has completed", () => {
-        const onEndSpy = jest.spyOn(animation, "onEnd")
-
-        animation.render(101)
-        expect(onEndSpy).toHaveBeenCalled()
-    })
-    test("onEnd will only be called once after the animation has completed", () => {
-        animation.render(101)
-
-        const onEndSpy = jest.spyOn(animation, "onEnd")
-
-        animation.render(102)
-        expect(onEndSpy).not.toHaveBeenCalled()
+    test(".firstSection returns the section that starts first", () => {
+        animation = new Animation(section1, section2, section3)
+        expect(animation.firstSection).toEqual(section2)
     })
 
-    describe(".firstSection", () => {
+    test(".lastSection returns the section that starts last", () => {
+        animation = new Animation(section1, section2, section3)
+        expect(animation.lastSection).toEqual(section1)
+    })
 
-        let section1: AnimationSection
-        let section2: AnimationSection
-        let section3: AnimationSection
+    test(".add(...sections) adds a list of sections to the animation", () => {
+        expect(animation.parts).toEqual([section])
+        animation.add(section1, section2, section3)
+        expect(animation.parts).toEqual([section, section1, section2, section3])
+    })
 
-        beforeEach(() => {
-            section1 = new AnimationSection(50, 150)
-            section2 = new AnimationSection(0, 100)
-            section3 = new AnimationSection(1, 50)
+    describe(".append(section, delay)", () => {
+
+        test("adds an animation section such that it starts after the last section has ended.", () => {
             animation = new Animation(section1, section2, section3)
+            const lastSection = animation.lastSection
+            animation.append(section)
+            expect(section.startMillis).toEqual(lastSection.endMillis)
         })
 
-        test("returns the section that starts first", () => {
-            expect(animation.firstSection).toEqual(section2)
-        })
-    })
-
-    describe(".lastSection", () => {
-
-        let section1: AnimationSection
-        let section2: AnimationSection
-        let section3: AnimationSection
-
-        beforeEach(() => {
-            section1 = new AnimationSection(50, 150)
-            section2 = new AnimationSection(0, 100)
-            section3 = new AnimationSection(1, 50)
+        test("adds an animation section such that it starts after the last section has ended and a delay has passed.", () => {
             animation = new Animation(section1, section2, section3)
+            const lastSection = animation.lastSection
+            animation.append(section, 100)
+            expect(lastSection.endMillis + 100).toEqual(section.startMillis)
         })
 
-        test("returns the section that starts first", () => {
-            expect(animation.lastSection).toEqual(section1)
+        test("adds an animation section to an empty animation.", () => {
+            animation = new Animation()
+            animation.append(section, 100)
+            expect(section.startMillis).toBe(100)
+        })
+
+        test("shifts the visibility range, too, if visibility is limited.", () => {
+            animation = new Animation()
+            section.visibleFrom = 1
+            section.visibleUntil = 100
+            animation.append(section, 100)
+            expect(section.visibleFrom).toBe(100)
+            expect(section.visibleUntil).toBe(199)
+        })
+
+        test("does not shift the unlimited ends of the visibility range.", () => {
+            animation = new Animation()
+            section.visibleFrom = 0
+            section.visibleUntil = 0
+            animation.append(section, 100)
+            expect(section.visibleFrom).toBe(99)
+            expect(section.visibleUntil).toBe(0)
         })
     })
+
+    describe(".appendParallel(sections, delay)", () => {
+
+        test("adds multiple animation sections such that all start after the last section has ended.", () => {
+            const lastSection = animation.lastSection
+            animation.appendParallel([section1, section2, section3], 10)
+            expect(section1.startMillis).toEqual(lastSection.endMillis + 10)
+            expect(section2.startMillis).toEqual(lastSection.endMillis + 10)
+            expect(section3.startMillis).toEqual(lastSection.endMillis + 10)
+        })
+    })
+
+    describe(".appendAll(sections, delay)", () => {
+
+        test("appends multiple animation sections. Sections grouped in an array are appended in parallel.", () => {
+            const lastSection = animation.lastSection
+
+            animation.appendAll(30,
+                [section1, section2],
+                section3
+            )
+            expect(section1.startMillis).toEqual(lastSection.endMillis + 30)
+            expect(section2.startMillis).toEqual(lastSection.endMillis + 30)
+
+            const endMillis = Math.max(section1.endMillis, section2.endMillis)
+            expect(section3.startMillis).toEqual(endMillis + 30)
+        })
+    })
+
+    describe(".render(time)", () => {
+
+        test("will call render on all it's parts, even if it has not started yet, to set progress in all to 0%.", () => {
+            const renderSpy = jest.spyOn(section, "render")
+            animation.render(0)
+            expect(renderSpy).toHaveBeenCalledTimes(1)
+        })
+
+        test("does render animation parts if the animation has started and has not yet completed.", () => {
+            const renderSpy = jest.spyOn(section, "render")
+            animation.render(1)
+            animation.render(50)
+            animation.render(100)
+            expect(renderSpy).toHaveBeenCalledTimes(3)
+        })
+
+        test("does render animation parts one single last time if the animation has ended, i.e. progress has reached 100%.", () => {
+            const renderSpy = jest.spyOn(section, "render")
+            animation.render(101)
+            animation.render(101)
+            animation.render(101)
+            expect(renderSpy).toHaveBeenCalledTimes(1)
+        })
+
+        test("sets the animation's isComplete flag to true if the animation is complete (progress = 100%).", () => {
+            expect(animation.isComplete).toBe(false)
+            animation.render(101)
+            expect(animation.isComplete).toBe(true)
+        })
+
+        test("sets the animation's isComplete flag to false if the animation is not complete (progress < 100%).", () => {
+            animation.render(101)
+            expect(animation.isComplete).toBe(true)
+            animation.render(1)
+            expect(animation.isComplete).toBe(false)
+        })
+
+        test("calls the animation's onComplete listeners if the animation is complete (progress = 100%).", () => {
+            const notifyCompleteSpy = jest.spyOn(animation, "notifyComplete")
+            animation.render(101)
+            expect(notifyCompleteSpy).toHaveBeenCalledTimes(1)
+        })
+
+        test(".notifyComplete() will only be called once after the animation has completed (progress = 100%)", () => {
+            animation.render(101)
+            const notifyCompleteSpy = jest.spyOn(animation, "notifyComplete")
+            animation.render(102)
+            expect(notifyCompleteSpy).not.toHaveBeenCalled()
+        })
+
+        test(".notifyComplete() will call all onComplete listeners", () => {
+            let listenerCalls = 0
+
+            animation.onComplete = () => {
+                expect(listenerCalls).toBe(0)
+                listenerCalls += 1
+            }
+            animation.onComplete = () => {
+                expect(listenerCalls).toBe(1)
+                listenerCalls += 1
+            }
+            animation.onComplete = () => {
+                expect(listenerCalls).toBe(2)
+            }
+
+            animation.notifyComplete()
+        })
+    })
+
 })

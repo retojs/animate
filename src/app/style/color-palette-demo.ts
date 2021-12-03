@@ -96,7 +96,7 @@ export function colorPaletteDemo(container): Div {
         }
     }
 
-    return Div.create({container})
+    return Div.create({container, styleClass: "demo"})
         .append("<h2>Color Palette</h2>")
         .append("<p>The standard color palette contains 24 colors with 10 x 10 shades of saturation and lightness (i.e. value).")
         .append("Each color shade is accessible by a property path like: </p>")
