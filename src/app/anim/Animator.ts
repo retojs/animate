@@ -1,15 +1,16 @@
 import { Animation } from "./Animation"
+import { isElementVisibleInViewport } from "./isElementVisibleInViewport";
 
 export interface AnimatorConfig {
     name?: String
     repeatDelay?: number
-    mouseWheelAnimate?: HTMLElement
+    htmlElement?: HTMLElement
 }
 
 const defaultConfig: AnimatorConfig = {
     name: "",
     repeatDelay: 0,
-    mouseWheelAnimate: null
+    htmlElement: null
 }
 
 export class Animator {
@@ -45,7 +46,7 @@ export class Animator {
         window.requestAnimationFrame(() => this.animate())
 
         console.log("Starting animation", this.config.name)
-        this.animation.log()
+        // this.animation.log()
     }
 
     stop() {
@@ -65,6 +66,7 @@ export class Animator {
     }
 
     render(time) {
+        if (this.config.htmlElement && !isElementVisibleInViewport(this.config.htmlElement)) return
         this.animation.render(time)
     }
 
@@ -92,14 +94,14 @@ export class Animator {
     onEnd = () => undefined
 
     setupMouseWheelAnimate() {
-        if (this.config.mouseWheelAnimate) {
-            this.config.mouseWheelAnimate.addEventListener("mouseenter", () => {
+        if (this.config.htmlElement) {
+            this.config.htmlElement.addEventListener("mouseenter", () => {
                 this.pause()
             })
-            this.config.mouseWheelAnimate.addEventListener("mouseleave", () => {
+            this.config.htmlElement.addEventListener("mouseleave", () => {
                 this.resume()
             })
-            this.config.mouseWheelAnimate.addEventListener("wheel", (e: WheelEvent) => {
+            this.config.htmlElement.addEventListener("wheel", (e: WheelEvent) => {
                 this.renderIncrement(e.deltaY)
                 e.preventDefault()
             })

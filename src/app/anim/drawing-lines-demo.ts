@@ -35,7 +35,7 @@ export function drawingLinesDemo(container): Div {
 
     const drawingLines: Animator = new Animator(animation, {
         name: "Drawing Lines",
-        mouseWheelAnimate: svg.htmlElement
+        htmlElement: svg.htmlElement
     })
 
     drawingLines.onEnd = () => drawingLines.startOver(5000)

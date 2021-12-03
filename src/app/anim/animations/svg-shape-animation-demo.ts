@@ -78,7 +78,7 @@ export function createSVGShapeAnimationDemo(container): Div {
     const animator = new Animator(animation, {
         name: "Shape Animations",
         repeatDelay: 500,
-        mouseWheelAnimate: svg.htmlElement
+        htmlElement: svg.htmlElement
     })
 
     animator.start()

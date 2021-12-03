@@ -60,7 +60,7 @@ export function rainbowPaletteDemo(container): Div {
 
     const animator = new Animator(animation, {
         name: "Rainbow Colors",
-        mouseWheelAnimate: svg.htmlElement
+        htmlElement: svg.htmlElement
     })
 
     animator.onEnd = () => animator.startOver(0)

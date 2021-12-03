@@ -33,7 +33,7 @@ export function createPentaPaintingDemo3(container): Div {
     const animator = new Animator(animation, {
         name: "Drawing Lines with Background Image",
         repeatDelay: STARTOVER_DELAY,
-        mouseWheelAnimate: svg.htmlElement
+        htmlElement: svg.htmlElement
     })
 
     animator.start();

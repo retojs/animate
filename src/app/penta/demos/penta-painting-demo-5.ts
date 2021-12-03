@@ -50,7 +50,7 @@ export function createPentaPaintingDemo5(container): Div {
         createAnimations(svg, true), {
             name: "Moving Lines and Circles",
             repeatDelay: STARTOVER_DELAY,
-            mouseWheelAnimate: svg.htmlElement
+            htmlElement: svg.htmlElement
         })
 
     animator.start();

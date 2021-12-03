@@ -86,7 +86,7 @@ export function createPentaPaintingDemo2(container): Div {
     const animator = new Animator(animation, {
         name: "Drawing Essential Lines",
         repeatDelay: STARTOVER_DELAY,
-        mouseWheelAnimate: svg.htmlElement
+        htmlElement: svg.htmlElement
     })
 
     animator.start();

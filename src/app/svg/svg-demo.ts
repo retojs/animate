@@ -37,7 +37,8 @@ export function createSVGDemo(container): Div {
             new RadiusAnimationSection(circle1, 0, 10 * 1000),
             new RadiusAnimationSection(circle2, 60, 10 * 1000)
         ), {
-            name: "SVGs"
+            name: "SVGs",
+            htmlElement: svg.htmlElement
         }
     ).start()
 

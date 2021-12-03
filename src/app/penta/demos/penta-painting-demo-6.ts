@@ -41,7 +41,7 @@ export function createPentaPaintingDemo6(container): Div {
         createAnimations(svg), {
             name: "Essential Pentagramming",
             repeatDelay: STARTOVER_DELAY,
-            mouseWheelAnimate: svg.htmlElement
+            htmlElement: svg.htmlElement
         })
 
     animator.start();

@@ -63,7 +63,7 @@ export function createPentaPaintingDemo(container): Div {
     const animator = new Animator(animation, {
         name: "Drawing Pentagrams",
         repeatDelay: STARTOVER_DELAY,
-        mouseWheelAnimate: svg.htmlElement
+        htmlElement: svg.htmlElement
     })
 
     animator.start()

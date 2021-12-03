@@ -56,7 +56,7 @@ export function createPentaPaintingDemo4(container): Div {
     const animator = new Animator(createAnimations(svg), {
         name: "Drawing Connected Lines",
         repeatDelay: STARTOVER_DELAY,
-        mouseWheelAnimate: svg.htmlElement
+        htmlElement: svg.htmlElement
     })
 
     animator.start();
