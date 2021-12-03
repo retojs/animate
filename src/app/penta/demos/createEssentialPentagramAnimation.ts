@@ -7,6 +7,7 @@ import { StyleAnimationFactory } from "../../anim/animations/StyleAnimationFacto
 import { SVGCircle } from "../../svg"
 import { DEFAULT_DURATION } from "./penta-painting-demo-6"
 import { PentaAnimationConfig } from "../PentaAnimationConfig";
+import { DrawingLineAnimationBuilder } from "../../anim/animations/factories/DrawingLineAnimationBuilder";
 
 export function createEssentialPentagramAnimation(config: PentaAnimationConfig): DrawingLineAnimation {
 
@@ -21,101 +22,73 @@ function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimatio
 
     const penta = config.penta
 
-    const animation = DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis,
-        1,
-        config.style.centralLine,
-
-        new Line(penta.pubis, penta.head),
-    )
-
-    const lineStyle = config.style.pentagramLine.clone()
-
+    const lineStyle = config.style.pentagramLine.clone();
     lineStyle.lineWidth = 2.5
 
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis,
-        config.duration * 0.35,
-        lineStyle,
-
-        [
+    const animationBuilder = new DrawingLineAnimationBuilder({
+        svg: config.svg,
+        startMillis: config.startMillis,
+        defaultDuration: 1,
+        defaultPaintStyle: config.style.centralLine,
+    })
+        .fromLines(
+            new Line(penta.pubis, penta.head)
+        )
+        .setDefaultDuration(config.duration * 0.35)
+        .setDefaultPaintStyle(lineStyle)
+        .fromLines([
             new Line(penta.head, penta.shoulderLeft),
             new Line(penta.head, penta.shoulderRight),
             new Line(penta.neck, penta.shoulderLeft),
             new Line(penta.neck, penta.shoulderRight),
-        ],
-    ))
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis + config.duration * 0.35,
-        config.duration * 0.65 / 2,
-        lineStyle,
+        ])
 
-        [
+        .setStartMillis(config.startMillis + config.duration * 0.35)
+        .setDefaultDuration(config.duration * 0.65 / 2)
+        .fromLines([
             new Line(penta.shoulderLeft, penta.hipLeft),
             new Line(penta.shoulderRight, penta.hipRight),
         ], [
             new Line(penta.hipLeft, penta.kneeLeft),
             new Line(penta.hipRight, penta.kneeRight),
-        ]
-    ))
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis + config.duration * 0.35,
-        config.duration * 0.65,
-        lineStyle,
+        ])
 
-        [
+        .setStartMillis(config.startMillis + config.duration * 0.35)
+        .setDefaultDuration(config.duration * 0.65)
+        .fromLines([
             new Line(penta.shoulderLeft, penta.elbowLeft),
             new Line(penta.shoulderRight, penta.elbowRight),
-        ]
-    ))
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis + config.duration,
-        config.duration,
-        lineStyle,
+        ])
 
-        [
+        .setStartMillis(config.startMillis + config.duration)
+        .setDefaultDuration(config.duration)
+        .fromLines([
             new Line(penta.kneeLeft, penta.pubis),
             new Line(penta.kneeRight, penta.pubis),
-        ]
-    ))
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis + config.duration,
-        config.duration * 0.65,
-        lineStyle,
+        ])
 
-        [
+        .setStartMillis(config.startMillis + config.duration)
+        .setDefaultDuration(config.duration * 0.65)
+        .fromLines([
             new Line(penta.elbowLeft, penta.hipLeft),
             new Line(penta.elbowRight, penta.hipRight)
-        ]
-    ))
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis + config.duration * 1.65,
-        config.duration * 0.35,
-        lineStyle,
+        ])
 
-        [
+        .setStartMillis(config.startMillis + config.duration * 1.65)
+        .setDefaultDuration(config.duration * 0.35)
+        .fromLines([
             new Line(penta.hipLeft, penta.pubis),
             new Line(penta.hipRight, penta.pubis),
-        ]
-    ))
+        ])
 
     lineStyle.lineWidth = 2.0
 
     const kreuz = penta.spine.intersection(penta.hips)
 
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis + config.duration * 2,
-        config.duration,
-        lineStyle,
-        [
+    animationBuilder
+        .setStartMillis(config.startMillis + config.duration * 2)
+        .setDefaultDuration(config.duration)
+        .fromLines([
             new Line(penta.pubis, penta.shoulderLeft),
             new Line(penta.pubis, penta.shoulderRight),
             new Line(kreuz, penta.hipLeft),
@@ -125,20 +98,18 @@ function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimatio
             new Line(penta.hipRight, penta.heart),
             new Line(penta.shoulderLeft, penta.heart),
             new Line(penta.shoulderRight, penta.heart),
-        ],
-    ))
+        ])
+
 
     lineStyle.lineWidth = 1.5
 
     const diaphragm = penta.spine.intersection(new Line(penta.lungLeft, penta.lungRight))
     const middle = penta.spine.intersection(new Line(penta.lungLeft, penta.kidneyRight))
 
-    animation.add(DrawingLineAnimation.fromLines(
-        config.svg,
-        config.startMillis + config.duration * 4,
-        config.duration,
-        lineStyle,
-        [
+    animationBuilder
+        .setStartMillis(config.startMillis + config.duration * 4)
+        .setDefaultDuration(config.duration)
+        .fromLines([
             new Line(penta.heart, penta.kidneyLeft),
             new Line(penta.heart, penta.kidneyRight),
             new Line(diaphragm, penta.lungLeft),
@@ -148,10 +119,11 @@ function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimatio
             new Line(penta.lungRight, middle),
             new Line(penta.kidneyLeft, middle),
             new Line(penta.kidneyRight, middle),
-        ],
-    ))
+        ])
 
-    return animation
+        .build()
+
+    return animationBuilder.build()
 }
 
 
