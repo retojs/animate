@@ -10,15 +10,13 @@ export class DrawingLineAnimation extends Animation {
 
     static create(
         svg: SVG,
-        x: number,
-        y: number,
         startMillis: number,
         defaultDuration?: number,
         defaultPaintStyle?: PaintStyle,
     ): DrawingLineAnimation {
 
         const lineAnimation = new DrawingLineAnimation(svg, startMillis, defaultDuration, defaultPaintStyle);
-        lineAnimation.startPoint = new Point(x, y);
+        lineAnimation.startPoint = new Point(0, 0);
 
         return lineAnimation;
     }
@@ -77,6 +75,12 @@ export class DrawingLineAnimation extends Animation {
         return this.parts && this.parts.length > 0
             ? this.lastSection.endMillis
             : this.startMillis;
+    }
+
+    startFrom(x: number, y: number) {
+        this.startPoint = new Point(x, y);
+
+        return this;
     }
 
     lineTo(x: number, y: number, style?: PaintStyle): DrawingLineAnimation {

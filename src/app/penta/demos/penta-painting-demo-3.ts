@@ -24,7 +24,7 @@ export function createPentaPaintingDemo3(container): Div {
     })
 
     const pentaMan = new PentaMan(300, 347, 500)
-    const penta = new Penta(300, 300, 200)
+    const penta = new Penta(300, 275, 200)
 
     addBackgroundShapes(penta, pentaMan, svg);
 

@@ -11,6 +11,7 @@ import { MappingType, PentaManAnimationGenerator } from "../PentaManAnimationGen
 
 const BACKGROUND_COLOR = "white"
 const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
+const GOLD_COLOR_FILL_FULL = "rgba(255, 180, 40, 1)"
 const GOLD_COLOR_FILL = "rgba(255, 180, 40, 0.4)"
 const BROWN = "rgba(100, 50, 35, 1)"
 const COPPER = "rgba(165, 60, 0, 1)"
@@ -27,8 +28,8 @@ const style = {
     pentaManSpots: PaintStyle.fillAndStroke(COPPER, BACKGROUND_COLOR, 3),
     centralSpots: PaintStyle.fillAndStroke(COPPER, TRANSPARENT_9_YELLOW, 4),
     centralSpotsLight: PaintStyle.fillAndStroke(COPPER_LIGHT, TRANSPARENT_5_YELLOW, 4),
-    pentaManOuterSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
-    pentaManInnerSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
+    pentaManOuterSpots: PaintStyle.fillAndStroke(GOLD_COLOR_FILL_FULL, COPPER, 2),
+    pentaManInnerSpots: PaintStyle.fillAndStroke(GOLD_COLOR_FILL, COPPER, 2),
 }
 const goldFill = PaintStyle.fill(GOLD_COLOR_FILL)
 const yellowSpots = PaintStyle.fillAndStroke(BACKGROUND_COLOR, "rgba(255, 255, 0, 1)", 2)
@@ -63,7 +64,7 @@ export function createPentaPaintingDemo5(container): Div {
 function createAnimations(svg: SVG, withLineConnections: boolean) {
     const pentaMan = new PentaMan(300, 382, 580)
     // const pentaMan = new PentaMan(300, 362, 500)
-    const penta = new Penta(300, 300, 200)
+    const penta = new Penta(300, 290, 225)
     const relation = new PentaManRelation(pentaMan, penta)
 
     addBackgroundShapes(penta, pentaMan, svg);
@@ -157,7 +158,7 @@ function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animat
             }
             if (index >= 10) {
                 anim.circle.style = style.pentaManInnerSpots
-                anim.circle.radius = 4
+                anim.circle.radius = 11
             }
 
             animation.add(anim)

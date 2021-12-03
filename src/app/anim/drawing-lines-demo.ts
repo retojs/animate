@@ -14,20 +14,21 @@ export function drawingLinesDemo(container): Div {
 
     const animation = DrawingLineAnimation.create(
         svg,
-        200, 100,
-        0,
-        200,
+        0, 200,
         PaintStyle.stroke(PRIMARY_COLOR, 1.5)
     )
+        .startFrom(220, 70)
+        .lineTo(510, 290)
+        .lineTo(200, 100)
         .lineTo(500, 300)
         .lineTo(180, 130)
-        .lineTo(490, 310, PaintStyle.stroke("red"))
-        .lineTo(160, 160, PaintStyle.stroke("red"))
-        .lineTo(480, 320, PaintStyle.stroke("red"))
+        .lineTo(490, 310)
+        .lineTo(160, 160)
+        .lineTo(480, 320)
         .lineTo(140, 190)
-        .lineTo(470, 330)
-        .lineTo(120, 220)
-        .lineTo(460, 340)
+        .lineTo(470, 330, PaintStyle.stroke("red"))
+        .lineTo(120, 220, PaintStyle.stroke("red"))
+        .lineTo(460, 340, PaintStyle.stroke("red"))
         .lineTo(100, 250)
         .lineTo(450, 350)
 

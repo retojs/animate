@@ -1,5 +1,10 @@
-import { DomElement, DomElementContainer } from "comicvm-dom"
+import { DomElement, DomElementContainer, PaintStyle } from "comicvm-dom"
 import { SVGShape } from "./SVGShape";
+import { Circle, Line, Point } from "comicvm-geometry-2d";
+import { SVGCircle } from "./SVGCircle";
+import { SVGLine } from "./SVGLine";
+import { SVGRect } from "./SVGRect";
+import { SVGText } from "./SVGText";
 
 export const SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 
@@ -93,5 +98,41 @@ export class SVG extends DomElement<HTMLDivElement> {
         childNodes.forEach(childNode =>
             this.svgElement.removeChild(childNode)
         )
+    }
+
+    newSVGCircle(circle: Circle, style?: PaintStyle): SVGCircle {
+        return new SVGCircle(circle.x, circle.y, circle.radius, style, this)
+    }
+
+    newSVGCircleFromPoint(point: Point, radius: number, style?: PaintStyle): SVGCircle {
+        return new SVGCircle(point.x, point.y, radius, style, this)
+    }
+
+    newSVGCircleFromCoords(x: number, y: number, r: number, style?: PaintStyle): SVGCircle {
+        return new SVGCircle(x, y, r, style, this);
+    }
+
+    newSVGLine(line: Line, style: PaintStyle): SVGLine {
+        return new SVGLine(line.from.x, line.from.y, line.to.x, line.to.y, style, this)
+    }
+
+    newSVGLineFromPoints(from: Point, to: Point, style: PaintStyle): SVGLine {
+        return new SVGLine(from.x, from.y, to.x, to.y, style, this)
+    }
+
+    newSVGLineFromCoords(x1: number, y1: number, x2: number, y2: number, style: PaintStyle): SVGLine {
+        return new SVGLine(x1, y1, x2, y2, style, this)
+    }
+
+    newSVGRect(x: number, y: number, width: number, height: number, style: PaintStyle): SVGRect {
+        return new SVGRect(x, y, width, height, style, this);
+    }
+
+    newSVGText(point: Point, text: string, rotate?: number, style?: PaintStyle): SVGText {
+        return new SVGText(point.x, point.y, text, rotate, style, this)
+    }
+
+    newSVGTextFromCoords(x: number, y: number, text: string, rotate?: number, style?: PaintStyle) {
+        return new SVGText(x, y, text, rotate, style, this)
     }
 }

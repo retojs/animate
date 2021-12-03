@@ -11,6 +11,7 @@ export const STARTOVER_DELAY = 1000
 
 const BACKGROUND_COLOR = "white"
 const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
+const GOLD_COLOR_FILL_FULL = "rgba(255, 180, 40, 1)"
 const GOLD_COLOR_FILL = "rgba(255, 180, 40, 0.4)"
 const BROWN = "rgba(100, 50, 35, 1)"
 const COPPER = "rgba(165, 60, 0, 1)"
@@ -22,8 +23,8 @@ const STYLE = {
     centralSpots: PaintStyle.fillAndStroke(COPPER, TRANSPARENT_9_YELLOW, 4),
     centralLine: PaintStyle.stroke(TRANSPARENT_9_YELLOW, 2.5),
     middleSpot: PaintStyle.fillAndStroke(BACKGROUND_COLOR, "rgba(255, 255, 0, 1)", 2),
-    pentaManOuterSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
-    pentaManInnerSpots: PaintStyle.fillAndStroke(BACKGROUND_COLOR, COPPER, 2),
+    pentaManOuterSpots: PaintStyle.fillAndStroke(GOLD_COLOR_FILL_FULL, COPPER, 2),
+    pentaManInnerSpots: PaintStyle.fillAndStroke(GOLD_COLOR_FILL, COPPER, 2),
     pentagonPolygonFill: PaintStyle.fill(GOLD_COLOR_FILL),
     pentagramLine: PaintStyle.stroke(COPPER, 2.5),
     brownThinLine: PaintStyle.fillAndStroke("transparent", BROWN, 0.5),

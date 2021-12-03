@@ -9,8 +9,8 @@ export class SVGText extends SVGShape {
         return new SVGText(point.x, point.y, text, rotate, style, svg)
     }
 
-    static create(center: Point, text: string, rotate?: number, style?: PaintStyle, svg?: SVG) {
-        return new SVGText(center.x, center.y, text, rotate, style, svg)
+    static create(x: number, y: number, text: string, rotate?: number, style?: PaintStyle, svg?: SVG) {
+        return new SVGText(x, y, text, rotate, style, svg)
     }
 
     constructor(x: number, y: number, text: string, rotate?: number, style?: PaintStyle, svg?: SVG) {
