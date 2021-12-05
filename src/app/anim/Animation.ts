@@ -2,7 +2,7 @@ import { AnimationSection } from "./AnimationSection";
 
 /**
  * An Animation contains an array of parts, which can be AnimationSections or nested Animations.
- * It calls render(time) on all it's parts when render(time) is called on an animation.
+ * It calls render(time) on all its parts when render(time) is called on an animation.
  */
 export class Animation {
 
@@ -15,13 +15,13 @@ export class Animation {
 
     onCompleteHanders = [];
 
+    public constructor(...parts: (AnimationSection | Animation)[]) {
+        this.parts = parts
+    }
+
     set onComplete(fn: () => void) {
         console.log("onComplete Handler added", fn)
         this.onCompleteHanders = [...this.onCompleteHanders, fn]
-    }
-
-    public constructor(...parts: (AnimationSection | Animation)[]) {
-        this.parts = parts
     }
 
     notifyComplete() {
@@ -183,7 +183,13 @@ export class Animation {
             if (part instanceof Animation) {
                 part.log();
             } else if (part instanceof AnimationSection) {
-                console.log(part.constructor.name, "- startMillis:", part.startMillis, "- endMillis:", part.endMillis, "- visibleFrom:", part.visibleFrom, "- visibleUntil:", part.visibleUntil);
+                console.log(
+                    part.constructor.name,
+                    "- startMillis:", part.startMillis,
+                    "- endMillis:", part.endMillis,
+                    "- visibleFrom:", part.visibleFrom,
+                    "- visibleUntil:", part.visibleUntil
+                );
             }
         });
     }

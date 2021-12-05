@@ -1,8 +1,8 @@
 import { Line } from "comicvm-geometry-2d";
 import { PaintStyle } from "comicvm-dom";
-import { SVG, SVGLine } from "../../../svg";
-import { DrawingLineAnimation } from "../DrawingLineAnimation";
-import { DrawingLineAnimationSection } from "../DrawingLineAnimationSection";
+import { SVG, SVGLine } from "../../svg";
+import { DrawingLineAnimation } from "./DrawingLineAnimation";
+import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
 
 export interface DrawingLineAnimationConfig {
     svg: SVG,

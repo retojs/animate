@@ -1,8 +1,20 @@
 import { SVGShape } from "../../svg";
 import { AnimationSection } from "../AnimationSection";
-import { ShapeAnimationConfig } from "./ShapeAnimationConfig";
+import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
 
 export class SVGShapeAnimationSection<T extends SVGShape> extends AnimationSection {
+
+    static create(config: ShapeAnimationSectionConfig<any>) {
+        return new SVGShapeAnimationSection(
+            config.shape,
+            config.startMillis,
+            config.duration > 0
+                ? config.startMillis + config.duration
+                : 0,
+            config.visibleFrom,
+            config.visibleUntil,
+        )
+    }
 
     constructor(
         public shape: T,
@@ -33,7 +45,7 @@ export class SVGShapeAnimationSection<T extends SVGShape> extends AnimationSecti
         this.shape.svg.remove(this.shape)
     }
 
-    clone(config: ShapeAnimationConfig<any>) {
+    clone(config: ShapeAnimationSectionConfig<any>) {
         return new SVGShapeAnimationSection(
             config.shape || this.shape,
             config.startMillis || this.startMillis,

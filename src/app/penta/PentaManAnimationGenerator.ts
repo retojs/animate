@@ -1,12 +1,18 @@
 import { PentaManRelation } from "./PentaManRelation";
-import { Animation, AnimationSection, ConnectedLineAnimation, DrawingLineAnimation, DrawingLineAnimationSection } from "../anim";
+import {
+    Animation,
+    AnimationSection,
+    ConnectedLineAnimation,
+    DrawingLineAnimation,
+    DrawingLineAnimationSection
+} from "../anim";
 import { SVGLine } from "../svg";
 import { Line, Point } from "comicvm-geometry-2d";
 import { PentaMan } from "./PentaMan";
 import { Penta } from "./Penta";
 import { PaintStyle } from "comicvm-dom";
 
-export const enum MappingType {
+export const enum PentaMappingType {
     MAN_TO_PENTA,
     PENTA_TO_MAN,
 }
@@ -26,16 +32,16 @@ export class PentaManAnimationGenerator {
     }
 
     toPentaAnimation(manAnimation: DrawingLineAnimation) {
-        return this.mapAnimation(manAnimation, MappingType.MAN_TO_PENTA)
+        return this.mapAnimation(manAnimation, PentaMappingType.MAN_TO_PENTA)
     }
 
     toManAnimation(pentaAnimation: DrawingLineAnimation) {
-        return this.mapAnimation(pentaAnimation, MappingType.PENTA_TO_MAN)
+        return this.mapAnimation(pentaAnimation, PentaMappingType.PENTA_TO_MAN)
     }
 
     toConnectedLineAnimation(
         animation: DrawingLineAnimation,
-        mappingType: MappingType,
+        mappingType: PentaMappingType,
         styleCallback: (style: PaintStyle) => PaintStyle
     ): Animation {
 
@@ -48,7 +54,7 @@ export class PentaManAnimationGenerator {
         )
     }
 
-    mapAnimation(animation: DrawingLineAnimation, mappingType: MappingType) {
+    mapAnimation(animation: DrawingLineAnimation, mappingType: PentaMappingType) {
 
         return new DrawingLineAnimation(
             animation.svg,
@@ -59,7 +65,7 @@ export class PentaManAnimationGenerator {
         )
     }
 
-    mapAnimationSections(sections: DrawingLineAnimationSection[], mappingType: MappingType): DrawingLineAnimationSection[] {
+    mapAnimationSections(sections: DrawingLineAnimationSection[], mappingType: PentaMappingType): DrawingLineAnimationSection[] {
 
         return sections.map(section => {
             if (section instanceof Animation) {
@@ -77,7 +83,7 @@ export class PentaManAnimationGenerator {
 
     mapAnimationSectionsConnected(
         sections: DrawingLineAnimationSection[],
-        mappingType: MappingType,
+        mappingType: PentaMappingType,
         styleCallback: (style: PaintStyle) => PaintStyle
     ): ConnectedLineAnimation[] {
 
@@ -108,7 +114,7 @@ export class PentaManAnimationGenerator {
         )
     }
 
-    mapAnimationSection(section: DrawingLineAnimationSection, direction: MappingType): DrawingLineAnimationSection {
+    mapAnimationSection(section: DrawingLineAnimationSection, direction: PentaMappingType): DrawingLineAnimationSection {
 
         return new DrawingLineAnimationSection(
             this.mapLineSVG(section.line, direction),
@@ -117,24 +123,28 @@ export class PentaManAnimationGenerator {
         )
     }
 
-    mapLine(pentaLine: SVGLine, mappingType: MappingType): Line {
+    mapLine(line: SVGLine, mappingType: PentaMappingType): Line {
         let from: Point, to: Point
 
-        if (mappingType === MappingType.MAN_TO_PENTA) {
-            from = this.relation.getPentaPoint(pentaLine.x1, pentaLine.y1)
-            to = this.relation.getPentaPoint(pentaLine.x2, pentaLine.y2)
+        if (mappingType === PentaMappingType.MAN_TO_PENTA) {
+            from = this.relation.getPentaPoint(line.x1, line.y1)
+            to = this.relation.getPentaPoint(line.x2, line.y2)
         } else {
-            from = this.relation.getManPoint(pentaLine.x1, pentaLine.y1)
-            to = this.relation.getManPoint(pentaLine.x2, pentaLine.y2)
+            from = this.relation.getManPoint(line.x1, line.y1)
+            to = this.relation.getManPoint(line.x2, line.y2)
         }
 
         return new Line(from, to)
     }
 
-    mapLineSVG(pentaLine: SVGLine, mappingType: MappingType): SVGLine {
-        const line = this.mapLine(pentaLine, mappingType)
+    mapLineSVG(line: SVGLine, mappingType: PentaMappingType): SVGLine {
+        const mappedLine = this.mapLine(line, mappingType)
 
-        return new SVGLine(line.from.x, line.from.y, line.to.x, line.to.y, pentaLine.style, pentaLine.svg)
+        return new SVGLine(
+            mappedLine.from.x, mappedLine.from.y,
+            mappedLine.to.x, mappedLine.to.y,
+            line.style, line.svg
+        )
     }
 
     modifyStyles(

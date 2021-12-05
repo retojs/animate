@@ -8,14 +8,14 @@ export class MovingPentaLineAnimation extends Animation {
         animation: Animation,
         relation: PentaManRelation,
         startMillis: number = 0,
-        interval: number
+        frequency: number
     ) {
         return new MovingPentaLineAnimation(
             MovingPentaLineAnimationSection.fromConnectedLineAnimation(
                 animation,
                 relation,
                 startMillis,
-                interval,
+                frequency,
             )
         )
     }
@@ -24,14 +24,14 @@ export class MovingPentaLineAnimation extends Animation {
         animation: Animation,
         relation: PentaManRelation,
         startMillis: number = 0,
-        interval: number
+        frequency: number
     ) {
         return new MovingPentaLineAnimation(
             MovingPentaLineAnimationSection.fromLineAnimation(
                 animation,
                 relation,
                 startMillis,
-                interval
+                frequency
             ))
     }
 

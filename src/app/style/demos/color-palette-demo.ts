@@ -1,7 +1,7 @@
 import { Div, Label } from "comicvm-dom"
-import { SVG, SVGRect } from "../svg"
-import { colorPaletteToSVG } from "./colorPaletteToSVG";
-import { ColorPalette } from "./ColorPalette";
+import { SVG, SVGRect } from "../../svg"
+import { colorPaletteToSVG } from "../colorPaletteToSVG";
+import { ColorPalette } from "../ColorPalette";
 
 export function colorPaletteDemo(container): Div {
 

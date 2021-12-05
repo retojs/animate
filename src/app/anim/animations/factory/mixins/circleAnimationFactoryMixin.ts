@@ -1,34 +1,45 @@
-import { Constructor } from "./Constructor";
-import { ShapeAnimationFactory } from "../ShapeAnimationFactory";
-import { Circle } from "comicvm-geometry-2d";
-import { ShapeAnimationConfig } from "../../ShapeAnimationConfig";
+import { Circle, Point } from "comicvm-geometry-2d";
 import { SVGCircle } from "../../../../svg";
+import { movePoint } from "../../../movePoint";
+import { interpolateValue } from "../../../interpolateValue";
 import { SVGShapeAnimationSection } from "../../SVGShapeAnimationSection";
-import { movePoint } from "../../movePoint";
-import { interpolateValue } from "../../interpolateValue";
+import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
+import { Constructor } from "./Constructor";
 
 export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimationFactory>>(BaseClass: T) {
 
     return class extends BaseClass {
 
-        createShowCircle(
+        createCircle(
             circle: Circle,
+            config: ShapeAnimationSectionConfig<any>,
+        ): SVGShapeAnimationSection<any> {
+
+            return this.createCircleWithRadius(new Point(circle.x, circle.y), circle.radius, config);
+        }
+
+        createCircleWithRadius(
+            center: Point,
             radius: number,
-            config: ShapeAnimationConfig<any>,
-        ) {
-            return this.createSection({
+            config: ShapeAnimationSectionConfig<any>,
+        ): SVGShapeAnimationSection<any> {
+
+            config = {...this.config, ...config};
+
+            return this.createShape({
                 ...config,
-                shape: new SVGCircle(circle.x, circle.y, radius, config.style, this.config.svg),
+                shape: SVGCircle.fromPoint(center, radius, config.style, config.svg),
             })
         }
 
         createMoveCircle(
             target: Circle,
-            config: ShapeAnimationConfig<SVGCircle>
-        ) {
-            config = this.validateShapeAnimationConfig(config)
+            config: ShapeAnimationSectionConfig<SVGCircle>
+        ): SVGShapeAnimationSection<any> {
 
-            const section = this.createSection(config)
+            config = {...this.config, ...config};
+
+            const section = this.createShape(config)
 
             const initial = {
                 x: config.shape.x,
@@ -57,8 +68,9 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
 
         addMoveCircle(
             target: Circle,
-            config: ShapeAnimationConfig<SVGCircle>
-        ) {
+            config: ShapeAnimationSectionConfig<SVGCircle>
+        ): SVGShapeAnimationSection<any> {
+
             if (!this.config.parent) return
 
             const section = this.createMoveCircle(target, config)
@@ -70,7 +82,7 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
         applyMoveCircle(
             section: SVGShapeAnimationSection<SVGCircle>,
             target: Circle,
-            config?: ShapeAnimationConfig<SVGCircle>
+            config?: ShapeAnimationSectionConfig<SVGCircle>
         ) {
             if (!this.config.parent) return
 

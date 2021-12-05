@@ -1,7 +1,7 @@
 import { AnimationSection } from "../AnimationSection";
 import { SVG, SVGCircle, SVGShape } from "../../svg";
-import { movePoint } from "./movePoint";
-import { getSinusValue } from "./getSinusValue";
+import { movePoint } from "../movePoint";
+import { getSinusValue } from "../getSinusValue";
 import { PaintStyle } from "comicvm-dom";
 
 export class MovingCircleAnimationSection extends AnimationSection {
@@ -11,7 +11,7 @@ export class MovingCircleAnimationSection extends AnimationSection {
         source: SVGCircle,
         target: SVGCircle,
         startMillis,
-        interval,
+        frequency,
         style?: PaintStyle,
     ): MovingCircleAnimationSection {
         return new MovingCircleAnimationSection(
@@ -19,7 +19,7 @@ export class MovingCircleAnimationSection extends AnimationSection {
             source,
             target,
             startMillis,
-            interval,
+            frequency,
             style,
         )
     }
@@ -32,7 +32,7 @@ export class MovingCircleAnimationSection extends AnimationSection {
      * @param sourceCircle
      * @param targetCircle
      * @param startMillis
-     * @param interval
+     * @param frequency
      * @param style
      * @param insertBefore
      */
@@ -41,7 +41,7 @@ export class MovingCircleAnimationSection extends AnimationSection {
         private sourceCircle: SVGCircle,
         private  targetCircle: SVGCircle,
         startMillis: number,
-        interval: number,
+        frequency: number,
         style?: PaintStyle,
         insertBefore?: SVGShape
     ) {
@@ -53,7 +53,7 @@ export class MovingCircleAnimationSection extends AnimationSection {
         svg.insertBefore(insertBefore, this.circle)
 
         this.renderFn = function (time: number) {
-            const progress = getSinusValue(startMillis, time, interval)
+            const progress = getSinusValue(startMillis, time, frequency)
 
             if (!this.circle || !this.sourceCircle || !this.targetCircle) return
 

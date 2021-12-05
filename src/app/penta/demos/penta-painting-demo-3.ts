@@ -1,7 +1,8 @@
 import { Line } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, ShowShapeAnimationFactory } from "../../anim"
+import { Animator, DrawingLineAnimation, DrawingLineAnimationSection } from "../../anim"
+import { createAnimationFactory } from "../../anim/animations/factory/createAnimationFactory";
 import { addPentaPolygon } from "../addPentaPolygon";
 import { PentaMan } from "../PentaMan";
 import { Penta } from "../Penta"
@@ -14,7 +15,7 @@ const pentaCircles = PaintStyle.fillAndStroke("transparent", "rgba(100, 50, 35, 
 const pentagramLines = PaintStyle.stroke("rgba(165, 60, 0, 1)", 2.5)
 const centralLines = PaintStyle.stroke("rgba(170, 255, 60, 1)", 2.5)
 const yellowSpots = PaintStyle.fillAndStroke("white", "yellow", 2)
-const yellowLines = PaintStyle.fillAndStroke("white", "yellow", 1)
+const yellowLines = PaintStyle.fillAndStroke("white", "yellow", 2)
 
 export function createPentaPaintingDemo3(container): Div {
 
@@ -120,21 +121,29 @@ function createPentaLineAnimation(penta: Penta | PentaMan, svg): DrawingLineAnim
 
     animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 12, 13, 14, 15, 16, 17)
 
-    const factory = new ShowShapeAnimationFactory(svg, animation, yellowSpots)
+    const factory = createAnimationFactory({svg, parent: animation, style: yellowSpots})
 
-    factory.addDot(penta.scapulaRight, DEFAULT_DURATION * 3.5)
-    factory.addDot(penta.scapulaLeft, DEFAULT_DURATION * 3.5)
-    factory.addDot(penta.ischiumRight, DEFAULT_DURATION * 4.25)
-    factory.addDot(penta.ischiumLeft, DEFAULT_DURATION * 4.25)
+    const addDot = (center, startMillis) => factory.createCircleWithRadius(center, 5, {startMillis})
 
-    factory.insertBeforeRef = (animation.sectionList[0] as DrawingLineAnimationSection).line
-    factory.style = yellowLines
+    addDot(penta.scapulaRight, DEFAULT_DURATION * 3.5)
+    addDot(penta.scapulaLeft, DEFAULT_DURATION * 3.5)
+    addDot(penta.ischiumRight, DEFAULT_DURATION * 4.25)
+    addDot(penta.ischiumLeft, DEFAULT_DURATION * 4.25)
 
-    factory.addLine(new Line(penta.shoulderLeft, penta.shoulderRight), 0)
-    factory.addLine(new Line(penta.hipRight, penta.shoulderRight), DEFAULT_DURATION * 3.5)
-    factory.addLine(new Line(penta.hipLeft, penta.shoulderLeft), DEFAULT_DURATION * 3.5)
-    factory.addLine(new Line(penta.hipLeft, penta.pubis), DEFAULT_DURATION * 4.25)
-    factory.addLine(new Line(penta.hipRight, penta.pubis), DEFAULT_DURATION * 4.25)
+    const insertBeforeShape = (animation.sectionList[0] as DrawingLineAnimationSection).line
+
+    const addLine = (from, to, startMillis) =>
+        factory.createLineFromPoints(from, to, {
+            startMillis,
+            style: yellowLines,
+            insertBeforeShape
+        })
+
+    addLine(penta.shoulderLeft, penta.shoulderRight, 0)
+    addLine(penta.hipRight, penta.shoulderRight, DEFAULT_DURATION * 3.5)
+    addLine(penta.hipLeft, penta.shoulderLeft, DEFAULT_DURATION * 3.5)
+    addLine(penta.hipLeft, penta.pubis, DEFAULT_DURATION * 4.25)
+    addLine(penta.hipRight, penta.pubis, DEFAULT_DURATION * 4.25)
 
     return animation
 }

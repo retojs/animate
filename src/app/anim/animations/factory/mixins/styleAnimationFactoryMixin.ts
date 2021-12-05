@@ -1,10 +1,14 @@
-import { Constructor } from "./Constructor";
-import { ShapeAnimationFactory } from "../ShapeAnimationFactory";
 import { PaintStyle } from "comicvm-dom";
-import { ShapeAnimationConfig } from "../../ShapeAnimationConfig";
-import { SVGShapeAnimationSection } from "../../SVGShapeAnimationSection";
+import { SVGShape } from "../../../../svg";
 import { blendColors } from "../../../../style/blendColors";
-import { interpolateValue } from "../../interpolateValue";
+import { interpolateValue } from "../../../interpolateValue";
+import { SVGShapeAnimationSection } from "../../SVGShapeAnimationSection";
+import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
+import { Constructor } from "./Constructor";
+
+export interface StyleAnimationConfig<T extends SVGShape> extends ShapeAnimationSectionConfig<T> {
+    targetStyle: PaintStyle
+}
 
 export function styleAnimationFactoryMixin<T extends Constructor<ShapeAnimationFactory>>(BaseClass?: T) {
 
@@ -22,24 +26,23 @@ export function styleAnimationFactoryMixin<T extends Constructor<ShapeAnimationF
         }
 
         createStyleChange(
-            targetStyle: PaintStyle,
-            config: ShapeAnimationConfig<any>,
-        ) {
-            config = this.validateShapeAnimationConfig(config)
+            config: StyleAnimationConfig<any>,
+        ): SVGShapeAnimationSection<any> {
+            config = {...this.config, ...config}
 
             const sourceStyle = config.shape.style && config.shape.style.clone()
 
-            this.validateStyles(sourceStyle, targetStyle);
+            this.validateStyles(sourceStyle, config.targetStyle);
 
-            const section = this.createSection(config)
+            const section = this.createShape(config)
 
             section.renderFn = function (time: number) {
                 const progress = config.progressFn(this.getProgress(time))
 
                 section.shape.style = PaintStyle.fillAndStroke(
-                    blendColors(sourceStyle.fillStyle as string, targetStyle.fillStyle as string, progress),
-                    blendColors(sourceStyle.strokeStyle as string, targetStyle.strokeStyle as string, progress),
-                    interpolateValue(sourceStyle.lineWidth, targetStyle.lineWidth, progress),
+                    blendColors(sourceStyle.fillStyle as string, config.targetStyle.fillStyle as string, progress),
+                    blendColors(sourceStyle.strokeStyle as string, config.targetStyle.strokeStyle as string, progress),
+                    interpolateValue(sourceStyle.lineWidth, config.targetStyle.lineWidth, progress),
                 )
             }
 
@@ -47,22 +50,22 @@ export function styleAnimationFactoryMixin<T extends Constructor<ShapeAnimationF
         }
 
         addStyleChange(
-            targetStyle: PaintStyle,
-            config: ShapeAnimationConfig<any> = this.config,
+            config: StyleAnimationConfig<any>
         ) {
+            config = {...this.config, ...config}
             if (!this.config.parent) return
 
-            this.config.parent.add(this.createStyleChange(targetStyle, config))
+            this.config.parent.add(this.createStyleChange(config))
         }
 
         applyStyleChange(
             section: SVGShapeAnimationSection<any>,
-            targetStyle: PaintStyle,
-            config: ShapeAnimationConfig<any> = {},
+            config: StyleAnimationConfig<any>
         ) {
-            return this.createStyleChange(targetStyle, {
+            return this.createStyleChange({
                 ...config,
                 shape: section.shape,
+                targetStyle: config.targetStyle
             })
         }
     }

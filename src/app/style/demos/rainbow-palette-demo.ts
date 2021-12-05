@@ -1,7 +1,7 @@
 import { Div, PaintStyle } from "comicvm-dom"
-import { Animation, AnimationSection, Animator } from "../anim";
-import { SVG, SVGRect, SVGShape } from "../svg"
-import { getColorPalette } from "./getColorPalette";
+import { Animation, AnimationSection, Animator } from "../../anim";
+import { SVG, SVGRect, SVGShape } from "../../svg"
+import { getColorPalette } from "../getColorPalette";
 
 const COLOR_PIXEL_SIZE = 20
 const COLOR_COUNT = Math.round(560 / COLOR_PIXEL_SIZE)
@@ -30,8 +30,10 @@ export function rainbowPaletteDemo(container): Div {
         )
 
     const animation = new Animation(
-        AnimationSection.create(0, 60 * 1000,
-            (t) => {
+        AnimationSection.create({
+            startMillis: 0,
+            endMillis: 60 * 1000,
+            renderFn: (t) => {
                 colorField.forEach((line, y) => {
 
                     const red = -t / 50;
@@ -55,7 +57,7 @@ export function rainbowPaletteDemo(container): Div {
                     })
                 })
             }
-        )
+        })
     )
 
     const animator = new Animator(animation, {

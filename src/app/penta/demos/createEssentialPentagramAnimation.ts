@@ -1,13 +1,13 @@
 import { Line, Point } from "comicvm-geometry-2d"
 import { PaintStyle } from "comicvm-dom"
-import { Animation, DrawingLineAnimation, RadiusAnimationSection, ShowShapeAnimationFactory } from "../../anim"
-import { Penta } from "../Penta"
+import { Animation, DrawingLineAnimation, RadiusAnimationSection } from "../../anim"
+import { DrawingLineAnimationBuilder } from "../../anim/animations/DrawingLineAnimationBuilder";
+import { createAnimationFactory } from "../../anim/animations/factory/createAnimationFactory";
 import { ColorPalette } from "../../style"
-import { StyleAnimationFactory } from "../../anim/animations/StyleAnimationFactory"
 import { SVGCircle } from "../../svg"
+import { Penta } from "../Penta"
 import { DEFAULT_DURATION } from "./penta-painting-demo-6"
 import { PentaAnimationConfig } from "../PentaAnimationConfig";
-import { DrawingLineAnimationBuilder } from "../../anim/animations/factories/DrawingLineAnimationBuilder";
 
 export function createEssentialPentagramAnimation(config: PentaAnimationConfig): DrawingLineAnimation {
 
@@ -131,18 +131,11 @@ function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
 
     const color = ColorPalette.getColors()
 
-    const showShapeAnimationFactory = new ShowShapeAnimationFactory(
-        config.svg,
-        animation,
-        PaintStyle.fillAndStroke(color.yellow, color.val8.hue1, 2),
-        2,
-    )
-    const styleAnimationFactory = new StyleAnimationFactory(
-        config.svg,
-        animation,
-        PaintStyle.fillAndStroke(color.transparent, color.transparent),
-        DEFAULT_DURATION
-    )
+    const animationFactory = createAnimationFactory({
+        svg: config.svg,
+        parent: animation,
+        style: PaintStyle.fillAndStroke(color.yellow, color.val8.hue1, 2)
+    })
 
     const spotTimingPenta = [
         config.startMillis + DEFAULT_DURATION * 0.35, // shoulders
@@ -171,45 +164,45 @@ function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
     const penta = config.penta
     const timing = penta instanceof Penta ? spotTimingPenta : spotTimingPentaMan
 
-    showShapeAnimationFactory.radius = 8
+    let radius = 8
 
     addAnimatedDot(penta.shoulderLeft, timing[0])
     addAnimatedDot(penta.shoulderRight, timing[0])
 
-    showShapeAnimationFactory.radius = 10
+    radius = 10
 
     addAnimatedDot(penta.elbowLeft, timing[1])
     addAnimatedDot(penta.elbowRight, timing[1])
     addAnimatedDot(penta.kneeLeft, timing[1])
     addAnimatedDot(penta.kneeRight, timing[1])
 
-    showShapeAnimationFactory.radius = 8
+    radius = 8
 
     addAnimatedDot(penta.hipLeft, timing[2])
     addAnimatedDot(penta.hipRight, timing[2])
 
     addAnimatedDot(penta.pubis, timing[3])
 
-    showShapeAnimationFactory.radius = 6
+    radius = 6
 
     addAnimatedDot(penta.kidneyLeft, timing[4])
     addAnimatedDot(penta.kidneyRight, timing[4])
 
-    showShapeAnimationFactory.radius = 8
+    radius = 8
 
     addAnimatedDot(penta.hipLeft, timing[5])
     addAnimatedDot(penta.hipRight, timing[5])
     addAnimatedDot(penta.shoulderLeft, timing[5])
     addAnimatedDot(penta.shoulderRight, timing[5])
 
-    showShapeAnimationFactory.radius = 6
+    radius = 6
 
     addAnimatedDot(penta.lungLeft, timing[6])
     addAnimatedDot(penta.lungRight, timing[6])
 
     addAnimatedDot(penta.heart, timing[7])
 
-    showShapeAnimationFactory.radius = 5
+    radius = 5
 
     addAnimatedDot(penta.lungLeft, timing[8])
     addAnimatedDot(penta.lungRight, timing[8])
@@ -217,13 +210,20 @@ function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
     addAnimatedDot(penta.kidneyRight, timing[8])
 
 
-    function addAnimatedDot(point: Point, startShapeAnimation: number, startStyleAnimation: number = startShapeAnimation) {
-        const shapeAnim = showShapeAnimationFactory.addDot(point, startShapeAnimation)
-        styleAnimationFactory.addStyleAnimationSection(shapeAnim.shape, startStyleAnimation + 300)
+    function addAnimatedDot(center: Point, startMillis: number) {
+        const shapeAnimation = animationFactory.createCircleWithRadius(center, radius, {
+            startMillis,
+            style: PaintStyle.fillAndStroke(color.yellow, color.val8.hue1, 2)
+        })
+        animationFactory.createStyleChange({
+            shape: shapeAnimation.shape,
+            startMillis: startMillis + 300,
+            targetStyle: PaintStyle.fillAndStroke(color.transparent, color.transparent)
+        })
         animation.add(RadiusAnimationSection.getSinglePulse(
-            shapeAnim.shape as SVGCircle,
+            shapeAnimation.shape as SVGCircle,
             5,
-            startStyleAnimation,
+            startMillis,
             DEFAULT_DURATION
         ))
     }

@@ -64,22 +64,22 @@ describe("createFactory", () => {
     test("creates a SVGShapeAnimationFactory", () => {
         const factory = createAnimationFactory({})
 
-        expect(factory.validateShapeAnimationConfig).toBeDefined()
-        expect(factory.createSection).toBeDefined()
-        expect(factory.addShowShape).toBeDefined()
-        expect(factory.applyShowShape).toBeDefined()
+        expect(factory.getAnimationConfig).toBeDefined()
+        expect(factory.createShape).toBeDefined()
+        expect(factory.addShape).toBeDefined()
+        expect(factory.applyShape).toBeDefined()
 
         expect(factory.validateStyles).toBeDefined()
         expect(factory.createStyleChange).toBeDefined()
         expect(factory.addStyleChange).toBeDefined()
         expect(factory.applyStyleChange).toBeDefined()
 
-        expect(factory.createShowCircle).toBeDefined()
+        expect(factory.createCircle).toBeDefined()
         expect(factory.createMoveCircle).toBeDefined()
         expect(factory.addMoveCircle).toBeDefined()
         expect(factory.applyMoveCircle).toBeDefined()
 
-        expect(factory.createShowLine).toBeDefined()
+        expect(factory.createLine).toBeDefined()
         expect(factory.createDrawLine).toBeDefined()
         expect(factory.addDrawLine).toBeDefined()
         expect(factory.applyDrawLine).toBeDefined()

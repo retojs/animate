@@ -1,33 +1,45 @@
-import { Constructor } from "./Constructor";
-import { ShapeAnimationFactory } from "../ShapeAnimationFactory";
-import { Line } from "comicvm-geometry-2d";
-import { ShapeAnimationConfig } from "../../ShapeAnimationConfig";
+import { Line, Point } from "comicvm-geometry-2d";
 import { SVGLine } from "../../../../svg";
+import { movePoint } from "../../../movePoint";
+import { interpolateValue } from "../../../interpolateValue";
 import { SVGShapeAnimationSection } from "../../SVGShapeAnimationSection";
-import { interpolateValue } from "../../interpolateValue";
-import { movePoint } from "../../movePoint";
+import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
+import { Constructor } from "./Constructor";
 
 export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFactory>>(BaseClass: T) {
 
     return class extends BaseClass {
 
-        createShowLine(
+        createLine(
             line: Line,
-            config: ShapeAnimationConfig<SVGLine>,
-        ) {
-            return this.createSection({
+            config: ShapeAnimationSectionConfig<SVGLine>,
+        ): SVGShapeAnimationSection<any> {
+
+            return this.createLineFromPoints(line.from, line.to, config);
+        }
+
+        createLineFromPoints(
+            from: Point,
+            to: Point,
+            config: ShapeAnimationSectionConfig<SVGLine>,
+        ): SVGShapeAnimationSection<any> {
+
+            config = {...this.config, ...config}
+
+            return this.createShape({
                 ...config,
-                shape: SVGLine.fromLine(line, config.style, this.config.svg),
+                shape: SVGLine.fromPoints(from, to, config.style, config.svg),
             })
         }
 
         createDrawLine(
-            config: ShapeAnimationConfig<SVGLine>,
+            config: ShapeAnimationSectionConfig<SVGLine>,
             reverse: boolean = false,
-        ) {
-            config = this.validateShapeAnimationConfig(config)
+        ): SVGShapeAnimationSection<any> {
 
-            const section = this.createSection(config)
+            config = this.getAnimationConfig(config)
+
+            const section = this.createShape(config)
 
             const line = config.shape as SVGLine
 
@@ -51,23 +63,23 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
             return section
         }
 
-        createDrawLineReverse(config: ShapeAnimationConfig<SVGLine>) {
+        createDrawLineReverse(config: ShapeAnimationSectionConfig<SVGLine>) {
             return this.createDrawLine(config, true)
         }
 
-        addDrawLine(config: ShapeAnimationConfig<SVGLine>, reverse: boolean = false) {
+        addDrawLine(config: ShapeAnimationSectionConfig<SVGLine>, reverse: boolean = false) {
             if (!this.config.parent) return
 
             this.config.parent.add(this.createDrawLine(config))
         }
 
-        addDrawLineReverse(config: ShapeAnimationConfig<SVGLine>) {
+        addDrawLineReverse(config: ShapeAnimationSectionConfig<SVGLine>) {
             return this.addDrawLine(config, true)
         }
 
         applyDrawLine(
             section: SVGShapeAnimationSection<SVGLine>,
-            config: ShapeAnimationConfig<SVGLine>
+            config: ShapeAnimationSectionConfig<SVGLine>
         ) {
             if (!this.config.parent) return
 
@@ -83,13 +95,13 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
 
         createMoveLine(
             targetLine: Line,
-            config: ShapeAnimationConfig<SVGLine>
+            config: ShapeAnimationSectionConfig<SVGLine>
         ) {
-            config = this.validateShapeAnimationConfig(config)
+            config = this.getAnimationConfig(config)
 
             const sourceLine = config.shape.cloneSilent()
 
-            const section = this.createSection(config)
+            const section = this.createShape(config)
 
             section.renderFn = function (time: number) {
                 const progress = config.progressFn(this.getProgress(time))

@@ -1,7 +1,12 @@
-import { Animation, AnimationSection, ConnectedLineAnimation, DrawingLineAnimationSection } from "../anim";
+import {
+    Animation,
+    AnimationSection,
+    ConnectedLineAnimation,
+    DrawingLineAnimationSection,
+    getSinusValue,
+    movePoint
+} from "../anim";
 import { PentaManRelation } from "./PentaManRelation";
-import { movePoint } from "../anim/animations/movePoint";
-import { getSinusValue } from "../anim/animations/getSinusValue";
 
 export class MovingPentaLineAnimationSection extends AnimationSection {
 
@@ -15,7 +20,7 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
         animation: Animation,
         relation: PentaManRelation,
         startMillis: number = 0,
-        interval: number
+        frequency: number
     ): MovingPentaLineAnimationSection {
 
         const section = new MovingPentaLineAnimationSection(animation, relation, startMillis)
@@ -23,7 +28,7 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
         section.processConnectedLineAnimations()
 
         section.renderFn = (time: number) => {
-            const value = getSinusValue(section.startMillis, time, interval)
+            const value = getSinusValue(section.startMillis, time, frequency)
             section.moveConnectedLineAnimations(value)
         }
 
@@ -34,7 +39,7 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
         animation: Animation,
         relation: PentaManRelation,
         startMillis: number = 0,
-        interval: number
+        frequency: number
     ): MovingPentaLineAnimationSection {
 
         const section = new MovingPentaLineAnimationSection(animation, relation, startMillis)
@@ -42,7 +47,7 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
         section.processLineAnimations()
 
         section.renderFn = (time: number) => {
-            const value = getSinusValue(section.startMillis, time, interval)
+            const value = getSinusValue(section.startMillis, time, frequency)
             section.moveLineAnimationSections(value)
         }
 

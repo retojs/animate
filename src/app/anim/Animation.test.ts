@@ -26,6 +26,7 @@ describe("AnimationSection.ts", () => {
         expect(animation.hasStarted(1)).toBe(true)
         expect(animation.hasStarted(50)).toBe(true)
         expect(animation.hasStarted(100)).toBe(true)
+        expect(animation.hasStarted(1001)).toBe(true)
     })
 
     test(".hasEnded(time) returns false if time <= endMillis", () => {

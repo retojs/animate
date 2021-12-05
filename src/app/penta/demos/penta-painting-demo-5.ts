@@ -1,13 +1,14 @@
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG, SVGCircle } from "../../svg"
-import { Animation, Animator, MovingCircleAnimationSection, ShowShapeAnimationSection } from "../../anim"
+import { Animation, Animator, MovingCircleAnimationSection } from "../../anim"
+import { SVGShapeAnimationSection } from "../../anim/animations/SVGShapeAnimationSection";
 import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
+import { PentaManRelation } from "../PentaManRelation";
+import { MovingPentaLineAnimation } from "../MovingPentaLineAnimation";
+import { PentaManAnimationGenerator, PentaMappingType } from "../PentaManAnimationGenerator";
 import { addPentaPolygon } from "../addPentaPolygon";
 import { createPentaLineAnimation } from "./createPentaLineAnimation";
-import { MovingPentaLineAnimation } from "../MovingPentaLineAnimation";
-import { PentaManRelation } from "../PentaManRelation";
-import { MappingType, PentaManAnimationGenerator } from "../PentaManAnimationGenerator";
 
 const BACKGROUND_COLOR = "white"
 const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
@@ -77,7 +78,7 @@ function createAnimations(svg: SVG, withLineConnections: boolean) {
 
         const connectedLineAnimation = animationGenerator.toConnectedLineAnimation(
             pentaLineAnimation,
-            MappingType.PENTA_TO_MAN,
+            PentaMappingType.PENTA_TO_MAN,
             (style: PaintStyle) => {
                 if (style.strokeStyle === pentagramLines.strokeStyle) {
                     style.strokeStyle = pentagramLinesThin.strokeStyle
@@ -182,7 +183,7 @@ function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animat
         })
 
     // pentaManPentagramSpots.forEach((sourceCircle: SVGCircle, index: number) => {
-    //     const anim = new ShowShapeAnimationSection(
+    //     const anim = new ShapeAnimationSection(
     //         svg,
     //         sourceCircle,
     //         0,
@@ -193,8 +194,7 @@ function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animat
     // })
 
     pentaManCentralSpots.forEach((sourceCircle: SVGCircle, index: number) => {
-        const anim = new ShowShapeAnimationSection(
-            svg,
+        const anim = new SVGShapeAnimationSection(
             sourceCircle.evolve({style: style.centralSpotsLight}),
             0,
             0,

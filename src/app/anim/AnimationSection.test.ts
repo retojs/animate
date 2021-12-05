@@ -54,7 +54,7 @@ describe("AnimationSection.ts", () => {
     })
 
     describe(".isVisible(time)", () => {
-        test("returns the same values as is running with the default settings.", () => {
+        test("returns the same values as isRunning with the default settings.", () => {
             expect(section.isVisible(0)).toBe(section.isRunning(0))
             expect(section.isVisible(1)).toBe(section.isRunning(1))
             expect(section.isVisible(100)).toBe(section.isRunning(100))

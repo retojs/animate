@@ -1,9 +1,8 @@
-import { ShapeAnimationConfig } from "../ShapeAnimationConfig";
+import { SVGShape } from "../../../svg";
+import { ShapeAnimationSectionConfig, ShapeAnimationFactory } from "./ShapeAnimationFactory";
 import { styleAnimationFactoryMixin } from "./mixins/styleAnimationFactoryMixin";
 import { lineAnimationFactoryMixin } from "./mixins/lineAnimationFactoryMixin";
 import { circleAnimationFactoryMixin } from "./mixins/circleAnimationFactoryMixin";
-import { ShapeAnimationFactory } from "./ShapeAnimationFactory";
-import { SVGShape } from "../../../svg";
 
 /**
  * This function creates a class that extends the specified base class with all mixins
@@ -24,7 +23,7 @@ export function createFactoryClass() {
     )
 }
 
-export function createAnimationFactory(config: ShapeAnimationConfig<SVGShape>) {
+export function createAnimationFactory(config: ShapeAnimationSectionConfig<SVGShape>) {
     const FactoryClass = createFactoryClass()
     return new FactoryClass(config);
 }

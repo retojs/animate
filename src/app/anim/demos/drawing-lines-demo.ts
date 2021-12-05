@@ -1,7 +1,6 @@
 import { Div, PaintStyle } from "comicvm-dom"
-import { SVG } from "../svg"
-import { Animator } from "./Animator"
-import { DrawingLineAnimation } from "./animations/DrawingLineAnimation"
+import { SVG } from "../../svg"
+import { Animator, DrawingLineAnimation } from "../"
 
 export const PRIMARY_COLOR = "#2e878a"
 

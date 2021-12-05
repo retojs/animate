@@ -1,9 +1,10 @@
 import { Line } from "comicvm-geometry-2d"
 import { Div, PaintStyle } from "comicvm-dom"
 import { SVG } from "../../svg"
-import { Animator, DrawingLineAnimation, DrawingLineAnimationSection, ShowShapeAnimationFactory } from "../../anim"
-import { addPentaPolygon } from "../addPentaPolygon";
+import { Animator, DrawingLineAnimation, DrawingLineAnimationSection } from "../../anim"
+import { createAnimationFactory } from "../../anim/animations/factory/createAnimationFactory";
 import { Penta } from "../Penta"
+import { addPentaPolygon } from "../addPentaPolygon";
 
 export const PRIMARY_COLOR = "#2e878a"
 export const SECONDARY_COLOR = "#00bfc5"
@@ -74,14 +75,20 @@ export function createPentaPaintingDemo2(container): Div {
 
     animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 7, 8, 13, 14)
 
-    const factory = new ShowShapeAnimationFactory(svg, animation, PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2))
+    const factory = createAnimationFactory({
+        svg,
+        parent: animation,
+        style: PaintStyle.fillAndStroke(BACKGROUND_COLOR, SECONDARY_COLOR, 2)
+    })
 
-    factory.addDot(penta.middle, DEFAULT_DURATION * 0.25)
-    factory.addDot(penta.neck, DEFAULT_DURATION * 0.5)
-    factory.addDot(penta.scapulaLeft, DEFAULT_DURATION * 2.5)
-    factory.addDot(penta.scapulaRight, DEFAULT_DURATION * 2.5)
-    factory.addDot(penta.ischiumLeft, DEFAULT_DURATION * 4.5)
-    factory.addDot(penta.ischiumRight, DEFAULT_DURATION * 4.5)
+    const createDot = (center, startMillis) => factory.createCircleWithRadius(center, 2, {startMillis})
+
+    createDot(penta.middle, DEFAULT_DURATION * 0.25)
+    createDot(penta.neck, DEFAULT_DURATION * 0.5)
+    createDot(penta.scapulaLeft, DEFAULT_DURATION * 2.5)
+    createDot(penta.scapulaRight, DEFAULT_DURATION * 2.5)
+    createDot(penta.ischiumLeft, DEFAULT_DURATION * 4.5)
+    createDot(penta.ischiumRight, DEFAULT_DURATION * 4.5)
 
     const animator = new Animator(animation, {
         name: "Drawing Essential Lines",

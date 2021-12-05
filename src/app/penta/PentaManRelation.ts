@@ -1,6 +1,9 @@
 import { Penta } from "./Penta";
 import { PentaMan } from "./PentaMan";
 
+/**
+ * Translates the coordinates of a PentaMan point to the coordinates of the related Penta point.
+ */
 export class PentaManRelation {
 
     POINT_NAMES = [

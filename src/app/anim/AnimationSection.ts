@@ -1,19 +1,23 @@
-export class AnimationSection {
+export interface AnimationSectionConfig {
+    renderFn: (time: number) => void,
+    startMillis: number,
+    endMillis: number,
+    visibleFrom?: number,
+    visibleUntil?: number,
+}
 
-    renderFn: (time: number) => void
+export class AnimationSection {
 
     lastProgressRendered: number;
 
-    static create(
-        startMillis: number,
-        endMillis: number,
-        renderFn: (time: number) => void,
-        visibleFrom?: number,
-        visibleUntil?: number,
-    ) {
-        const animation = new AnimationSection(startMillis, endMillis, visibleFrom, visibleUntil)
-        animation.renderFn = renderFn
-        return animation
+    static create(config: AnimationSectionConfig) {
+        return new AnimationSection(
+            config.startMillis,
+            config.endMillis,
+            config.visibleFrom,
+            config.visibleUntil,
+            config.renderFn
+        )
     }
 
     constructor(
@@ -21,6 +25,7 @@ export class AnimationSection {
         public endMillis: number,
         public visibleFrom: number = startMillis,
         public visibleUntil: number = endMillis,
+        public renderFn?: (time: number) => void
     ) {
     }
 

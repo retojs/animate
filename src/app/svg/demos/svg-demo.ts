@@ -1,8 +1,8 @@
 import { Div, PaintStyle } from "comicvm-dom"
-import { SVG } from "./SVG"
-import { SVGRect } from "./SVGRect";
-import { SVGCircle } from "./SVGCircle";
-import { Animation, Animator, RadiusAnimationSection } from "../anim";
+import { SVG } from "../SVG"
+import { SVGRect } from "../SVGRect";
+import { SVGCircle } from "../SVGCircle";
+import { Animation, Animator, RadiusAnimationSection } from "../../anim";
 
 export function createSVGDemo(container): Div {
 
