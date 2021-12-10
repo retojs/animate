@@ -4,7 +4,9 @@ import { Animation, Animator } from "../../anim"
 import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
 import { addPentaPolygon } from "../addPentaPolygon";
+import { addPentaManImage } from "../addPentaManImage";
 import { createEssentialPentagramAnimation } from "./createEssentialPentagramAnimation";
+import { PENTA_STYLES, PentaAnimationConfig } from "../PentaAnimationConfig";
 
 export const DEFAULT_DURATION = 3000
 export const STARTOVER_DELAY = 1000
@@ -13,7 +15,6 @@ const BACKGROUND_COLOR = "white"
 const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
 const GOLD_COLOR_FILL_FULL = "rgba(255, 180, 40, 1)"
 const GOLD_COLOR_FILL = "rgba(255, 180, 40, 0.4)"
-const BROWN = "rgba(100, 50, 35, 1)"
 const COPPER = "rgba(165, 60, 0, 1)"
 const TRANSPARENT_9_YELLOW = "rgba(255, 255, 0, 0.9)"
 
@@ -21,13 +22,12 @@ const STYLE = {
     transparent: PaintStyle.fillAndStroke(TRANSPARENT, TRANSPARENT),
     pentaManSpots: PaintStyle.fillAndStroke(COPPER, BACKGROUND_COLOR, 3),
     centralSpots: PaintStyle.fillAndStroke(COPPER, TRANSPARENT_9_YELLOW, 4),
-    centralLine: PaintStyle.stroke(TRANSPARENT_9_YELLOW, 2.5),
+    central: PaintStyle.stroke(TRANSPARENT_9_YELLOW, 2.5),
     middleSpot: PaintStyle.fillAndStroke(BACKGROUND_COLOR, "rgba(255, 255, 0, 1)", 2),
     pentaManOuterSpots: PaintStyle.fillAndStroke(GOLD_COLOR_FILL_FULL, COPPER, 2),
     pentaManInnerSpots: PaintStyle.fillAndStroke(GOLD_COLOR_FILL, COPPER, 2),
     pentagonPolygonFill: PaintStyle.fill(GOLD_COLOR_FILL),
-    pentagramLine: PaintStyle.stroke(COPPER, 2.5),
-    brownThinLine: PaintStyle.fillAndStroke("transparent", BROWN, 0.5),
+    pentagram: PaintStyle.stroke(COPPER, 2.5),
 }
 
 export function createPentaPaintingDemo6(container): Div {
@@ -38,7 +38,8 @@ export function createPentaPaintingDemo6(container): Div {
     })
 
     const animator = new Animator(
-        createAnimations(svg), {
+        createAnimations(svg),
+        {
             name: "Essential Pentagramming",
             repeatDelay: STARTOVER_DELAY,
             htmlElement: svg.htmlElement
@@ -56,34 +57,26 @@ function createAnimations(svg: SVG) {
     const pentaMan = new PentaMan(300, 382, 580)
     const penta = new Penta(300, 300, 200)
 
-    addBackgroundShapes(penta, pentaMan, svg);
-
-    const animationPenta = createEssentialPentagramAnimation({
-        penta,
+    const animationConfig: PentaAnimationConfig = {
         svg,
+        penta,
+        pentaMan,
         startMillis: 0,
         duration: DEFAULT_DURATION,
-        style: {
-            pentagramLine: STYLE.pentagramLine,
-            centralLine: STYLE.centralLine
-        }
-    })
-
-    animationPenta.notifyComplete = () => {
-        console.log("on end called")
-        setTimeout(() => animationPenta.remove(), STARTOVER_DELAY)
+        style: PENTA_STYLES
     }
 
-    const animationPentaMan = createEssentialPentagramAnimation({
-        penta: pentaMan,
-        svg,
-        startMillis: 0,
-        duration: DEFAULT_DURATION,
-        style: {
-            pentagramLine: STYLE.pentagramLine,
-            centralLine: STYLE.centralLine
-        }
-    })
+    addPentaManImage(animationConfig)
+    addPentaPolygon(animationConfig)
+
+    const animationPenta = createEssentialPentagramAnimation({penta, ...animationConfig})
+
+    animationPenta.notifyComplete = () => {
+        console.log("-----.....on end called")
+        //  setTimeout(() => animationPenta.remove(), STARTOVER_DELAY)
+    }
+
+    const animationPentaMan = createEssentialPentagramAnimation({penta: pentaMan, ...animationConfig})
 
     animationPentaMan.remove()
 
@@ -92,24 +85,9 @@ function createAnimations(svg: SVG) {
     return animationPenta
 }
 
-
-function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
-
-    svg.add(
-        pentaMan.getImage(svg, 0.5),
-        new SVGCircle(penta.center.x, penta.center.y, penta.radius, STYLE.brownThinLine),
-        new SVGCircle(penta.center.x, penta.center.y, 77, STYLE.brownThinLine),
-        new SVGCircle(penta.center.x, penta.center.y, 29, STYLE.brownThinLine)
-    )
-
-    addPentaPolygon(pentaMan, STYLE.pentagonPolygonFill, svg)
-}
-
-
 function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animation, svg: SVG) {
     svg.add(
         SVGCircle.fromPoint(penta.middle, 5, STYLE.middleSpot),
     )
-
 }
 

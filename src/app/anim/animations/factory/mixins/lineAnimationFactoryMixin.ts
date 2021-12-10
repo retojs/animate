@@ -2,7 +2,7 @@ import { Line, Point } from "comicvm-geometry-2d";
 import { SVGLine } from "../../../../svg";
 import { movePoint } from "../../../movePoint";
 import { interpolateValue } from "../../../interpolateValue";
-import { SVGShapeAnimationSection } from "../../SVGShapeAnimationSection";
+import { ShapeAnimationSection } from "../../ShapeAnimationSection";
 import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
 import { Constructor } from "./Constructor";
 
@@ -13,7 +13,7 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
         createLine(
             line: Line,
             config: ShapeAnimationSectionConfig<SVGLine>,
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
 
             return this.createLineFromPoints(line.from, line.to, config);
         }
@@ -22,7 +22,7 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
             from: Point,
             to: Point,
             config: ShapeAnimationSectionConfig<SVGLine>,
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
 
             config = {...this.config, ...config}
 
@@ -35,7 +35,7 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
         createDrawLine(
             config: ShapeAnimationSectionConfig<SVGLine>,
             reverse: boolean = false,
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
 
             config = this.getAnimationConfig(config)
 
@@ -78,7 +78,7 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
         }
 
         applyDrawLine(
-            section: SVGShapeAnimationSection<SVGLine>,
+            section: ShapeAnimationSection<SVGLine>,
             config: ShapeAnimationSectionConfig<SVGLine>
         ) {
             if (!this.config.parent) return

@@ -8,11 +8,11 @@ import { Penta } from "../Penta"
 import { PentaMan } from "../PentaMan";
 import { PentaManAnimationGenerator, PentaMappingType } from "../PentaManAnimationGenerator";
 import { addPentaPolygon } from "../addPentaPolygon";
+import { addPentaManImage } from "../addPentaManImage";
 import { createPentaLineAnimation } from "./createPentaLineAnimation";
+import { PENTA_STYLES, PentaAnimationConfig } from "../PentaAnimationConfig";
 
 const BACKGROUND_COLOR = "white"
-const GOLD_COLOR_FILL = "rgba(255, 190, 10, 0.3)"
-const BROWN = "rgba(100, 50, 35, 1)"
 const COPPER = "rgba(165, 60, 0, 1)"
 const TRANSPARENT_3_COPPER = "rgba(165, 60, 0, 0.3)"
 const TRANSPARENT_5_COPPER = "rgba(165, 60, 0, 0.5)"
@@ -33,10 +33,8 @@ const style = {
     pentaManInnerSpots: PaintStyle.fillAndStroke(color.white, color.val5.sat8.hue1, 2),
 }
 
-const goldFill = PaintStyle.fill(GOLD_COLOR_FILL)
+
 const yellowSpots = PaintStyle.fillAndStroke(BACKGROUND_COLOR, "rgba(255, 255, 0, 1)", 2)
-const brownThinLine = PaintStyle.fillAndStroke("transparent", BROWN, 0.5)
-const pentagramLines = PaintStyle.stroke(COPPER, 2.5)
 const centralLines = PaintStyle.stroke(TRANSPARENT_9_YELLOW, 2.5)
 const pentagramLinesBold = PaintStyle.stroke(COPPER, 3.5)
 const centralLinesBold = PaintStyle.stroke(TRANSPARENT_9_YELLOW, 3.5)
@@ -44,7 +42,6 @@ const pentagramLinesDisabled = PaintStyle.stroke(TRANSPARENT_3_COPPER, 2.5)
 const centralLinesDisabled = PaintStyle.stroke(TRANSPARENT_3_YELLOW, 2.5)
 const pentagramLinesThin = PaintStyle.stroke(TRANSPARENT_5_COPPER, 2.5)
 const centralLinesThin = PaintStyle.stroke(TRANSPARENT_5_YELLOW, 2.5)
-const pentaManSpots = PaintStyle.fillAndStroke(BROWN, "white", 3)
 const centralSpots = PaintStyle.fillAndStroke(COPPER, TRANSPARENT_9_YELLOW, 4)
 
 export function createPentaPaintingDemo4(container): Div {
@@ -72,9 +69,19 @@ function createAnimations(svg: SVG) {
     const pentaMan = new PentaMan(300, 382, 580)
     const penta = new Penta(300, 285, 220)
 
-    addBackgroundShapes(penta, pentaMan, svg);
+    const config: PentaAnimationConfig = {
+        svg,
+        penta,
+        pentaMan,
+        startMillis: 0,
+        duration: DEFAULT_DURATION,
+        style: PENTA_STYLES,
+    }
 
-    const pentaLineAnimation = createPentaLineAnimation(penta, svg, 0, DEFAULT_DURATION, pentagramLines, centralLines)
+    addPentaManImage(config)
+    addPentaPolygon(config)
+
+    const pentaLineAnimation = createPentaLineAnimation(config)
 
     const animationGenerator = new PentaManAnimationGenerator(pentaLineAnimation, pentaMan, penta)
 
@@ -86,7 +93,7 @@ function createAnimations(svg: SVG) {
         pentaLineAnimation,
         PentaMappingType.PENTA_TO_MAN,
         (style: PaintStyle) => {
-            if (style.strokeStyle === pentagramLines.strokeStyle) {
+            if (style.strokeStyle === config.style.pentagramLine.strokeStyle) {
                 style.strokeStyle = pentagramLinesThin.strokeStyle
             }
             if (style.strokeStyle === centralLines.strokeStyle) {
@@ -101,7 +108,7 @@ function createAnimations(svg: SVG) {
 
     animationGenerator.replaceLineStyle(
         pentaLineAnimation,
-        pentagramLines,
+        config.style.pentagramLine,
         pentagramLinesBold,
         centralLines,
         centralLinesBold
@@ -110,7 +117,7 @@ function createAnimations(svg: SVG) {
     manAnimation.notifyComplete = () => {
         setTimeout(() => animationGenerator.replaceLineStyle(
             manAnimation,
-            pentagramLines,
+            config.style.pentagramLine,
             pentagramLinesDisabled,
             centralLines,
             centralLinesDisabled
@@ -122,7 +129,7 @@ function createAnimations(svg: SVG) {
         setTimeout(() => animationGenerator.replaceLineStyle(
             manAnimation,
             pentagramLinesDisabled,
-            pentagramLines,
+            config.style.pentagramLine,
             centralLinesDisabled,
             centralLines
             ),
@@ -136,19 +143,6 @@ function createAnimations(svg: SVG) {
         connectedLineAnimation,
         pentaLineAnimation,
     )
-}
-
-
-function addBackgroundShapes(penta: Penta, pentaMan: PentaMan, svg: SVG) {
-
-    svg.add(
-        pentaMan.getImage(svg),
-        new SVGCircle(penta.center.x, penta.center.y, penta.radius, brownThinLine),
-        new SVGCircle(penta.center.x, penta.center.y, 77, brownThinLine),
-        new SVGCircle(penta.center.x, penta.center.y, 29, brownThinLine)
-    )
-
-    addPentaPolygon(pentaMan, goldFill, svg)
 }
 
 

@@ -1,4 +1,5 @@
-import { DrawingLineAnimation, DrawingLineAnimationSection } from "../index";
+import { DrawingLineAnimation, } from "./DrawingLineAnimation";
+import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
 import { SVG, SVGLine } from "../../svg";
 import { PaintStyle } from "comicvm-dom";
 import { Line } from "comicvm-geometry-2d";
@@ -18,7 +19,7 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
     ) {
         return new ConnectedLineAnimation(
             section.line.svg,
-            section.line.clone(), 
+            section.line.clone(),
             connectedLine,
             connectionGaps,
             section.startMillis,
@@ -58,7 +59,7 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
             })
 
         return this.connectionLines.map((connection, index) => {
-            const connectionDuration = this.duration / this.connectionLines.length
+            const connectionDuration = this.defaultDuration / this.connectionLines.length
             const start = this.startMillis + index * connectionDuration
             const end = start + connectionDuration
 
@@ -92,7 +93,7 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
             this.connectedLine.clone(),
             this.connectionGaps,
             this.startMillis,
-            this.duration,
+            this.defaultDuration,
             this.style
         )
     }
@@ -104,7 +105,7 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
             this.connectedLine.clone(),
             this.connectionGaps,
             this.startMillis,
-            this.duration,
+            this.defaultDuration,
             this.style
         )
     }

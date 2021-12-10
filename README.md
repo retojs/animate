@@ -37,3 +37,22 @@ A Penta object represents a set of points and Lines between them forming a visua
 Each point has a name referring to a point in the body (e.g. head, elbowLeft, elbowRight, kneeLeft, kneeRight etc.).
 The PentaMan object can draw an image of the Vitruvian Man by Leonardo da Vinci.
 It also contains the points of a Penta object, but their positions are at the actual points in the Vitruvian Man's body (left elbow, right elbow etc.).
+
+
+### Techniques to Build Animations
+
+#### Builder
+
+An animation builder is a class containing a configuration for animation sections.
+It provides methods to modify that configuration and add new animation sections according to the configuration.
+Its build() method returns the animation containing all created animation sections.
+
+Examples: 
+* DrawingLineAnimationBuilder
+
+#### Closures
+
+You can also pass the configuration for new animation sections to the generator function through the function's closure.
+
+Examples:
+* function addAnimatedSpot in addSpotAnimations.

@@ -2,7 +2,7 @@ import { Circle, Point } from "comicvm-geometry-2d";
 import { SVGCircle } from "../../../../svg";
 import { movePoint } from "../../../movePoint";
 import { interpolateValue } from "../../../interpolateValue";
-import { SVGShapeAnimationSection } from "../../SVGShapeAnimationSection";
+import { ShapeAnimationSection } from "../../ShapeAnimationSection";
 import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
 import { Constructor } from "./Constructor";
 
@@ -13,7 +13,7 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
         createCircle(
             circle: Circle,
             config: ShapeAnimationSectionConfig<any>,
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
 
             return this.createCircleWithRadius(new Point(circle.x, circle.y), circle.radius, config);
         }
@@ -22,7 +22,7 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
             center: Point,
             radius: number,
             config: ShapeAnimationSectionConfig<any>,
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
 
             config = {...this.config, ...config};
 
@@ -35,7 +35,7 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
         createMoveCircle(
             target: Circle,
             config: ShapeAnimationSectionConfig<SVGCircle>
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
 
             config = {...this.config, ...config};
 
@@ -69,7 +69,7 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
         addMoveCircle(
             target: Circle,
             config: ShapeAnimationSectionConfig<SVGCircle>
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
 
             if (!this.config.parent) return
 
@@ -80,7 +80,7 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
         }
 
         applyMoveCircle(
-            section: SVGShapeAnimationSection<SVGCircle>,
+            section: ShapeAnimationSection<SVGCircle>,
             target: Circle,
             config?: ShapeAnimationSectionConfig<SVGCircle>
         ) {

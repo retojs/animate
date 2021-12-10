@@ -7,8 +7,8 @@ import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
 export interface DrawingLineAnimationConfig {
     svg: SVG,
     startMillis: number,
-    defaultDuration?: number,
-    defaultPaintStyle?: PaintStyle,
+    duration?: number,
+    style?: PaintStyle,
 }
 
 export class DrawingLineAnimationBuilder {
@@ -21,21 +21,21 @@ export class DrawingLineAnimationBuilder {
         this.animation = new DrawingLineAnimation(
             config.svg,
             config.startMillis,
-            config.defaultDuration,
-            config.defaultPaintStyle
+            config.duration,
+            config.style
         )
     }
 
-    fromLines(...lines: (Line | Line[])[]): DrawingLineAnimationBuilder {
+    addLines(...lines: (Line | Line[])[]): DrawingLineAnimationBuilder {
 
-        const {svg, startMillis, defaultDuration, defaultPaintStyle} = this.config;
+        const {svg, startMillis, duration, style} = this.config;
 
         const sections: DrawingLineAnimationSection[] = lines.map((lineGroup, index) => {
             const lineArray = Array.isArray(lineGroup) ? lineGroup : [lineGroup]
             return lineArray.map(line => new DrawingLineAnimationSection(
-                SVGLine.fromLine(line, defaultPaintStyle, svg),
-                startMillis + index * defaultDuration,
-                startMillis + index * defaultDuration + defaultDuration
+                SVGLine.fromLine(line, style, svg),
+                startMillis + index * duration,
+                startMillis + index * duration + duration
             ))
         }).reduce((flat, arr) => flat.concat(arr), [])
 
@@ -49,13 +49,13 @@ export class DrawingLineAnimationBuilder {
         return this
     }
 
-    setDefaultDuration(defaultDuration): DrawingLineAnimationBuilder {
-        this.config.defaultDuration = defaultDuration
+    setDuration(duration): DrawingLineAnimationBuilder {
+        this.config.duration = duration
         return this
     }
 
-    setDefaultPaintStyle(defaultPaintStyle: PaintStyle): DrawingLineAnimationBuilder {
-        this.config.defaultPaintStyle = defaultPaintStyle
+    setPaintStyle(style: PaintStyle): DrawingLineAnimationBuilder {
+        this.config.style = style
         return this
     }
 

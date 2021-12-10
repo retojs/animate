@@ -1,9 +1,7 @@
-import { PaintStyle } from "comicvm-dom";
-import { SVG, SVGPolygon } from "../svg";
-import { Penta } from "./Penta";
-import { PentaMan } from "./PentaMan";
+import { SVGPolygon } from "../svg";
+import { PentaAnimationConfig } from "./PentaAnimationConfig";
 
-export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, svg: SVG): void {
+export function addPentaPolygon({penta, style, svg}: PentaAnimationConfig): void {
 
     svg.add(SVGPolygon.fromPoints([
             penta.head,
@@ -11,7 +9,7 @@ export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, sv
             penta.pubis,
             penta.shoulderRight,
         ],
-        style,
+        style.pentaBodyFill,
         svg)
     )
 
@@ -21,7 +19,7 @@ export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, sv
             penta.kneeLeft,
             penta.pubis,
         ],
-        style,
+        style.pentaBodyFill,
         svg)
     )
     svg.add(SVGPolygon.fromPoints([
@@ -30,7 +28,7 @@ export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, sv
             penta.kneeRight,
             penta.pubis,
         ],
-        style,
+        style.pentaBodyFill,
         svg)
     )
 
@@ -40,7 +38,7 @@ export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, sv
             penta.scapulaRight,
             penta.lungRight,
         ],
-        style,
+        style.pentaBodyFill,
         svg)
     )
 
@@ -50,7 +48,7 @@ export function addPentaPolygon(penta: (Penta | PentaMan), style: PaintStyle, sv
             penta.scapulaLeft,
             penta.lungLeft,
         ],
-        style,
+        style.pentaBodyFill,
         svg)
     )
 }

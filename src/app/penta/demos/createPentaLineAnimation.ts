@@ -1,51 +1,43 @@
 import { Line } from "comicvm-geometry-2d";
-import { PaintStyle } from "comicvm-dom";
-import { DrawingLineAnimation } from "../../anim";
-import { Penta } from "../Penta";
-import { PentaMan } from "../PentaMan";
+import { DrawingLineAnimation, DrawingLineAnimationBuilder } from "../../anim";
+import { PentaAnimationConfig } from "../PentaAnimationConfig";
 
 export function createPentaLineAnimation(
-    penta: Penta | PentaMan,
-    svg,
-    startMillis = 0,
-    defaultDuration,
-    pentagramStroke: PaintStyle,
-    centralLineStroke: PaintStyle
+    {
+        svg,
+        penta,
+        startMillis,
+        duration,
+        style,
+    }: PentaAnimationConfig
 ): DrawingLineAnimation {
 
-    const animation = DrawingLineAnimation.fromLines(
+    const animation = new DrawingLineAnimationBuilder({
         svg,
         startMillis,
-        defaultDuration,
-        centralLineStroke,
+        duration
+    })
+        .setPaintStyle(style.centralLine)
+        .addLines(
+            new Line(penta.pubis, penta.neck)
+        )
 
-        new Line(penta.pubis, penta.neck),
-    )
-
-    const fromHeadAndNeckToShoulders = DrawingLineAnimation.fromLines(svg,
-        startMillis + defaultDuration,
-        defaultDuration / 2,
-        pentagramStroke,
-        [
+        .setStartMillis(startMillis + duration)
+        .setDuration(duration / 2)
+        .setPaintStyle(style.pentagramLine)
+        .addLines([
             new Line(penta.neck, penta.head),
             new Line(penta.neck, penta.shoulderLeft),
             new Line(penta.neck, penta.shoulderRight),
-        ]
-    )
-    fromHeadAndNeckToShoulders.applyStyle(centralLineStroke, 0)
-    animation.add(fromHeadAndNeckToShoulders)
-
-    animation.add(DrawingLineAnimation.fromLines(svg,
-        startMillis + defaultDuration * 1.5,
-        defaultDuration,
-        pentagramStroke,
-        [
+        ])
+        .setStartMillis(startMillis + duration * 1.5)
+        .setDuration(duration)
+        .addLines([
             new Line(penta.shoulderLeft, penta.elbowLeft),
             new Line(penta.shoulderRight, penta.elbowRight),
             new Line(penta.head, penta.shoulderLeft),
             new Line(penta.head, penta.shoulderRight),
-        ],
-        [
+        ], [
             new Line(penta.shoulderRight, penta.pubis),
             new Line(penta.shoulderLeft, penta.pubis),
         ], [
@@ -53,35 +45,23 @@ export function createPentaLineAnimation(
             new Line(penta.pubis, penta.kneeRight),
             new Line(penta.hipLeft, penta.kneeLeft),
             new Line(penta.hipRight, penta.kneeRight),
-        ]
-    ))
-
-    // extended extremities
-
-    animation.add(DrawingLineAnimation.fromLines(svg,
-        startMillis + defaultDuration * 1.5,
-        defaultDuration,
-        centralLineStroke,
-
-        new Line(penta.head, penta.overhead),
-        [
-            new Line(penta.elbowLeft, penta.handLeft),
-            new Line(penta.elbowRight, penta.handRight)
-        ],
-        [],
-        [
-            new Line(penta.kneeLeft, penta.footLeft),
-            new Line(penta.kneeRight, penta.footRight)
-        ]
-    ))
-
-    // central arms line,
-
-    animation.add(DrawingLineAnimation.fromLines(svg,
-        startMillis + defaultDuration * 2.5,
-        defaultDuration / 3,
-        centralLineStroke,
-        [
+        ])
+        .setStartMillis(startMillis + duration * 1.5,)
+        .setPaintStyle(style.centralLine)
+        .addLines(
+            new Line(penta.head, penta.overhead),
+            [
+                new Line(penta.elbowLeft, penta.handLeft),
+                new Line(penta.elbowRight, penta.handRight)
+            ],
+            [
+                new Line(penta.kneeLeft, penta.footLeft),
+                new Line(penta.kneeRight, penta.footRight)
+            ]
+        )
+        .setStartMillis(startMillis + duration * 2.5)
+        .setDuration(duration / 3)
+        .addLines([
             new Line(penta.elbowLeft, penta.scapulaLeft),
             new Line(penta.elbowRight, penta.scapulaRight)
         ], [
@@ -90,16 +70,9 @@ export function createPentaLineAnimation(
         ], [
             new Line(penta.middle, penta.hipRight),
             new Line(penta.middle, penta.hipLeft),
-        ]
-    ))
-
-    // central leg line
-
-    animation.add(DrawingLineAnimation.fromLines(svg,
-        startMillis + defaultDuration * 4.5,
-        defaultDuration / 3,
-        centralLineStroke,
-        [
+        ])
+        .setStartMillis(startMillis + duration * 4.5)
+        .addLines([
             new Line(penta.kneeLeft, penta.ischiumLeft),
             new Line(penta.kneeRight, penta.ischiumRight),
         ], [
@@ -108,8 +81,10 @@ export function createPentaLineAnimation(
         ], [
             new Line(penta.middle, penta.shoulderRight),
             new Line(penta.middle, penta.shoulderLeft),
-        ]
-    ))
+        ])
+        .build()
+
+    animation.applyStyle(style.centralLine, 1)
 
     return animation
 }

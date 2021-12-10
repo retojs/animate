@@ -21,10 +21,10 @@ export function createSVGDemo(container): Div {
     )
 
     let circle1 = new SVGCircle(300, 200, 120,
-        PaintStyle.fillAndStroke("#ffe32b", "#d130ae", 4)
+        PaintStyle.fillAndStroke("rgba(255, 220, 30, 0.7)", "rgba(220, 40, 180, 1)", 4)
     )
     let circle2 = new SVGCircle(300, 200, 80,
-        PaintStyle.fillAndStroke("#b0ff66", "#00bd81", 2)
+        PaintStyle.fillAndStroke("rgba(180, 255, 100, 0.7)", "rgba(0, 180, 120, 1)", 2)
     )
 
     svg.add(
@@ -34,8 +34,8 @@ export function createSVGDemo(container): Div {
 
     new Animator(
         new Animation(
-            new RadiusAnimationSection(circle1, 0, 10 * 1000),
-            new RadiusAnimationSection(circle2, 60, 10 * 1000)
+            RadiusAnimationSection.getBounce(circle1, 3000, {startMillis: 0, duration: 11 * 3000}),
+            RadiusAnimationSection.getBounce(circle2, 2750, {startMillis: 0, duration: 12 * 2750})
         ), {
             name: "SVGs!",
             htmlElement: svg.htmlElement

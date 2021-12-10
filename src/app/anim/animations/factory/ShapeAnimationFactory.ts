@@ -1,7 +1,7 @@
 import { PaintStyle } from "comicvm-dom";
 import { SVG, SVGShape } from "../../../svg";
 import { Animation } from "../../Animation";
-import { SVGShapeAnimationSection } from "../SVGShapeAnimationSection";
+import { ShapeAnimationSection } from "../ShapeAnimationSection";
 
 export interface ShapeAnimationSectionConfig<T extends SVGShape> {
     parent?: Animation
@@ -45,10 +45,10 @@ export class ShapeAnimationFactory {
         }
     }
 
-    createShape(config: ShapeAnimationSectionConfig<any>): SVGShapeAnimationSection<any> {
+    createShape(config: ShapeAnimationSectionConfig<any>): ShapeAnimationSection<any> {
         config = this.getAnimationConfig(config)
 
-        const section = SVGShapeAnimationSection.create(config)
+        const section = ShapeAnimationSection.create(config)
 
         if (config.insertBeforeShape) {
             config.svg.insertBefore(config.insertBeforeShape, config.shape);
@@ -66,10 +66,10 @@ export class ShapeAnimationFactory {
     }
 
     applyShape(
-        section: SVGShapeAnimationSection<any>,
+        section: ShapeAnimationSection<any>,
         targetStyle: PaintStyle,
         config: ShapeAnimationSectionConfig<any> = {},
-    ): SVGShapeAnimationSection<any> {
+    ): ShapeAnimationSection<any> {
         return this.createShape({
             ...config,
             shape: section.shape,

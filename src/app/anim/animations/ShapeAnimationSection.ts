@@ -2,10 +2,10 @@ import { SVGShape } from "../../svg";
 import { AnimationSection } from "../AnimationSection";
 import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
 
-export class SVGShapeAnimationSection<T extends SVGShape> extends AnimationSection {
+export class ShapeAnimationSection<T extends SVGShape> extends AnimationSection {
 
     static create(config: ShapeAnimationSectionConfig<any>) {
-        return new SVGShapeAnimationSection(
+        return new ShapeAnimationSection(
             config.shape,
             config.startMillis,
             config.duration > 0
@@ -46,7 +46,7 @@ export class SVGShapeAnimationSection<T extends SVGShape> extends AnimationSecti
     }
 
     clone(config: ShapeAnimationSectionConfig<any>) {
-        return new SVGShapeAnimationSection(
+        return new ShapeAnimationSection(
             config.shape || this.shape,
             config.startMillis || this.startMillis,
             config.duration || this.duration

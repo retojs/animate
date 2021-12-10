@@ -1,9 +1,5 @@
 import { Line, Point } from "comicvm-geometry-2d"
-import { PaintStyle } from "comicvm-dom"
-import { Animation, DrawingLineAnimation, RadiusAnimationSection } from "../../anim"
-import { DrawingLineAnimationBuilder } from "../../anim/animations/DrawingLineAnimationBuilder";
-import { createAnimationFactory } from "../../anim/animations/factory/createAnimationFactory";
-import { ColorPalette } from "../../style"
+import { Animation, DrawingLineAnimation, DrawingLineAnimationBuilder, RadiusAnimationSection } from "../../anim"
 import { SVGCircle } from "../../svg"
 import { Penta } from "../Penta"
 import { DEFAULT_DURATION } from "./penta-painting-demo-6"
@@ -18,34 +14,32 @@ export function createEssentialPentagramAnimation(config: PentaAnimationConfig):
     return animation
 }
 
-function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimation {
+function createLineAnimations({svg, penta, startMillis, duration, style}: PentaAnimationConfig): DrawingLineAnimation {
 
-    const penta = config.penta
-
-    const lineStyle = config.style.pentagramLine.clone();
-    lineStyle.lineWidth = 2.5
+    const lineStyle = style.pentagramLine.clone()
+    const lineWidth = lineStyle.lineWidth
 
     const animationBuilder = new DrawingLineAnimationBuilder({
-        svg: config.svg,
-        startMillis: config.startMillis,
-        defaultDuration: 1,
-        defaultPaintStyle: config.style.centralLine,
+        svg,
+        startMillis,
+        duration: 1,
+        style: lineStyle,
     })
-        .fromLines(
+        .addLines(
             new Line(penta.pubis, penta.head)
         )
-        .setDefaultDuration(config.duration * 0.35)
-        .setDefaultPaintStyle(lineStyle)
-        .fromLines([
+        .setDuration(duration * 0.35)
+        .setPaintStyle(lineStyle)
+        .addLines([
             new Line(penta.head, penta.shoulderLeft),
             new Line(penta.head, penta.shoulderRight),
             new Line(penta.neck, penta.shoulderLeft),
             new Line(penta.neck, penta.shoulderRight),
         ])
 
-        .setStartMillis(config.startMillis + config.duration * 0.35)
-        .setDefaultDuration(config.duration * 0.65 / 2)
-        .fromLines([
+        .setStartMillis(startMillis + duration * 0.35)
+        .setDuration(duration * 0.65 / 2)
+        .addLines([
             new Line(penta.shoulderLeft, penta.hipLeft),
             new Line(penta.shoulderRight, penta.hipRight),
         ], [
@@ -53,42 +47,42 @@ function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimatio
             new Line(penta.hipRight, penta.kneeRight),
         ])
 
-        .setStartMillis(config.startMillis + config.duration * 0.35)
-        .setDefaultDuration(config.duration * 0.65)
-        .fromLines([
+        .setStartMillis(startMillis + duration * 0.35)
+        .setDuration(duration * 0.65)
+        .addLines([
             new Line(penta.shoulderLeft, penta.elbowLeft),
             new Line(penta.shoulderRight, penta.elbowRight),
         ])
 
-        .setStartMillis(config.startMillis + config.duration)
-        .setDefaultDuration(config.duration)
-        .fromLines([
+        .setStartMillis(startMillis + duration)
+        .setDuration(duration)
+        .addLines([
             new Line(penta.kneeLeft, penta.pubis),
             new Line(penta.kneeRight, penta.pubis),
         ])
 
-        .setStartMillis(config.startMillis + config.duration)
-        .setDefaultDuration(config.duration * 0.65)
-        .fromLines([
+        .setStartMillis(startMillis + duration)
+        .setDuration(duration * 0.65)
+        .addLines([
             new Line(penta.elbowLeft, penta.hipLeft),
             new Line(penta.elbowRight, penta.hipRight)
         ])
 
-        .setStartMillis(config.startMillis + config.duration * 1.65)
-        .setDefaultDuration(config.duration * 0.35)
-        .fromLines([
+        .setStartMillis(startMillis + duration * 1.65)
+        .setDuration(duration * 0.35)
+        .addLines([
             new Line(penta.hipLeft, penta.pubis),
             new Line(penta.hipRight, penta.pubis),
         ])
 
-    lineStyle.lineWidth = 2.0
+    lineStyle.lineWidth = lineWidth * 3 / 4
 
     const kreuz = penta.spine.intersection(penta.hips)
 
     animationBuilder
-        .setStartMillis(config.startMillis + config.duration * 2)
-        .setDefaultDuration(config.duration)
-        .fromLines([
+        .setStartMillis(startMillis + duration * 2)
+        .setDuration(duration)
+        .addLines([
             new Line(penta.pubis, penta.shoulderLeft),
             new Line(penta.pubis, penta.shoulderRight),
             new Line(kreuz, penta.hipLeft),
@@ -101,15 +95,15 @@ function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimatio
         ])
 
 
-    lineStyle.lineWidth = 1.5
+    lineStyle.lineWidth = lineWidth * 2
 
     const diaphragm = penta.spine.intersection(new Line(penta.lungLeft, penta.lungRight))
     const middle = penta.spine.intersection(new Line(penta.lungLeft, penta.kidneyRight))
 
     animationBuilder
-        .setStartMillis(config.startMillis + config.duration * 4)
-        .setDefaultDuration(config.duration)
-        .fromLines([
+        .setStartMillis(startMillis + duration * 4)
+        .setDuration(duration)
+        .addLines([
             new Line(penta.heart, penta.kidneyLeft),
             new Line(penta.heart, penta.kidneyRight),
             new Line(diaphragm, penta.lungLeft),
@@ -127,82 +121,69 @@ function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimatio
 }
 
 
-function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
+function addSpotAnimations(animation: Animation, {svg, penta, startMillis, style}: PentaAnimationConfig) {
 
-    const color = ColorPalette.getColors()
-
-    const animationFactory = createAnimationFactory({
-        svg: config.svg,
-        parent: animation,
-        style: PaintStyle.fillAndStroke(color.yellow, color.val8.hue1, 2)
-    })
+    const duration = DEFAULT_DURATION
 
     const spotTimingPenta = [
-        config.startMillis + DEFAULT_DURATION * 0.35, // shoulders
-        config.startMillis + DEFAULT_DURATION,        // elbows, knees
-        config.startMillis + DEFAULT_DURATION * 1.65, // hips
-        config.startMillis + DEFAULT_DURATION * 2,    // pubis
-        config.startMillis + DEFAULT_DURATION * 2.35,
-        config.startMillis + DEFAULT_DURATION * 3,
-        config.startMillis + DEFAULT_DURATION * 3.55,
-        config.startMillis + DEFAULT_DURATION * 4,
-        config.startMillis + DEFAULT_DURATION * 5,
+        startMillis + duration * 0.35, // shoulders
+        startMillis + duration,        // elbows, knees
+        startMillis + duration * 1.65, // hips
+        startMillis + duration * 2,    // pubis
+        startMillis + duration * 2.35,
+        startMillis + duration * 3,
+        startMillis + duration * 3.55,
+        startMillis + duration * 4,
+        startMillis + duration * 5,
     ]
 
     const spotTimingPentaMan = [
-        config.startMillis + DEFAULT_DURATION * 0.35, // shoulders
-        config.startMillis + DEFAULT_DURATION,        // elbows, knees
-        config.startMillis + DEFAULT_DURATION * 1.65, // hips
-        config.startMillis + DEFAULT_DURATION * 2,    // pubis
-        config.startMillis + DEFAULT_DURATION * 2.35,
-        config.startMillis + DEFAULT_DURATION * 3,
-        config.startMillis + DEFAULT_DURATION * 3.55,
-        config.startMillis + DEFAULT_DURATION * 4,
-        config.startMillis + DEFAULT_DURATION * 5,
+        startMillis + duration * 0.35, // shoulders
+        startMillis + duration,        // elbows, knees
+        startMillis + duration * 1.65, // hips
+        startMillis + duration * 2,    // pubis
+        startMillis + duration * 2.35,
+        startMillis + duration * 3,
+        startMillis + duration * 3.55,
+        startMillis + duration * 4,
+        startMillis + duration * 5,
     ]
 
-    const penta = config.penta
     const timing = penta instanceof Penta ? spotTimingPenta : spotTimingPentaMan
 
-    let radius = 8
+    let radius = 10
 
     addAnimatedDot(penta.shoulderLeft, timing[0])
     addAnimatedDot(penta.shoulderRight, timing[0])
-
-    radius = 10
 
     addAnimatedDot(penta.elbowLeft, timing[1])
     addAnimatedDot(penta.elbowRight, timing[1])
     addAnimatedDot(penta.kneeLeft, timing[1])
     addAnimatedDot(penta.kneeRight, timing[1])
 
-    radius = 8
-
     addAnimatedDot(penta.hipLeft, timing[2])
     addAnimatedDot(penta.hipRight, timing[2])
 
     addAnimatedDot(penta.pubis, timing[3])
 
-    radius = 6
+    radius = 15
 
     addAnimatedDot(penta.kidneyLeft, timing[4])
     addAnimatedDot(penta.kidneyRight, timing[4])
 
-    radius = 8
+    radius = 10
 
     addAnimatedDot(penta.hipLeft, timing[5])
     addAnimatedDot(penta.hipRight, timing[5])
     addAnimatedDot(penta.shoulderLeft, timing[5])
     addAnimatedDot(penta.shoulderRight, timing[5])
 
-    radius = 6
+    radius = 15
 
     addAnimatedDot(penta.lungLeft, timing[6])
     addAnimatedDot(penta.lungRight, timing[6])
 
     addAnimatedDot(penta.heart, timing[7])
-
-    radius = 5
 
     addAnimatedDot(penta.lungLeft, timing[8])
     addAnimatedDot(penta.lungRight, timing[8])
@@ -211,20 +192,16 @@ function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
 
 
     function addAnimatedDot(center: Point, startMillis: number) {
-        const shapeAnimation = animationFactory.createCircleWithRadius(center, radius, {
-            startMillis,
-            style: PaintStyle.fillAndStroke(color.yellow, color.val8.hue1, 2)
-        })
-        animationFactory.createStyleChange({
-            shape: shapeAnimation.shape,
-            startMillis: startMillis + 300,
-            targetStyle: PaintStyle.fillAndStroke(color.transparent, color.transparent)
-        })
-        animation.add(RadiusAnimationSection.getSinglePulse(
-            shapeAnimation.shape as SVGCircle,
-            5,
-            startMillis,
-            DEFAULT_DURATION
+        animation.add(RadiusAnimationSection.getPulse(
+            SVGCircle.fromPoint(center, radius, style.pentagramSpot, svg),
+            Math.PI * 0.85,
+            {
+                startMillis,
+                duration: duration / 2,
+                visibleFrom: startMillis,
+                visibleUntil: 0,
+                style: style.pentagramSpot
+            }
         ))
     }
 }

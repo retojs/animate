@@ -5,6 +5,7 @@ import { Animator, DrawingLineAnimation, DrawingLineAnimationSection } from "../
 import { createAnimationFactory } from "../../anim/animations/factory/createAnimationFactory";
 import { Penta } from "../Penta"
 import { addPentaPolygon } from "../addPentaPolygon";
+import { PENTA_STYLES } from "../PentaAnimationConfig";
 
 export const PRIMARY_COLOR = "#2e878a"
 export const SECONDARY_COLOR = "#00bfc5"
@@ -13,8 +14,6 @@ export const BACKGROUND_COLOR = "#fff"
 
 export const DEFAULT_DURATION = 1500
 export const STARTOVER_DELAY = 3000
-
-const goldFill = PaintStyle.fill("rgba(255, 190, 10, 0.3)")
 
 export function createPentaPaintingDemo2(container): Div {
 
@@ -25,7 +24,9 @@ export function createPentaPaintingDemo2(container): Div {
 
     const penta = new Penta(300, 200, 150)
 
-    addPentaPolygon(penta, goldFill, svg)
+    const config = {svg, penta, style: PENTA_STYLES}
+
+    addPentaPolygon(config)
 
     const animation = DrawingLineAnimation.fromLines(
         svg,

@@ -1,4 +1,6 @@
-import { PentaManRelation } from "./PentaManRelation";
+import { Line, Point } from "comicvm-geometry-2d";
+import { PaintStyle } from "comicvm-dom";
+import { SVGLine } from "../svg";
 import {
     Animation,
     AnimationSection,
@@ -6,11 +8,9 @@ import {
     DrawingLineAnimation,
     DrawingLineAnimationSection
 } from "../anim";
-import { SVGLine } from "../svg";
-import { Line, Point } from "comicvm-geometry-2d";
-import { PentaMan } from "./PentaMan";
 import { Penta } from "./Penta";
-import { PaintStyle } from "comicvm-dom";
+import { PentaMan } from "./PentaMan";
+import { PentaManRelation } from "./PentaManRelation";
 
 export const enum PentaMappingType {
     MAN_TO_PENTA,
@@ -60,7 +60,7 @@ export class PentaManAnimationGenerator {
             animation.svg,
             animation.startMillis,
             animation.defaultDuration,
-            animation.defaultPaintStyle,
+            animation.style,
             ...this.mapAnimationSections(animation.parts as DrawingLineAnimationSection[], mappingType)
         )
     }

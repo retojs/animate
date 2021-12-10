@@ -55,7 +55,7 @@ export class DrawingLineAnimation extends Animation {
         public svg: SVG,
         public startMillis = 0,
         public defaultDuration = 300,
-        public defaultPaintStyle: PaintStyle = PaintStyle.stroke("black"),
+        public style: PaintStyle = PaintStyle.stroke("black"),
         ...lines: DrawingLineAnimationSection[]
     ) {
         super(...lines);
@@ -89,7 +89,7 @@ export class DrawingLineAnimation extends Animation {
             this.lastPoint.x,
             this.lastPoint.y,
             x, y,
-            style || this.defaultPaintStyle
+            style || this.style
         )
 
         this.svg.add(line);

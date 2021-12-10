@@ -2,7 +2,7 @@ import { PaintStyle } from "comicvm-dom";
 import { SVGShape } from "../../../../svg";
 import { blendColors } from "../../../../style/blendColors";
 import { interpolateValue } from "../../../interpolateValue";
-import { SVGShapeAnimationSection } from "../../SVGShapeAnimationSection";
+import { ShapeAnimationSection } from "../../ShapeAnimationSection";
 import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
 import { Constructor } from "./Constructor";
 
@@ -27,7 +27,7 @@ export function styleAnimationFactoryMixin<T extends Constructor<ShapeAnimationF
 
         createStyleChange(
             config: StyleAnimationConfig<any>,
-        ): SVGShapeAnimationSection<any> {
+        ): ShapeAnimationSection<any> {
             config = {...this.config, ...config}
 
             const sourceStyle = config.shape.style && config.shape.style.clone()
@@ -59,7 +59,7 @@ export function styleAnimationFactoryMixin<T extends Constructor<ShapeAnimationF
         }
 
         applyStyleChange(
-            section: SVGShapeAnimationSection<any>,
+            section: ShapeAnimationSection<any>,
             config: StyleAnimationConfig<any>
         ) {
             return this.createStyleChange({

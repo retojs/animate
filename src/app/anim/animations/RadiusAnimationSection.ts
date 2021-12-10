@@ -1,55 +1,68 @@
-import { AnimationSection } from "../AnimationSection"
 import { SVGCircle } from "../../svg";
+import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
+import { ShapeAnimationSection } from "./ShapeAnimationSection";
 
-export const PULSE_INTERVAL = 3000
+export class RadiusAnimationSection extends ShapeAnimationSection<SVGCircle> {
 
-export class RadiusAnimationSection extends AnimationSection {
-
-    readonly r: number;
+    readonly radius: number;
 
     constructor(
         private circle: SVGCircle,
-        public startMillis: number,
-        public endMillis: number,
+        config: ShapeAnimationSectionConfig<any>,
     ) {
-        super(startMillis, endMillis)
+        super(
+            circle,
+            config.startMillis,
+            config.startMillis + config.duration,
+            config.visibleFrom,
+            config.visibleUntil
+        )
 
-        this.r = this.circle.radius
-
-        this.renderFn = function (time: number) {
-            const progress = this.getProgressMillis(time)
-            this.circle.radius = this.r * Math.abs(Math.sin(progress / PULSE_INTERVAL * 2 * Math.PI))
-        }
+        this.radius = this.circle.radius
     }
 
-    static getLinearAnimation(
+    static getBounce(
         circle: SVGCircle,
-        targetRadius: number,
-        startMillis: number,
-        duration: number,
+        frequency: number,
+        config: ShapeAnimationSectionConfig<any>,
     ): RadiusAnimationSection {
-        const section = new RadiusAnimationSection(circle, startMillis, startMillis + duration)
+        const section = new RadiusAnimationSection(circle, config)
 
         section.renderFn = function (time: number) {
-            const progress = this.getProgress(time)
-            section.circle.radius = section.r + (targetRadius - section.r) * progress
+            const progress = this.getProgressMillis(time)
+            section.circle.radius = section.radius * Math.abs(Math.sin(progress / frequency * 2 * Math.PI))
         }
 
         return section
     }
 
-    static getSinglePulse(
+
+    static getLinear(
         circle: SVGCircle,
         targetRadius: number,
-        startMillis: number,
-        duration: number,
+        config: ShapeAnimationSectionConfig<any>,
     ): RadiusAnimationSection {
-        const section = new RadiusAnimationSection(circle, startMillis, startMillis + duration)
+        const section = new RadiusAnimationSection(circle, config)
 
         section.renderFn = function (time: number) {
             const progress = this.getProgress(time)
-            const angle = (progress) * 2 * Math.PI
-            section.circle.radius = targetRadius + (section.r - targetRadius) * Math.sin(angle)
+            section.circle.radius = section.radius + (targetRadius - section.radius) * progress
+        }
+
+        return section
+    }
+
+    static getPulse(
+        circle: SVGCircle,
+        angle: number = 2 * Math.PI,
+        config: ShapeAnimationSectionConfig<any>,
+    ): RadiusAnimationSection {
+        const section = new RadiusAnimationSection(circle, config)
+
+        section.renderFn = function (time: number) {
+            const progress = this.getProgress(time)
+            const _angle = (progress) * angle
+            section.circle.radius = section.radius * Math.sin(_angle)
         }
 
         return section
