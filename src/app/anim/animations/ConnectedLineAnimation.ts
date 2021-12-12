@@ -1,9 +1,20 @@
-import { DrawingLineAnimation, } from "./DrawingLineAnimation";
-import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
-import { SVG, SVGLine } from "../../svg";
 import { PaintStyle } from "comicvm-dom";
 import { Line } from "comicvm-geometry-2d";
+import { SVG, SVGLine, SVGShape } from "../../svg";
+import { DrawingLineAnimation, } from "./DrawingLineAnimation";
+import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
+import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
 
+export interface ConnectedLineAnimationConfig<T extends SVGShape> extends ShapeAnimationSectionConfig<T> {
+    line?: SVGLine,
+    connectedLine?: Line
+    gapWidth?: number
+    connectionStyle?: PaintStyle
+}
+
+/**
+ * Two lines connected by a set of connection lines with a specified gap from each other.
+ */
 export class ConnectedLineAnimation extends DrawingLineAnimation {
 
     lineAnimationSection: DrawingLineAnimationSection
@@ -13,44 +24,33 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
 
     static fromDrawingLineAnimationSection(
         section: DrawingLineAnimationSection,
-        connectedLine: Line,
-        connectionGaps: number = 10,
-        style: PaintStyle = section.line.style.clone()
+        config: ConnectedLineAnimationConfig<SVGLine>
     ) {
-        return new ConnectedLineAnimation(
-            section.line.svg,
-            section.line.clone(),
-            connectedLine,
-            connectionGaps,
-            section.startMillis,
-            section.duration,
-            style
-        )
+        return new ConnectedLineAnimation({
+            ...config,
+            line: section.line.clone()
+        })
     }
 
     constructor(
-        public svg: SVG,
-        public line: SVGLine,
-        public connectedLine: Line,
-        public connectionGaps: number,
-        startMillis: number,
-        duration: number,
-        public style: PaintStyle
+        public config: ConnectedLineAnimationConfig<SVGLine>
     ) {
-        super(svg, startMillis, duration)
+        super(config)
+
+        const {line, startMillis, duration, gapWidth, style, svg} = config
 
         this.lineAnimationSection = new DrawingLineAnimationSection(line, startMillis, startMillis + duration)
         this.add(this.lineAnimationSection)
 
-        this.connectionLineAnimationSections = this.createConnectionLines(connectionGaps, style, svg)
+        this.connectionLineAnimationSections = this.createConnectionLines(gapWidth, style, svg)
         this.add(...this.connectionLineAnimationSections)
-        this.connectionLineAnimationSections.forEach(section =>
-            section.line && section.line.svg.insertBefore(this.lineAnimationSection.line, section.line)
-        )
+        this.connectionLineAnimationSections.forEach(section => {
+            line.svg.insertBefore(this.lineAnimationSection.line, section.line)
+        })
     }
 
-    createConnectionLines(connectionGaps: number, style: PaintStyle, svg: SVG): DrawingLineAnimationSection[] {
-        const nofConnections = Math.round(this.line.length / connectionGaps)
+    createConnectionLines(gapWidth: number, style: PaintStyle, svg: SVG): DrawingLineAnimationSection[] {
+        const nofConnections = Math.round(this.config.line.length / gapWidth)
 
         this.connectionLines = Array.from(Array(nofConnections).keys())
             .map(i => {
@@ -59,8 +59,8 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
             })
 
         return this.connectionLines.map((connection, index) => {
-            const connectionDuration = this.defaultDuration / this.connectionLines.length
-            const start = this.startMillis + index * connectionDuration
+            const connectionDuration = this.config.duration / this.connectionLines.length
+            const start = this.config.startMillis + index * connectionDuration
             const end = start + connectionDuration
 
             return new DrawingLineAnimationSection(connection, start, end)
@@ -78,35 +78,31 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
     }
 
     calculateConnectionLine(index: number, nofConnections: number) {
+        const {line, connectedLine} = this.config
+
         return {
-            x1: this.line.x1 + (this.line.x2 - this.line.x1) * index / (nofConnections - 1),
-            y1: this.line.y1 + (this.line.y2 - this.line.y1) * index / (nofConnections - 1),
-            x2: this.connectedLine.from.x + (this.connectedLine.to.x - this.connectedLine.from.x) * index / (nofConnections - 1),
-            y2: this.connectedLine.from.y + (this.connectedLine.to.y - this.connectedLine.from.y) * index / (nofConnections - 1)
+            x1: line.x1 + (line.x2 - line.x1) * index / (nofConnections - 1),
+            y1: line.y1 + (line.y2 - line.y1) * index / (nofConnections - 1),
+            x2: connectedLine.from.x + (connectedLine.to.x - connectedLine.from.x) * index / (nofConnections - 1),
+            y2: connectedLine.from.y + (connectedLine.to.y - connectedLine.from.y) * index / (nofConnections - 1)
         }
     }
 
     clone() {
-        return new ConnectedLineAnimation(
-            this.svg,
-            this.line.clone(),
-            this.connectedLine.clone(),
-            this.connectionGaps,
-            this.startMillis,
-            this.defaultDuration,
-            this.style
+        return new ConnectedLineAnimation({
+                ...this.config,
+                line: this.config.line.clone(),
+                connectedLine: this.config.connectedLine.clone()
+            }
         )
     }
 
     cloneSilent() {
-        return new ConnectedLineAnimation(
-            this.svg,
-            this.line.cloneSilent(),
-            this.connectedLine.clone(),
-            this.connectionGaps,
-            this.startMillis,
-            this.defaultDuration,
-            this.style
+        return new ConnectedLineAnimation({
+                ...this.config,
+                line: this.config.line.cloneSilent(),
+                connectedLine: this.config.connectedLine.clone(),
+            }
         )
     }
 }

@@ -29,11 +29,12 @@ export function createPentaPaintingDemo2(container): Div {
     addPentaPolygon(config)
 
     const animation = DrawingLineAnimation.fromLines(
-        svg,
-        0,
-        DEFAULT_DURATION,
-        PaintStyle.stroke(PRIMARY_COLOR, 2),
-
+        {
+            svg,
+            startMillis: 0,
+            duration: DEFAULT_DURATION,
+            style: PaintStyle.stroke(PRIMARY_COLOR, 2)
+        },
         new Line(penta.pubis, penta.neck),
         [
             new Line(penta.neck, penta.head),

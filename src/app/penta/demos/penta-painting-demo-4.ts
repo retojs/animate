@@ -88,7 +88,7 @@ function createAnimations(svg: SVG) {
     const manAnimation = animationGenerator.mapAnimation(pentaLineAnimation, PentaMappingType.PENTA_TO_MAN)
     manAnimation.moveBehind(pentaLineAnimation.firstSection as DrawingLineAnimationSection)
 
-    animationGenerator.connectionGaps = 5
+    animationGenerator.gapWidth = 5
     const connectedLineAnimation = animationGenerator.toConnectedLineAnimation(
         pentaLineAnimation,
         PentaMappingType.PENTA_TO_MAN,

@@ -1,23 +1,23 @@
-import { Animation } from "../index";
-import { SVG, SVGLine } from "../../svg";
 import { PaintStyle } from "comicvm-dom";
 import { Line, Point } from "comicvm-geometry-2d";
-import { ConnectedLineAnimation } from "./ConnectedLineAnimation";
 import { DEFAULT_STYLE } from "../../style";
+import { SVG, SVGLine } from "../../svg";
+import { Animation } from "../";
+import { ConnectedLineAnimation } from "./ConnectedLineAnimation";
 
 export interface ConnectedLineAnimationConfig {
-     svg: SVG;
-     startMillis: number;
-     defaultDuration : number,
-     connectionGaps: number,
-     lineStyle: PaintStyle,
-     connectionStyle: PaintStyle
+    svg: SVG;
+    startMillis: number;
+    defaultDuration: number,
+    gapWidth: number,
+    lineStyle: PaintStyle,
+    connectionStyle: PaintStyle
 }
 
 export const DEFAULT_CONNECTED_LINE_ANIMATION_CONFIG = {
-    startMillis:0,
+    startMillis: 0,
     defaultDuration: 300,
-    connectionGaps: 10,
+    gapWidth: 10,
     lineStyle: DEFAULT_STYLE,
     connectionStyle: DEFAULT_STYLE
 }
@@ -38,35 +38,18 @@ export class ConnectedLineAnimationBuilder {
         to: Point,
         connectedFrom: Point,
         connectedTo: Point,
-        connectionGaps = this.config.connectionGaps,
-        startMillis?: number
     ) {
-        let start = startMillis
-        if (start == undefined) {
-            start = this.animation.lastSection
-                ? this.animation.lastSection.endMillis
-                : this.config.startMillis
-        }
-
-        this.animation.add(new ConnectedLineAnimation(
-            this.config.svg,
-            SVGLine.fromPoints(from, to, this.config.lineStyle, this.config.svg),
-            new Line(connectedFrom, connectedTo),
-            connectionGaps,
-            start,
-            this.config.defaultDuration,
-            this.config.connectionStyle
-        ))
+        this.animation.add(new ConnectedLineAnimation({
+            ...this.config,
+            line: SVGLine.fromPoints(from, to, this.config.lineStyle, this.config.svg),
+            connectedLine: new Line(connectedFrom, connectedTo)
+        }))
     }
 
     addLines(...linePoints: [Point, Point, Point, Point][]) {
-        const start = this.animation.lastSection
-            ? this.animation.lastSection.endMillis
-            : this.config.startMillis
-
         linePoints.forEach(points => {
             const [from, to, connectedFrom, connectedTo] = points
-            this.addLine(from, to, connectedFrom, connectedTo, this.config.connectionGaps, start)
+            this.addLine(from, to, connectedFrom, connectedTo)
         })
     }
 }

@@ -25,8 +25,7 @@ export class PentaManAnimationGenerator {
         public animation: Animation,
         public pentaMan: PentaMan,
         public penta: Penta,
-        public connectionGaps: number = 5,
-        public connectionStyle?: PaintStyle,
+        public gapWidth: number = 5,
     ) {
         this.relation = new PentaManRelation(pentaMan, penta)
     }
@@ -57,10 +56,7 @@ export class PentaManAnimationGenerator {
     mapAnimation(animation: DrawingLineAnimation, mappingType: PentaMappingType) {
 
         return new DrawingLineAnimation(
-            animation.svg,
-            animation.startMillis,
-            animation.defaultDuration,
-            animation.style,
+            animation.config,
             ...this.mapAnimationSections(animation.parts as DrawingLineAnimationSection[], mappingType)
         )
     }
@@ -100,10 +96,13 @@ export class PentaManAnimationGenerator {
                 return [
                     ConnectedLineAnimation.fromDrawingLineAnimationSection(
                         section,
-                        this.mapLine(section.line, mappingType),
-                        this.connectionGaps,
-                        this.modifyStyle(style || section.line.style.clone(), {lineWidth: 1})
-                    )
+                        {
+                            startMillis: section.startMillis,
+                            duration: section.duration,
+                            connectedLine: this.mapLine(section.line, mappingType),
+                            gapWidth: this.gapWidth,
+                            style: this.modifyStyle(style || section.line.style.clone(), {lineWidth: 1})
+                        })
                 ]
             } else {
                 return []

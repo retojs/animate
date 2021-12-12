@@ -1,29 +1,18 @@
 import { Line } from "comicvm-geometry-2d";
 import { PaintStyle } from "comicvm-dom";
-import { SVG, SVGLine } from "../../svg";
+import { SVGLine } from "../../svg";
 import { DrawingLineAnimation } from "./DrawingLineAnimation";
 import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
-
-export interface DrawingLineAnimationConfig {
-    svg: SVG,
-    startMillis: number,
-    duration?: number,
-    style?: PaintStyle,
-}
+import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
 
 export class DrawingLineAnimationBuilder {
 
     private animation: DrawingLineAnimation
 
     constructor(
-        public config: DrawingLineAnimationConfig
+        public config: ShapeAnimationSectionConfig<SVGLine>
     ) {
-        this.animation = new DrawingLineAnimation(
-            config.svg,
-            config.startMillis,
-            config.duration,
-            config.style
-        )
+        this.animation = new DrawingLineAnimation(config)
     }
 
     addLines(...lines: (Line | Line[])[]): DrawingLineAnimationBuilder {

@@ -22,12 +22,9 @@ function createLineAnimations({svg, penta, startMillis, duration, style}: PentaA
     const animationBuilder = new DrawingLineAnimationBuilder({
         svg,
         startMillis,
-        duration: 1,
         style: lineStyle,
     })
-        .addLines(
-            new Line(penta.pubis, penta.head)
-        )
+
         .setDuration(duration * 0.35)
         .setPaintStyle(lineStyle)
         .addLines([
@@ -95,7 +92,7 @@ function createLineAnimations({svg, penta, startMillis, duration, style}: PentaA
         ])
 
 
-    lineStyle.lineWidth = lineWidth * 2
+    lineStyle.lineWidth = lineWidth / 2
 
     const diaphragm = penta.spine.intersection(new Line(penta.lungLeft, penta.lungRight))
     const middle = penta.spine.intersection(new Line(penta.lungLeft, penta.kidneyRight))

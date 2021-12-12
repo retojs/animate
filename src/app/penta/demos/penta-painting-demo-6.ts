@@ -72,7 +72,7 @@ function createAnimations(svg: SVG) {
     const animationPenta = createEssentialPentagramAnimation({penta, ...animationConfig})
 
     animationPenta.notifyComplete = () => {
-        console.log("-----.....on end called")
+        console.log("notifyComplete")
         //  setTimeout(() => animationPenta.remove(), STARTOVER_DELAY)
     }
 

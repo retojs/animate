@@ -26,11 +26,12 @@ export function createPentaPaintingDemo(container): Div {
     addBackgroundPentaPoints(penta, svg);
 
     const animation = DrawingLineAnimation.fromLines(
-        svg,
-        0,
-        DEFAULT_DURATION,
-        PaintStyle.stroke(PRIMARY_COLOR, 2),
-
+        {
+            svg,
+            startMillis: 0,
+            duration: DEFAULT_DURATION,
+            style: PaintStyle.stroke(PRIMARY_COLOR, 2)
+        },
         [
             new Line(penta.neck, penta.elbowLeft),
             new Line(penta.neck, penta.elbowRight),

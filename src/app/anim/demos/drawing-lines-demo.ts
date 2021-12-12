@@ -11,11 +11,12 @@ export function drawingLinesDemo(container): Div {
         height: 400,
     })
 
-    const animation = DrawingLineAnimation.create(
+    const animation = DrawingLineAnimation.create({
         svg,
-        0, 200,
-        PaintStyle.stroke(PRIMARY_COLOR, 1.5)
-    )
+        startMillis: 0,
+        duration: 200,
+        style: PaintStyle.stroke(PRIMARY_COLOR, 1.5)
+    })
         .startFrom(220, 70)
         .lineTo(510, 290)
         .lineTo(200, 100)
