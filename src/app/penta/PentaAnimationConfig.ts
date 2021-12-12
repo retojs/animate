@@ -1,15 +1,13 @@
 import { Penta } from "./Penta";
 import { PentaMan } from "./PentaMan";
 import { PaintStyle } from "comicvm-dom";
-import { SVG } from "../svg";
+import { SVGLine } from "../svg";
+import { ShapeAnimationSectionConfig } from "../anim/animations/ShapeAnimationSection";
 
-export interface PentaAnimationConfig {
+export interface PentaAnimationConfig extends ShapeAnimationSectionConfig<SVGLine> {
     penta?: Penta | PentaMan
     pentaMan?: PentaMan
-    svg?: SVG
-    startMillis?: number
-    duration?: number
-    style?: PentaStyleConfig
+    pentaStyle?: PentaStyleConfig
 }
 
 export interface PentaStyleConfig {

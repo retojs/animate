@@ -59,7 +59,7 @@ export class MovingPentaLineAnimationSection extends AnimationSection {
         public relation: PentaManRelation,
         startMillis: number = 0,
     ) {
-        super(startMillis, 0)
+        super({startMillis, duration: Number.POSITIVE_INFINITY})
     }
 
     processLineAnimations() {

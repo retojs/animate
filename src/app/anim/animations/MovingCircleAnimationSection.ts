@@ -45,7 +45,7 @@ export class MovingCircleAnimationSection extends AnimationSection {
         style?: PaintStyle,
         insertBefore?: SVGShape
     ) {
-        super(startMillis, 0)
+        super({startMillis, duration: Number.POSITIVE_INFINITY})
 
         this.circle = sourceCircle.clone()
         this.circle.style = style || this.circle.style

@@ -1,8 +1,8 @@
 import { Point } from "comicvm-geometry-2d";
 import { SVGLine } from "../../svg";
-import { AnimationSection } from "../AnimationSection"
+import { ShapeAnimationSection, ShapeAnimationSectionConfig } from "./ShapeAnimationSection";
 
-export class DrawingLineAnimationSection extends AnimationSection {
+export class DrawingLineAnimationSection extends ShapeAnimationSection<SVGLine> {
 
     readonly x1: number
     readonly y1: number
@@ -15,21 +15,19 @@ export class DrawingLineAnimationSection extends AnimationSection {
     readonly line: SVGLine
 
     constructor(
-        line: SVGLine,
-        startMillis: number,
-        endMillis: number,
+        config: ShapeAnimationSectionConfig<SVGLine>
     ) {
-        super(startMillis, endMillis)
+        super({...config, visibleUntil: config.visibleUntil || Number.POSITIVE_INFINITY})
 
-        this.line = line
+        this.line = config.shape
 
-        this.x1 = line.x1
-        this.y1 = line.y1
-        this.x2 = line.x2
-        this.y2 = line.y2
+        this.x1 = this.line.x1
+        this.y1 = this.line.y1
+        this.x2 = this.line.x2
+        this.y2 = this.line.y2
 
-        this.from = new Point(line.x1, line.y1)
-        this.to = new Point(line.x2, line.y2)
+        this.from = new Point(this.line.x1, this.line.y1)
+        this.to = new Point(this.line.x2, this.line.y2)
 
         this.renderFn = function (time: number) {
             const progress = this.getProgress(time)
@@ -39,19 +37,17 @@ export class DrawingLineAnimationSection extends AnimationSection {
     }
 
     clone() {
-        return new DrawingLineAnimationSection(
-            this.line.clone(),
-            this.startMillis,
-            this.endMillis
-        )
+        return new DrawingLineAnimationSection({
+            ...this.config,
+            shape: this.line.clone()
+        })
     }
 
     cloneSilent() {
-        return new DrawingLineAnimationSection(
-            this.line.cloneSilent(),
-            this.startMillis,
-            this.endMillis
-        )
+        return new DrawingLineAnimationSection({
+            ...this.config,
+            shape: this.line.cloneSilent()
+        })
     }
 
     remove() {

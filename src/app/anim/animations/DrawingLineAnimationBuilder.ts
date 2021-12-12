@@ -3,7 +3,7 @@ import { PaintStyle } from "comicvm-dom";
 import { SVGLine } from "../../svg";
 import { DrawingLineAnimation } from "./DrawingLineAnimation";
 import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
-import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
+import { ShapeAnimationSectionConfig } from "./ShapeAnimationSection";
 
 export class DrawingLineAnimationBuilder {
 
@@ -21,11 +21,11 @@ export class DrawingLineAnimationBuilder {
 
         const sections: DrawingLineAnimationSection[] = lines.map((lineGroup, index) => {
             const lineArray = Array.isArray(lineGroup) ? lineGroup : [lineGroup]
-            return lineArray.map(line => new DrawingLineAnimationSection(
-                SVGLine.fromLine(line, style, svg),
-                startMillis + index * duration,
-                startMillis + index * duration + duration
-            ))
+            return lineArray.map(line => new DrawingLineAnimationSection({
+                ...this.config,
+                shape: SVGLine.fromLine(line, style, svg),
+                startMillis: startMillis + index * duration,
+            }))
         }).reduce((flat, arr) => flat.concat(arr), [])
 
         this.animation.add(...sections);

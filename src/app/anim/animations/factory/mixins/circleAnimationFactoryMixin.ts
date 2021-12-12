@@ -2,8 +2,8 @@ import { Circle, Point } from "comicvm-geometry-2d";
 import { SVGCircle } from "../../../../svg";
 import { movePoint } from "../../../movePoint";
 import { interpolateValue } from "../../../interpolateValue";
-import { ShapeAnimationSection } from "../../ShapeAnimationSection";
-import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
+import { ShapeAnimationSection, ShapeAnimationSectionConfig } from "../../ShapeAnimationSection";
+import { ShapeAnimationFactory } from "../ShapeAnimationFactory";
 import { Constructor } from "./Constructor";
 
 export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimationFactory>>(BaseClass: T) {
@@ -48,7 +48,10 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
             }
 
             section.renderFn = function (time: number) {
-                const progress = config.progressFn(section.getProgress(time))
+                let progress = section.getProgress(time)
+                if (typeof config.progressFn === "function") {
+                    progress = config.progressFn(progress)
+                }
 
                 const p = movePoint(
                     initial.x,
@@ -88,7 +91,7 @@ export function circleAnimationFactoryMixin<T extends Constructor<ShapeAnimation
 
             const newSection = this.createMoveCircle(target, {
                 ...config,
-                shape: section.shape,
+                shape: section.shape as SVGCircle,
             })
 
             this.config.parent.add(newSection)

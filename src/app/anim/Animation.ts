@@ -25,6 +25,7 @@ export class Animation {
     }
 
     notifyComplete() {
+        console.log("-- notifyComplete", this.onCompleteHanders)
         this.onCompleteHanders.forEach(handler => {
             console.log("notifyComplete - calling handler", handler)
             handler()
@@ -172,7 +173,6 @@ export class Animation {
                 part.shiftBy(time);
             } else if (part instanceof AnimationSection) {
                 part.startMillis += time
-                part.endMillis += time
             }
         })
     }
@@ -186,7 +186,7 @@ export class Animation {
                 console.log(
                     part.constructor.name,
                     "- startMillis:", part.startMillis,
-                    "- endMillis:", part.endMillis,
+                    "- duration:", part.duration,
                     "- visibleFrom:", part.visibleFrom,
                     "- visibleUntil:", part.visibleUntil
                 );

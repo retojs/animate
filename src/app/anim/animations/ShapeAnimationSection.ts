@@ -1,29 +1,30 @@
-import { SVGShape } from "../../svg";
-import { AnimationSection } from "../AnimationSection";
-import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
+import { SVG, SVGShape } from "../../svg";
+import { AnimationSection, AnimationSectionConfig } from "../AnimationSection";
+import { Animation } from "../Animation";
+import { PaintStyle } from "comicvm-dom";
+
+export interface ShapeAnimationSectionConfig<T extends SVGShape> extends AnimationSectionConfig {
+    parent?: Animation
+    svg?: SVG
+    shape?: T
+    style?: PaintStyle
+    insertBeforeShape?: SVGShape
+}
 
 export class ShapeAnimationSection<T extends SVGShape> extends AnimationSection {
 
+    shape: SVGShape
+
     static create(config: ShapeAnimationSectionConfig<any>) {
-        return new ShapeAnimationSection(
-            config.shape,
-            config.startMillis,
-            config.duration > 0
-                ? config.startMillis + config.duration
-                : 0,
-            config.visibleFrom,
-            config.visibleUntil,
-        )
+        return new ShapeAnimationSection(config)
     }
 
     constructor(
-        public shape: T,
-        public startMillis: number,
-        public endMillis: number,
-        public visibleFrom: number = startMillis,
-        public visibleUntil: number = endMillis,
+        public config: ShapeAnimationSectionConfig<any>
     ) {
-        super(startMillis, endMillis, visibleFrom, visibleUntil)
+        super(config)
+
+        this.shape = config.shape
     }
 
     applyVisibility(time: number) {
@@ -46,10 +47,6 @@ export class ShapeAnimationSection<T extends SVGShape> extends AnimationSection 
     }
 
     clone(config: ShapeAnimationSectionConfig<any>) {
-        return new ShapeAnimationSection(
-            config.shape || this.shape,
-            config.startMillis || this.startMillis,
-            config.duration || this.duration
-        )
+        return new ShapeAnimationSection(config)
     }
 }

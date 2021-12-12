@@ -8,8 +8,8 @@ import { addPentaManImage } from "../addPentaManImage";
 import { createEssentialPentagramAnimation } from "./createEssentialPentagramAnimation";
 import { PENTA_STYLES, PentaAnimationConfig } from "../PentaAnimationConfig";
 
-export const DEFAULT_DURATION = 3000
-export const STARTOVER_DELAY = 1000
+export const DEFAULT_DURATION = 1000
+export const STARTOVER_DELAY = 0
 
 const BACKGROUND_COLOR = "white"
 const TRANSPARENT = "rgba(0, 0, 0, 0.0)"
@@ -45,6 +45,8 @@ export function createPentaPaintingDemo6(container): Div {
             htmlElement: svg.htmlElement
         })
 
+    animator.animation.log()
+
     animator.start();
 
     return Div.create({container, styleClass: "demo"})
@@ -57,28 +59,29 @@ function createAnimations(svg: SVG) {
     const pentaMan = new PentaMan(300, 382, 580)
     const penta = new Penta(300, 300, 200)
 
-    const animationConfig: PentaAnimationConfig = {
+    const config: PentaAnimationConfig = {
         svg,
         penta,
         pentaMan,
         startMillis: 0,
         duration: DEFAULT_DURATION,
-        style: PENTA_STYLES
+        pentaStyle: PENTA_STYLES
     }
 
-    addPentaManImage(animationConfig)
-    addPentaPolygon(animationConfig)
+    addPentaManImage(config)
+    addPentaPolygon(config)
 
-    const animationPenta = createEssentialPentagramAnimation({penta, ...animationConfig})
+    const animationPenta = createEssentialPentagramAnimation({
+        ...config,
+        penta,
+        visibleUntil: config.startMillis + config.duration * 7
+    })
 
-    animationPenta.notifyComplete = () => {
-        console.log("notifyComplete")
-        //  setTimeout(() => animationPenta.remove(), STARTOVER_DELAY)
-    }
-
-    const animationPentaMan = createEssentialPentagramAnimation({penta: pentaMan, ...animationConfig})
-
-    animationPentaMan.remove()
+    animationPenta.add(createEssentialPentagramAnimation({
+        ...config,
+        penta: pentaMan,
+        startMillis: animationPenta.duration + config.duration
+    }))
 
     addForegroundShapes(penta, pentaMan, animationPenta, svg)
 

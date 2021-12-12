@@ -8,26 +8,30 @@ describe("AnimationSection.ts", () => {
     let animation: Animation
 
     beforeEach(() => {
-        section = new AnimationSection(1, 100)
-        sectionInfinite = new AnimationSection(1, 0)
+        section = new AnimationSection({startMillis: 0, duration: 100})
+        sectionInfinite = new AnimationSection({startMillis: 0, duration: Number.POSITIVE_INFINITY})
         animation = new Animation(section)
+    })
+
+    test(".endMillis equals startMillis + duration", () => {
+        expect(section.endMillis).toBe(section.startMillis + section.duration)
     })
 
     describe(".hasStarted(time)", () => {
 
         test("returns false if time < startMillis", () => {
-            expect(section.hasStarted(0)).toBe(false)
-            expect(sectionInfinite.hasStarted(0)).toBe(false)
+            expect(section.hasStarted(-1)).toBe(false)
+            expect(sectionInfinite.hasStarted(-1)).toBe(false)
         })
 
         test("returns true if time >= startMillis", () => {
+            expect(section.hasStarted(0)).toBe(true)
             expect(section.hasStarted(1)).toBe(true)
-            expect(section.hasStarted(2)).toBe(true)
             expect(section.hasStarted(100)).toBe(true)
             expect(section.hasStarted(101)).toBe(true)
 
+            expect(sectionInfinite.hasStarted(0)).toBe(true)
             expect(sectionInfinite.hasStarted(1)).toBe(true)
-            expect(sectionInfinite.hasStarted(2)).toBe(true)
             expect(sectionInfinite.hasStarted(100)).toBe(true)
             expect(sectionInfinite.hasStarted(101)).toBe(true)
         })
@@ -36,6 +40,7 @@ describe("AnimationSection.ts", () => {
     describe(".hasEnded(time)", () => {
 
         test("returns false if time <= endMillis if the section is not infinite.", () => {
+            expect(section.hasEnded(-1)).toBe(false)
             expect(section.hasEnded(0)).toBe(false)
             expect(section.hasEnded(1)).toBe(false)
             expect(section.hasEnded(100)).toBe(false)
@@ -70,8 +75,9 @@ describe("AnimationSection.ts", () => {
             expect(section.isVisible(106)).toBe(false)
         })
 
-        test("never returns false for an infinite section (visibleUntil = 0).", () => {
-            expect(sectionInfinite.isVisible(0)).toBe(false)
+        test("returns true for any time after startMillis for an infinite section (duration == Number.POSITIVE_INFINITY).", () => {
+            expect(sectionInfinite.isVisible(-1)).toBe(false)
+            expect(sectionInfinite.isVisible(0)).toBe(true)
             expect(sectionInfinite.isVisible(1)).toBe(true)
             expect(sectionInfinite.isVisible(100)).toBe(true)
             expect(sectionInfinite.isVisible(1010101)).toBe(true)

@@ -3,7 +3,7 @@ import { PaintStyle } from "comicvm-dom";
 import { SVGLine } from "../../svg";
 import { Animation } from "../Animation";
 import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
-import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
+import { ShapeAnimationSectionConfig } from "./ShapeAnimationSection";
 
 export class DrawingLineAnimation extends Animation {
 
@@ -28,11 +28,11 @@ export class DrawingLineAnimation extends Animation {
         const {startMillis, duration, style, svg} = config
         const lineAnimations = lines.map((lineGroup, index) => {
             const lineArray = Array.isArray(lineGroup) ? lineGroup : [lineGroup]
-            return lineArray.map(line => new DrawingLineAnimationSection(
-                SVGLine.fromLine(line, style, svg),
-                startMillis + index * duration,
-                startMillis + index * duration + duration
-            ))
+            return lineArray.map(line => new DrawingLineAnimationSection({
+                shape: SVGLine.fromLine(line, style, svg),
+                startMillis: startMillis + index * duration,
+                duration
+            }))
         }).reduce((flat, arr) => flat.concat(arr), [])
 
         return new DrawingLineAnimation(config, ...lineAnimations);
@@ -40,7 +40,8 @@ export class DrawingLineAnimation extends Animation {
 
     constructor(
         public config: ShapeAnimationSectionConfig<any>,
-        ...lines: DrawingLineAnimationSection[]) {
+        ...lines: DrawingLineAnimationSection[]
+    ) {
         super(...lines);
     }
 
@@ -77,11 +78,11 @@ export class DrawingLineAnimation extends Animation {
 
         this.config.svg.add(line);
 
-        this.parts.push(new DrawingLineAnimationSection(
-            line,
-            this.lastTime,
-            this.lastTime + this.config.duration
-        ));
+        this.parts.push(new DrawingLineAnimationSection({
+            shape: line,
+            startMillis: this.lastTime,
+            duration: this.config.duration
+        }));
 
         return this;
     }

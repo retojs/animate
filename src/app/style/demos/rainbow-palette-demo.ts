@@ -32,7 +32,7 @@ export function rainbowPaletteDemo(container): Div {
     const animation = new Animation(
         AnimationSection.create({
             startMillis: 0,
-            endMillis: 60 * 1000,
+            duration: 60 * 1000,
             renderFn: (t) => {
                 colorField.forEach((line, y) => {
 

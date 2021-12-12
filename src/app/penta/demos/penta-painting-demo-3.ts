@@ -26,7 +26,7 @@ export function createPentaPaintingDemo3(container): Div {
         svg,
         penta,
         pentaMan,
-        style: PENTA_STYLES,
+        pentaStyle: PENTA_STYLES,
         startMillis: 0,
     }
 
@@ -52,29 +52,29 @@ export function createPentaPaintingDemo3(container): Div {
 }
 
 
-function addForegroundShapes({penta, svg, style}: PentaAnimationConfig) {
+function addForegroundShapes({penta, svg, pentaStyle}: PentaAnimationConfig) {
 
     svg.add(
-        SVGCircle.fromPoint(penta.center, 5, style.centralSpot),
-        SVGCircle.fromPoint(penta.neck, 5, style.centralSpot),
+        SVGCircle.fromPoint(penta.center, 5, pentaStyle.centralSpot),
+        SVGCircle.fromPoint(penta.neck, 5, pentaStyle.centralSpot),
     )
 }
 
 
-function createPentaLineAnimation({penta, svg, style}: PentaAnimationConfig): DrawingLineAnimation {
+function createPentaLineAnimation({penta, svg, pentaStyle}: PentaAnimationConfig): DrawingLineAnimation {
 
     const animation = new DrawingLineAnimationBuilder({
         svg,
         startMillis: 0,
         duration: DEFAULT_DURATION,
     })
-        .setPaintStyle(style.centralLine)
+        .setPaintStyle(pentaStyle.centralLine)
         .addLines(
             [
                 new Line(penta.neck, penta.head),
                 new Line(penta.neck, penta.pubis),
             ])
-        .setPaintStyle(style.pentagramLine)
+        .setPaintStyle(pentaStyle.pentagramLine)
         .addLines([ // 2
                 new Line(penta.head, penta.shoulderLeft),
                 new Line(penta.head, penta.shoulderRight),
@@ -105,16 +105,16 @@ function createPentaLineAnimation({penta, svg, style}: PentaAnimationConfig): Dr
             ],
         ).build()
 
-    animation.applyStyle(style.centralLine, 14, 15, 18, 19, 20, 21)
+    animation.applyStyle(pentaStyle.centralLine, 14, 15, 18, 19, 20, 21)
 
     animation.moveSectionsBehind(animation.firstSection as DrawingLineAnimationSection, 12, 13, 14, 15, 16, 17)
 
     return animation
 }
 
-function addTopDownPentagon(animation, {svg, penta, style}: PentaAnimationConfig) {
+function addTopDownPentagon(animation, {svg, penta, pentaStyle}: PentaAnimationConfig) {
 
-    const factory = createAnimationFactory({svg, parent: animation, style: style.centralSpot})
+    const factory = createAnimationFactory({svg, parent: animation, style: pentaStyle.centralSpot})
 
     const addDot = (center, startMillis) => factory.createCircleWithRadius(center, 5, {startMillis})
 
@@ -128,7 +128,7 @@ function addTopDownPentagon(animation, {svg, penta, style}: PentaAnimationConfig
     const addLine = (from, to, startMillis) =>
         factory.createLineFromPoints(from, to, {
             startMillis,
-            style: style.topDownPentagon,
+            style: pentaStyle.topDownPentagon,
             insertBeforeShape
         })
 

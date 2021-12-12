@@ -8,7 +8,7 @@ export function createPentaLineAnimation(
         penta,
         startMillis,
         duration,
-        style,
+        pentaStyle,
     }: PentaAnimationConfig
 ): DrawingLineAnimation {
 
@@ -17,14 +17,14 @@ export function createPentaLineAnimation(
         startMillis,
         duration
     })
-        .setPaintStyle(style.centralLine)
+        .setPaintStyle(pentaStyle.centralLine)
         .addLines(
             new Line(penta.pubis, penta.neck)
         )
 
         .setStartMillis(startMillis + duration)
         .setDuration(duration / 2)
-        .setPaintStyle(style.pentagramLine)
+        .setPaintStyle(pentaStyle.pentagramLine)
         .addLines([
             new Line(penta.neck, penta.head),
             new Line(penta.neck, penta.shoulderLeft),
@@ -47,7 +47,7 @@ export function createPentaLineAnimation(
             new Line(penta.hipRight, penta.kneeRight),
         ])
         .setStartMillis(startMillis + duration * 1.5,)
-        .setPaintStyle(style.centralLine)
+        .setPaintStyle(pentaStyle.centralLine)
         .addLines(
             new Line(penta.head, penta.overhead),
             [
@@ -84,7 +84,7 @@ export function createPentaLineAnimation(
         ])
         .build()
 
-    animation.applyStyle(style.centralLine, 1)
+    animation.applyStyle(pentaStyle.centralLine, 1)
 
     return animation
 }

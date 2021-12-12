@@ -66,7 +66,7 @@ function createAnimations(svg: SVG, withLineConnections: boolean) {
     const penta = new Penta(300, 290, 225)
     const relation = new PentaManRelation(pentaMan, penta)
 
-    const config = {svg, penta, pentaMan, style: PENTA_STYLES, startMillis: 0, duration: DEFAULT_DURATION}
+    const config = {svg, penta, pentaMan, pentaStyle: PENTA_STYLES, startMillis: 0, duration: DEFAULT_DURATION}
 
     addPentaManImage(config)
     addPentaPolygon(config)
@@ -181,11 +181,11 @@ function addForegroundShapes(penta: Penta, pentaMan: PentaMan, animation: Animat
     // })
 
     pentaManCentralSpots.forEach((sourceCircle: SVGCircle) => {
-        const anim = new ShapeAnimationSection(
-            sourceCircle.evolve({style: style.centralSpotsLight}),
-            0,
-            0,
-        )
+        const anim = new ShapeAnimationSection({
+            shape: sourceCircle.evolve({style: style.centralSpotsLight}),
+            startMillis: 0,
+            duration: Number.POSITIVE_INFINITY
+        })
 
         animation.add(anim)
     })

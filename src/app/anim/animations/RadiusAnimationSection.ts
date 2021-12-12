@@ -1,6 +1,5 @@
 import { SVGCircle } from "../../svg";
-import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
-import { ShapeAnimationSection } from "./ShapeAnimationSection";
+import { ShapeAnimationSection, ShapeAnimationSectionConfig } from "./ShapeAnimationSection";
 
 export class RadiusAnimationSection extends ShapeAnimationSection<SVGCircle> {
 
@@ -10,13 +9,10 @@ export class RadiusAnimationSection extends ShapeAnimationSection<SVGCircle> {
         private circle: SVGCircle,
         config: ShapeAnimationSectionConfig<any>,
     ) {
-        super(
-            circle,
-            config.startMillis,
-            config.startMillis + config.duration,
-            config.visibleFrom,
-            config.visibleUntil
-        )
+        super({
+            ...config,
+            shape: circle,
+        })
 
         this.radius = this.circle.radius
     }

@@ -75,7 +75,7 @@ function createAnimations(svg: SVG) {
         pentaMan,
         startMillis: 0,
         duration: DEFAULT_DURATION,
-        style: PENTA_STYLES,
+        pentaStyle: PENTA_STYLES,
     }
 
     addPentaManImage(config)
@@ -93,7 +93,7 @@ function createAnimations(svg: SVG) {
         pentaLineAnimation,
         PentaMappingType.PENTA_TO_MAN,
         (style: PaintStyle) => {
-            if (style.strokeStyle === config.style.pentagramLine.strokeStyle) {
+            if (style.strokeStyle === config.pentaStyle.pentagramLine.strokeStyle) {
                 style.strokeStyle = pentagramLinesThin.strokeStyle
             }
             if (style.strokeStyle === centralLines.strokeStyle) {
@@ -108,7 +108,7 @@ function createAnimations(svg: SVG) {
 
     animationGenerator.replaceLineStyle(
         pentaLineAnimation,
-        config.style.pentagramLine,
+        config.pentaStyle.pentagramLine,
         pentagramLinesBold,
         centralLines,
         centralLinesBold
@@ -117,7 +117,7 @@ function createAnimations(svg: SVG) {
     manAnimation.notifyComplete = () => {
         setTimeout(() => animationGenerator.replaceLineStyle(
             manAnimation,
-            config.style.pentagramLine,
+            config.pentaStyle.pentagramLine,
             pentagramLinesDisabled,
             centralLines,
             centralLinesDisabled
@@ -129,7 +129,7 @@ function createAnimations(svg: SVG) {
         setTimeout(() => animationGenerator.replaceLineStyle(
             manAnimation,
             pentagramLinesDisabled,
-            config.style.pentagramLine,
+            config.pentaStyle.pentagramLine,
             centralLinesDisabled,
             centralLines
             ),

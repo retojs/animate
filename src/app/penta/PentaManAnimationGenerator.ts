@@ -115,11 +115,11 @@ export class PentaManAnimationGenerator {
 
     mapAnimationSection(section: DrawingLineAnimationSection, direction: PentaMappingType): DrawingLineAnimationSection {
 
-        return new DrawingLineAnimationSection(
-            this.mapLineSVG(section.line, direction),
-            section.startMillis,
-            section.endMillis
-        )
+        return new DrawingLineAnimationSection({
+            shape: this.mapLineSVG(section.line, direction),
+            startMillis: section.startMillis,
+            duration: section.duration
+        })
     }
 
     mapLine(line: SVGLine, mappingType: PentaMappingType): Line {

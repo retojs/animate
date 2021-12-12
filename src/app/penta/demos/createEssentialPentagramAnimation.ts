@@ -2,7 +2,6 @@ import { Line, Point } from "comicvm-geometry-2d"
 import { Animation, DrawingLineAnimation, DrawingLineAnimationBuilder, RadiusAnimationSection } from "../../anim"
 import { SVGCircle } from "../../svg"
 import { Penta } from "../Penta"
-import { DEFAULT_DURATION } from "./penta-painting-demo-6"
 import { PentaAnimationConfig } from "../PentaAnimationConfig";
 
 export function createEssentialPentagramAnimation(config: PentaAnimationConfig): DrawingLineAnimation {
@@ -14,17 +13,16 @@ export function createEssentialPentagramAnimation(config: PentaAnimationConfig):
     return animation
 }
 
-function createLineAnimations({svg, penta, startMillis, duration, style}: PentaAnimationConfig): DrawingLineAnimation {
+function createLineAnimations(config: PentaAnimationConfig): DrawingLineAnimation {
+    const {penta, startMillis, duration, pentaStyle} = config
 
-    const lineStyle = style.pentagramLine.clone()
+    const lineStyle = pentaStyle.pentagramLine.clone()
     const lineWidth = lineStyle.lineWidth
 
     const animationBuilder = new DrawingLineAnimationBuilder({
-        svg,
-        startMillis,
-        style: lineStyle,
+        ...config,
+        style: lineStyle
     })
-
         .setDuration(duration * 0.35)
         .setPaintStyle(lineStyle)
         .addLines([
@@ -118,9 +116,8 @@ function createLineAnimations({svg, penta, startMillis, duration, style}: PentaA
 }
 
 
-function addSpotAnimations(animation: Animation, {svg, penta, startMillis, style}: PentaAnimationConfig) {
-
-    const duration = DEFAULT_DURATION
+function addSpotAnimations(animation: Animation, config: PentaAnimationConfig) {
+    const {penta, startMillis, duration} = config
 
     const spotTimingPenta = [
         startMillis + duration * 0.35, // shoulders
@@ -190,14 +187,14 @@ function addSpotAnimations(animation: Animation, {svg, penta, startMillis, style
 
     function addAnimatedDot(center: Point, startMillis: number) {
         animation.add(RadiusAnimationSection.getPulse(
-            SVGCircle.fromPoint(center, radius, style.pentagramSpot, svg),
+            SVGCircle.fromPoint(center, radius, config.pentaStyle.pentagramSpot, config.svg),
             Math.PI * 0.85,
             {
+                ...config,
                 startMillis,
                 duration: duration / 2,
                 visibleFrom: startMillis,
-                visibleUntil: 0,
-                style: style.pentagramSpot
+                style: config.pentaStyle.pentagramSpot
             }
         ))
     }

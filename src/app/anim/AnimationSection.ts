@@ -1,36 +1,52 @@
 export interface AnimationSectionConfig {
-    renderFn: (time: number) => void,
-    startMillis: number,
-    endMillis: number,
+    startMillis?: number,
+    duration?: number,
     visibleFrom?: number,
     visibleUntil?: number,
+    renderFn?: (time: number) => void,
+    progressFn?: (time: number) => number
 }
 
 export class AnimationSection {
 
+    startMillis: number
+    duration: number
+    visibleFrom: number
+    visibleUntil: number
+    renderFn: (time: number) => void
+    progressFn?: (time: number) => number
+
     lastProgressRendered: number;
 
     static create(config: AnimationSectionConfig) {
-        return new AnimationSection(
-            config.startMillis,
-            config.endMillis,
-            config.visibleFrom,
-            config.visibleUntil,
-            config.renderFn
-        )
+        return new AnimationSection(config)
     }
 
     constructor(
-        public startMillis: number,
-        public endMillis: number,
-        public visibleFrom: number = startMillis,
-        public visibleUntil: number = endMillis,
-        public renderFn?: (time: number) => void
+        public config: AnimationSectionConfig
     ) {
+        this.startMillis = config.startMillis == null
+            ? 0
+            : config.startMillis
+
+        this.duration = config.duration == null
+            ? Number.POSITIVE_INFINITY
+            : config.duration
+
+        this.visibleFrom = config.visibleFrom == null
+            ? this.startMillis
+            : config.visibleFrom
+
+        this.visibleUntil = config.visibleUntil == null
+            ? this.startMillis + this.duration
+            : config.visibleUntil
+
+        this.renderFn = config.renderFn
+        this.progressFn = config.progressFn
     }
 
-    get duration(): number {
-        return this.endMillis - this.startMillis
+    get endMillis(): number {
+        return this.startMillis + this.duration
     }
 
     hasStarted(time: number): boolean {
@@ -38,7 +54,7 @@ export class AnimationSection {
     }
 
     hasEnded(time: number): boolean {
-        return !(this.endMillis === 0) && this.endMillis < time
+        return !(this.duration === Number.POSITIVE_INFINITY) && this.endMillis < time
     }
 
     isRunning(time: number): boolean {
@@ -84,10 +100,8 @@ export class AnimationSection {
     }
 
     shiftTo(shiftedStartMillis) {
-        const duration = this.duration
         const offset = shiftedStartMillis - this.startMillis
         this.startMillis = shiftedStartMillis
-        this.endMillis = this.startMillis + duration
         this.visibleFrom = this.visibleFrom + offset
         this.visibleUntil = this.visibleUntil === 0 ? 0 : this.visibleUntil + offset
     }

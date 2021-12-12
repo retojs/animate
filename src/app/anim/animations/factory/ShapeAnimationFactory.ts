@@ -1,27 +1,6 @@
 import { PaintStyle } from "comicvm-dom";
-import { SVG, SVGShape } from "../../../svg";
 import { Animation } from "../../Animation";
-import { ShapeAnimationSection } from "../ShapeAnimationSection";
-
-export interface ShapeAnimationSectionConfig<T extends SVGShape> {
-    parent?: Animation
-    svg?: SVG
-    shape?: T
-    style?: PaintStyle
-    startMillis?: number
-    duration?: number
-    visibleFrom?: number
-    visibleUntil?: number
-    progressFn?: (time: number) => number
-    insertBeforeShape?: SVGShape
-}
-
-const DEFAULT_SHAPE_ANIMATION_CONFIG = {
-    style: PaintStyle.fillAndStroke("transparent", "rgba(0,0,0,0.9)", 2),
-    startMillis: 0,
-    duration: 1000,
-    progressFn: (time: number) => time,
-}
+import { ShapeAnimationSection, ShapeAnimationSectionConfig } from "../ShapeAnimationSection";
 
 export class ShapeAnimationFactory {
 
@@ -31,7 +10,6 @@ export class ShapeAnimationFactory {
         public  config: ShapeAnimationSectionConfig<any> = {}
     ) {
         this.animation = new Animation()
-        this.config = {...DEFAULT_SHAPE_ANIMATION_CONFIG, ...config}
     }
 
     getAnimationConfig(config: ShapeAnimationSectionConfig<any>): ShapeAnimationSectionConfig<any> {

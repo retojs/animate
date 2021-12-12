@@ -1,7 +1,7 @@
 import { Animation } from "./Animation"
 import { AnimationSection } from "./AnimationSection"
 
-describe("AnimationSection.ts", () => {
+describe("Animation.ts", () => {
 
     let section: AnimationSection
     let animation: Animation
@@ -11,25 +11,26 @@ describe("AnimationSection.ts", () => {
     let section3: AnimationSection
 
     beforeEach(() => {
-        section = new AnimationSection(1, 100)
+        section = new AnimationSection({startMillis: 0, duration: 100})
         animation = new Animation(section)
 
-        section1 = new AnimationSection(50, 150)
-        section2 = new AnimationSection(0, 100)
-        section3 = new AnimationSection(1, 50)
+        section1 = new AnimationSection({startMillis: 50, duration: 100})
+        section2 = new AnimationSection({startMillis: 0, duration: 100})
+        section3 = new AnimationSection({startMillis: 1, duration: 50})
     })
 
     test(".hasStarted(time) returns false if time < startMillis", () => {
-        expect(animation.hasStarted(0)).toBe(false)
+        expect(animation.hasStarted(-1)).toBe(false)
     })
     test(".hasStarted(time) returns true if time >= startMillis", () => {
-        expect(animation.hasStarted(1)).toBe(true)
+        expect(animation.hasStarted(0)).toBe(true)
         expect(animation.hasStarted(50)).toBe(true)
         expect(animation.hasStarted(100)).toBe(true)
         expect(animation.hasStarted(1001)).toBe(true)
     })
 
     test(".hasEnded(time) returns false if time <= endMillis", () => {
+        expect(animation.hasEnded(-1)).toBe(false)
         expect(animation.hasEnded(0)).toBe(false)
         expect(animation.hasEnded(1)).toBe(false)
         expect(animation.hasEnded(100)).toBe(false)
@@ -78,20 +79,20 @@ describe("AnimationSection.ts", () => {
 
         test("shifts the visibility range, too, if visibility is limited.", () => {
             animation = new Animation()
-            section.visibleFrom = 1
+            section.visibleFrom = 0
             section.visibleUntil = 100
             animation.append(section, 100)
             expect(section.visibleFrom).toBe(100)
-            expect(section.visibleUntil).toBe(199)
+            expect(section.visibleUntil).toBe(200)
         })
 
         test("does not shift the unlimited ends of the visibility range.", () => {
             animation = new Animation()
             section.visibleFrom = 0
-            section.visibleUntil = 0
+            section.visibleUntil = Number.POSITIVE_INFINITY
             animation.append(section, 100)
-            expect(section.visibleFrom).toBe(99)
-            expect(section.visibleUntil).toBe(0)
+            expect(section.visibleFrom).toBe(100)
+            expect(section.visibleUntil).toBe(Number.POSITIVE_INFINITY)
         })
     })
 

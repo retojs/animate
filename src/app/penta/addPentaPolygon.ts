@@ -1,7 +1,7 @@
 import { SVGPolygon } from "../svg";
 import { PentaAnimationConfig } from "./PentaAnimationConfig";
 
-export function addPentaPolygon({penta, style, svg}: PentaAnimationConfig): void {
+export function addPentaPolygon({penta, pentaStyle, svg}: PentaAnimationConfig): void {
 
     svg.add(SVGPolygon.fromPoints([
             penta.head,
@@ -9,7 +9,7 @@ export function addPentaPolygon({penta, style, svg}: PentaAnimationConfig): void
             penta.pubis,
             penta.shoulderRight,
         ],
-        style.pentaBodyFill,
+        pentaStyle.pentaBodyFill,
         svg)
     )
 
@@ -19,7 +19,7 @@ export function addPentaPolygon({penta, style, svg}: PentaAnimationConfig): void
             penta.kneeLeft,
             penta.pubis,
         ],
-        style.pentaBodyFill,
+        pentaStyle.pentaBodyFill,
         svg)
     )
     svg.add(SVGPolygon.fromPoints([
@@ -28,7 +28,7 @@ export function addPentaPolygon({penta, style, svg}: PentaAnimationConfig): void
             penta.kneeRight,
             penta.pubis,
         ],
-        style.pentaBodyFill,
+        pentaStyle.pentaBodyFill,
         svg)
     )
 
@@ -38,7 +38,7 @@ export function addPentaPolygon({penta, style, svg}: PentaAnimationConfig): void
             penta.scapulaRight,
             penta.lungRight,
         ],
-        style.pentaBodyFill,
+        pentaStyle.pentaBodyFill,
         svg)
     )
 
@@ -48,7 +48,7 @@ export function addPentaPolygon({penta, style, svg}: PentaAnimationConfig): void
             penta.scapulaLeft,
             penta.lungLeft,
         ],
-        style.pentaBodyFill,
+        pentaStyle.pentaBodyFill,
         svg)
     )
 }

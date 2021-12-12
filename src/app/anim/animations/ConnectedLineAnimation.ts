@@ -3,7 +3,7 @@ import { Line } from "comicvm-geometry-2d";
 import { SVG, SVGLine, SVGShape } from "../../svg";
 import { DrawingLineAnimation, } from "./DrawingLineAnimation";
 import { DrawingLineAnimationSection } from "./DrawingLineAnimationSection";
-import { ShapeAnimationSectionConfig } from "./factory/ShapeAnimationFactory";
+import { ShapeAnimationSectionConfig } from "./ShapeAnimationSection";
 
 export interface ConnectedLineAnimationConfig<T extends SVGShape> extends ShapeAnimationSectionConfig<T> {
     line?: SVGLine,
@@ -39,7 +39,7 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
 
         const {line, startMillis, duration, gapWidth, style, svg} = config
 
-        this.lineAnimationSection = new DrawingLineAnimationSection(line, startMillis, startMillis + duration)
+        this.lineAnimationSection = new DrawingLineAnimationSection({shape: line, startMillis, duration})
         this.add(this.lineAnimationSection)
 
         this.connectionLineAnimationSections = this.createConnectionLines(gapWidth, style, svg)
@@ -59,11 +59,10 @@ export class ConnectedLineAnimation extends DrawingLineAnimation {
             })
 
         return this.connectionLines.map((connection, index) => {
-            const connectionDuration = this.config.duration / this.connectionLines.length
-            const start = this.config.startMillis + index * connectionDuration
-            const end = start + connectionDuration
+            const duration = this.config.duration / this.connectionLines.length
+            const startMillis = this.config.startMillis + index * duration
 
-            return new DrawingLineAnimationSection(connection, start, end)
+            return new DrawingLineAnimationSection({shape: connection, startMillis, duration})
         })
     }
 

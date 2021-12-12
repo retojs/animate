@@ -24,7 +24,7 @@ export function createPentaPaintingDemo2(container): Div {
 
     const penta = new Penta(300, 200, 150)
 
-    const config = {svg, penta, style: PENTA_STYLES}
+    const config = {svg, penta, pentaStyle: PENTA_STYLES}
 
     addPentaPolygon(config)
 

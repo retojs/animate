@@ -2,8 +2,8 @@ import { PaintStyle } from "comicvm-dom";
 import { SVGShape } from "../../../../svg";
 import { blendColors } from "../../../../style/blendColors";
 import { interpolateValue } from "../../../interpolateValue";
-import { ShapeAnimationSection } from "../../ShapeAnimationSection";
-import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
+import { ShapeAnimationSection, ShapeAnimationSectionConfig } from "../../ShapeAnimationSection";
+import { ShapeAnimationFactory } from "../ShapeAnimationFactory";
 import { Constructor } from "./Constructor";
 
 export interface StyleAnimationConfig<T extends SVGShape> extends ShapeAnimationSectionConfig<T> {
@@ -37,7 +37,10 @@ export function styleAnimationFactoryMixin<T extends Constructor<ShapeAnimationF
             const section = this.createShape(config)
 
             section.renderFn = function (time: number) {
-                const progress = config.progressFn(this.getProgress(time))
+                let progress = section.getProgress(time)
+                if (typeof config.progressFn === "function") {
+                    progress = config.progressFn(progress)
+                }
 
                 section.shape.style = PaintStyle.fillAndStroke(
                     blendColors(sourceStyle.fillStyle as string, config.targetStyle.fillStyle as string, progress),

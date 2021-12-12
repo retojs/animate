@@ -2,8 +2,8 @@ import { Line, Point } from "comicvm-geometry-2d";
 import { SVGLine } from "../../../../svg";
 import { movePoint } from "../../../movePoint";
 import { interpolateValue } from "../../../interpolateValue";
-import { ShapeAnimationSection } from "../../ShapeAnimationSection";
-import { ShapeAnimationFactory, ShapeAnimationSectionConfig } from "../ShapeAnimationFactory";
+import { ShapeAnimationSection, ShapeAnimationSectionConfig } from "../../ShapeAnimationSection";
+import { ShapeAnimationFactory } from "../ShapeAnimationFactory";
 import { Constructor } from "./Constructor";
 
 export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFactory>>(BaseClass: T) {
@@ -49,7 +49,10 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
             const y2 = line.y2
 
             section.renderFn = function (time: number) {
-                const progress = config.progressFn(this.getProgress(time))
+                let progress = section.getProgress(time)
+                if (typeof config.progressFn === "function") {
+                    progress = config.progressFn(progress)
+                }
 
                 if (reverse) {
                     line.x1 = interpolateValue(x1, x2, progress)
@@ -85,7 +88,7 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
 
             const newSection = this.createDrawLine({
                 ...config,
-                shape: section.shape,
+                shape: section.shape as SVGLine,
             })
 
             this.config.parent.add(newSection)
@@ -104,7 +107,10 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
             const section = this.createShape(config)
 
             section.renderFn = function (time: number) {
-                const progress = config.progressFn(this.getProgress(time))
+                let progress = section.getProgress(time)
+                if (typeof config.progressFn === "function") {
+                    progress = config.progressFn(progress)
+                }
 
                 const from = movePoint(
                     sourceLine.x1,
@@ -120,11 +126,11 @@ export function lineAnimationFactoryMixin<T extends Constructor<ShapeAnimationFa
                     targetLine.to.y,
                     progress
                 )
-
-                section.shape.x1 = from.x
-                section.shape.y1 = from.y
-                section.shape.x2 = to.x
-                section.shape.y2 = to.y
+                const line = section.shape as SVGLine
+                line.x1 = from.x
+                line.y1 = from.y
+                line.x2 = to.x
+                line.y2 = to.y
             }
 
             return section
