@@ -1,6 +1,6 @@
 import { DomElement, DomElementContainer, PaintStyle } from "comicvm-dom"
-import { SVGShape } from "./SVGShape";
 import { Circle, Line, Point } from "comicvm-geometry-2d";
+import { SVGShape } from "./SVGShape";
 import { SVGCircle } from "./SVGCircle";
 import { SVGLine } from "./SVGLine";
 import { SVGRect } from "./SVGRect";
